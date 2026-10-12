@@ -213,22 +213,27 @@ function buildSteps(arr) {
     apply(s) { s.total = 0; s.i = -1; s.probe = -1; s.done = false; s.flash = 'total'; }
   });
   for (let i = 0; i < arr.length; i++) {
+    const idx = i;
+    const val = arr[i];
     steps.push({
       line: 1,
-      text: `Loop index <code>i = ${i}</code>. Look at <code>arr[${i}] = ${arr[i]}</code>.`,
-      apply(s) { s.i = i; s.probe = i; s.flash = 'i'; }
+      text: `Loop index <code>i = ${idx}</code>. Look at <code>arr[${idx}] = ${val}</code>.`,
+      apply(s) { s.i = idx; s.probe = idx; s.flash = 'i'; }
     });
-    total += arr[i];
+    const prev = total;
+    total += val;
+    const next = total;
     steps.push({
       line: 2,
-      text: `Add it: <code>total = ${total - arr[i]} + ${arr[i]} = ${total}</code>.`,
-      apply(s) { s.total = total; s.i = i; s.probe = i; s.flash = 'total'; }
+      text: `Add it: <code>total = ${prev} + ${val} = ${next}</code>.`,
+      apply(s) { s.total = next; s.i = idx; s.probe = idx; s.flash = 'total'; }
     });
   }
+  const finalTotal = total;
   steps.push({
     line: 2, kind: 'good', badge: 'Done',
-    text: `Loop finished. The sum of <code>[${arr.join(', ')}]</code> is <code>${total}</code>.`,
-    apply(s) { s.done = true; s.probe = -1; s.flash = 'total'; }
+    text: `Loop finished. The sum of <code>[${arr.join(', ')}]</code> is <code>${finalTotal}</code>.`,
+    apply(s) { s.done = true; s.total = finalTotal; s.probe = -1; s.flash = 'total'; }
   });
   return steps;
 }

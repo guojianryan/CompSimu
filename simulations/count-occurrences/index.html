@@ -219,11 +219,13 @@ function buildSteps(arr, target) {
     apply(s) { s.count = 0; s.i = -1; s.probe = -1; s.matched = []; s.done = false; s.flash = 'count'; }
   });
   for (let i = 0; i < arr.length; i++) {
-    const hit = arr[i] === target;
+    const idx = i;
+    const val = arr[i];
+    const hit = val === target;
     steps.push({
       line: 1,
-      text: `Index <code>i = ${i}</code>. Compare <code>arr[${i}] = ${arr[i]}</code> with target <code>${target}</code>.`,
-      apply(s) { s.i = i; s.probe = i; s.flash = 'i'; }
+      text: `Index <code>i = ${idx}</code>. Compare <code>arr[${idx}] = ${val}</code> with target <code>${target}</code>.`,
+      apply(s) { s.i = idx; s.probe = idx; s.flash = 'i'; }
     });
     steps.push({
       line: 2,
@@ -231,25 +233,29 @@ function buildSteps(arr, target) {
         ? `Match! Increase the counter.`
         : `Not equal — leave <code>count</code> unchanged.`,
       kind: hit ? 'good' : undefined,
-      apply(s) { s.i = i; s.probe = i; s.flash = hit ? 'count' : null; }
+      apply(s) { s.i = idx; s.probe = idx; s.flash = hit ? 'count' : null; }
     });
     if (hit) {
       count += 1;
-      matched.push(i);
+      matched.push(idx);
+      const nextCount = count;
+      const matchedNow = matched.slice();
       steps.push({
         line: 3,
-        text: `<code>count = ${count}</code> after finding another <code>${target}</code>.`,
+        text: `<code>count = ${nextCount}</code> after finding another <code>${target}</code>.`,
         kind: 'good',
-        apply(s) { s.count = count; s.matched = [...matched]; s.i = i; s.probe = i; s.flash = 'count'; }
+        apply(s) { s.count = nextCount; s.matched = matchedNow.slice(); s.i = idx; s.probe = idx; s.flash = 'count'; }
       });
     }
   }
+  const finalCount = count;
+  const finalMatched = matched.slice();
   steps.push({
-    line: 3, kind: count ? 'good' : 'warn', badge: 'Done',
-    text: count
-      ? `Finished. <code>${target}</code> appears <code>${count}</code> time${count === 1 ? '' : 's'}.`
+    line: 3, kind: finalCount ? 'good' : 'warn', badge: 'Done',
+    text: finalCount
+      ? `Finished. <code>${target}</code> appears <code>${finalCount}</code> time${finalCount === 1 ? '' : 's'}.`
       : `Finished. <code>${target}</code> never appeared — <code>count</code> is still <code>0</code>.`,
-    apply(s) { s.done = true; s.probe = -1; s.count = count; s.matched = [...matched]; s.flash = 'count'; }
+    apply(s) { s.done = true; s.probe = -1; s.count = finalCount; s.matched = finalMatched.slice(); s.flash = 'count'; }
   });
   return steps;
 }

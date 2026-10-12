@@ -223,42 +223,50 @@ function buildSteps(arr) {
     apply(s) { s.max = arr[0]; s.min = arr[0]; s.i = 0; s.probe = 0; s.flash = 'min_val'; }
   });
   for (let i = 1; i < arr.length; i++) {
+    const idx = i;
+    const val = arr[i];
+    const maxBefore = maxVal;
+    const minBefore = minVal;
     steps.push({
       line: 2,
-      text: `Index <code>i = ${i}</code>. Current value <code>${arr[i]}</code>.`,
-      apply(s) { s.i = i; s.probe = i; s.flash = 'i'; }
+      text: `Index <code>i = ${idx}</code>. Current value <code>${val}</code>.`,
+      apply(s) { s.i = idx; s.probe = idx; s.flash = 'i'; }
     });
     steps.push({
       line: 3,
-      text: `Is <code>${arr[i]} &gt; max_val (${maxVal})</code>? ${arr[i] > maxVal ? 'Yes.' : 'No.'}`,
-      apply(s) { s.i = i; s.probe = i; s.flash = null; }
+      text: `Is <code>${val} &gt; max_val (${maxBefore})</code>? ${val > maxBefore ? 'Yes.' : 'No.'}`,
+      apply(s) { s.i = idx; s.probe = idx; s.flash = null; }
     });
-    if (arr[i] > maxVal) {
-      maxVal = arr[i];
+    if (val > maxBefore) {
+      maxVal = val;
+      const nextMax = maxVal;
       steps.push({
         line: 4, kind: 'good',
-        text: `New maximum! <code>max_val = ${maxVal}</code>.`,
-        apply(s) { s.max = maxVal; s.i = i; s.probe = i; s.flash = 'max_val'; }
+        text: `New maximum! <code>max_val = ${nextMax}</code>.`,
+        apply(s) { s.max = nextMax; s.i = idx; s.probe = idx; s.flash = 'max_val'; }
       });
     }
     steps.push({
       line: 5,
-      text: `Is <code>${arr[i]} &lt; min_val (${minVal})</code>? ${arr[i] < minVal ? 'Yes.' : 'No.'}`,
-      apply(s) { s.i = i; s.probe = i; s.flash = null; }
+      text: `Is <code>${val} &lt; min_val (${minBefore})</code>? ${val < minBefore ? 'Yes.' : 'No.'}`,
+      apply(s) { s.i = idx; s.probe = idx; s.flash = null; }
     });
-    if (arr[i] < minVal) {
-      minVal = arr[i];
+    if (val < minBefore) {
+      minVal = val;
+      const nextMin = minVal;
       steps.push({
         line: 6, kind: 'good',
-        text: `New minimum! <code>min_val = ${minVal}</code>.`,
-        apply(s) { s.min = minVal; s.i = i; s.probe = i; s.flash = 'min_val'; }
+        text: `New minimum! <code>min_val = ${nextMin}</code>.`,
+        apply(s) { s.min = nextMin; s.i = idx; s.probe = idx; s.flash = 'min_val'; }
       });
     }
   }
+  const finalMax = maxVal;
+  const finalMin = minVal;
   steps.push({
     line: 6, kind: 'good', badge: 'Done',
-    text: `Scan complete. Max is <code>${maxVal}</code>, min is <code>${minVal}</code>.`,
-    apply(s) { s.done = true; s.probe = -1; s.max = maxVal; s.min = minVal; s.flash = null; }
+    text: `Scan complete. Max is <code>${finalMax}</code>, min is <code>${finalMin}</code>.`,
+    apply(s) { s.done = true; s.probe = -1; s.max = finalMax; s.min = finalMin; s.flash = null; }
   });
   return steps;
 }
