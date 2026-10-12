@@ -69,6 +69,9 @@
 .var[data-name="hi"], .var[data-name="top"], .var[data-name="front"], .var[data-name="size"] { --c: var(--orange); }
 .var[data-name="temp"], .var[data-name="result"], .var[data-name="x"] { --c: var(--brand-green-deep); }
 .var[data-name="swapped"] { --c: var(--brand-warn); }
+.var[data-name="distance"], .var[data-name="reading"] { --c: var(--brand-tag); }
+.var[data-name="threshold"] { --c: var(--brand-warn); }
+.var[data-name="action"] { --c: var(--brand-green-deep); }
 .var .label { display: inline-block; font: 600 13px/1.4 var(--mono); padding: 1px 10px; border-radius: var(--r-full); background: var(--c); color: #fff; margin-bottom: 10px; }
 .var .val { font: 600 36px/1 var(--mono); height: 60px; display: grid; place-items: center; border-radius: var(--r-md); background: var(--surface-soft); border: 1px dashed var(--hairline); color: var(--ink); }
 .var .val.empty { color: var(--muted); font-size: 16px; }
