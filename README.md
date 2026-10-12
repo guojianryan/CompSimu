@@ -14,6 +14,9 @@ assets/css/viz.css                      Array / bar / stack / queue visualizatio
 assets/js/sim-player.js                 Shared step / play / reset controller
 assets/img/logo.svg                     Favicon / logo
 simulations/python-swap/index.html      Swapping two variables (temp-variable method)
+simulations/array-sum/index.html        Totalling an array (accumulator)
+simulations/count-occurrences/index.html Counting occurrences
+simulations/max-min/index.html          Finding max and min
 simulations/linear-search/index.html    Linear search
 simulations/binary-search/index.html    Binary search
 simulations/bubble-sort/index.html      Bubble sort
@@ -21,6 +24,8 @@ simulations/selection-sort/index.html   Selection sort
 simulations/stacks/index.html           Stacks (LIFO)
 simulations/queues/index.html           Queues (FIFO)
 ```
+
+Every interactive stage shows **labeled variable boxes** so students can see how `i`, accumulators, pointers, and results change step by step.
 
 All links are relative, so the site works both at a custom domain root and under a GitHub Pages project path (`https://<user>.github.io/CompSimu/`).
 

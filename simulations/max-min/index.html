@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Finding max and min — CompSimu</title>
+<meta name="description" content="Watch max and min boxes update as a loop scans an array for the largest and smallest values." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Finding max & min</span>
+    </nav>
+    <h1 class="h1">Finding max and min with a for loop</h1>
+    <p class="subtitle" style="max-width:720px">Assume the first value is both max and min, then walk the rest of the list — updating the boxes whenever you see a new extreme.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Python</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">Loops · Comparisons</span>
+      <span class="badge badge-soft">~6 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Remember the extremes so far</h2>
+        <p>You cannot know the maximum until you have looked at every element — but you can keep a running best guess.</p>
+        <p>Seed <code>max_val</code> and <code>min_val</code> with <code>arr[0]</code>, then from index <code>1</code> onward compare and update.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Starting from the first element avoids needing a fake “infinity” starter value.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Running extremes</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>max_min.py</span><span>Python</span></div>
+<pre>max_val = arr[<span class="tok-num">0</span>]
+min_val = arr[<span class="tok-num">0</span>]
+<span class="tok-op">for</span> i <span class="tok-op">in</span> range(<span class="tok-num">1</span>, len(arr)):
+    <span class="tok-op">if</span> arr[i] &gt; max_val:
+        max_val = arr[i]
+    <span class="tok-op">if</span> arr[i] &lt; min_val:
+        min_val = arr[i]</pre>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">Array: <code>[5, 2, 9, 1, 7]</code> · Max <code>9</code> · Min <code>1</code></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">Boxes track <code>i</code>, <code>max_val</code>, and <code>min_val</code> as the scan proceeds.</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="demo" role="tab">Find both</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">demo.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Array + variables</span><span id="stageMode">demo</span></div>
+            <div class="stage viz-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">One pass, two answers</h2>
+        <p class="subtitle">You can track max and min together without a second loop.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">Seed</span>
+          <h3 class="h5">Start with arr[0]</h3>
+          <p class="muted" style="margin:0;font-size:14px">That gives both boxes a real value before the loop at index 1.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">Compare</span>
+          <h3 class="h5">Update only when better</h3>
+          <p class="muted" style="margin:0;font-size:14px">Greater than max → new max. Less than min → new min.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-soft" style="align-self:flex-start">O(n)</span>
+          <h3 class="h5">Single scan</h3>
+          <p class="muted" style="margin:0;font-size:14px">Every element is checked once — efficient and easy to follow.</p>
+        </div>
+      </div>
+      <div class="card-feature next-card" style="margin-top:40px">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Linear search</h3>
+          <p class="muted" style="margin:6px 0 0">Use the same left-to-right scan to find the index of a target value.</p>
+        </div>
+        <a class="btn btn-primary" href="../linear-search/index.html">Open linear search</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+                <h4>Simulations</h4>
+        <ul>
+          <li><a href="../python-swap/index.html">Swapping two variables</a></li>
+          <li><a href="../array-sum/index.html">Totalling an array</a></li>
+          <li><a href="../count-occurrences/index.html">Counting occurrences</a></li>
+          <li><a href="../max-min/index.html">Finding max &amp; min</a></li>
+          <li><a href="../linear-search/index.html">Linear search</a></li>
+          <li><a href="../binary-search/index.html">Binary search</a></li>
+          <li><a href="../bubble-sort/index.html">Bubble sort</a></li>
+          <li><a href="../selection-sort/index.html">Selection sort</a></li>
+          <li><a href="../stacks/index.html">Stacks</a></li>
+          <li><a href="../queues/index.html">Queues</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+
+const ARR = [5, 2, 9, 1, 7];
+
+function buildSteps(arr) {
+  const steps = [];
+  let maxVal = arr[0];
+  let minVal = arr[0];
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: `Seed <code>max_val = arr[0] = ${arr[0]}</code>.`,
+    apply(s) { s.max = arr[0]; s.min = undefined; s.i = 0; s.probe = 0; s.flash = 'max_val'; }
+  });
+  steps.push({
+    line: 1,
+    text: `Seed <code>min_val = arr[0] = ${arr[0]}</code> as well.`,
+    apply(s) { s.max = arr[0]; s.min = arr[0]; s.i = 0; s.probe = 0; s.flash = 'min_val'; }
+  });
+  for (let i = 1; i < arr.length; i++) {
+    steps.push({
+      line: 2,
+      text: `Index <code>i = ${i}</code>. Current value <code>${arr[i]}</code>.`,
+      apply(s) { s.i = i; s.probe = i; s.flash = 'i'; }
+    });
+    steps.push({
+      line: 3,
+      text: `Is <code>${arr[i]} &gt; max_val (${maxVal})</code>? ${arr[i] > maxVal ? 'Yes.' : 'No.'}`,
+      apply(s) { s.i = i; s.probe = i; s.flash = null; }
+    });
+    if (arr[i] > maxVal) {
+      maxVal = arr[i];
+      steps.push({
+        line: 4, kind: 'good',
+        text: `New maximum! <code>max_val = ${maxVal}</code>.`,
+        apply(s) { s.max = maxVal; s.i = i; s.probe = i; s.flash = 'max_val'; }
+      });
+    }
+    steps.push({
+      line: 5,
+      text: `Is <code>${arr[i]} &lt; min_val (${minVal})</code>? ${arr[i] < minVal ? 'Yes.' : 'No.'}`,
+      apply(s) { s.i = i; s.probe = i; s.flash = null; }
+    });
+    if (arr[i] < minVal) {
+      minVal = arr[i];
+      steps.push({
+        line: 6, kind: 'good',
+        text: `New minimum! <code>min_val = ${minVal}</code>.`,
+        apply(s) { s.min = minVal; s.i = i; s.probe = i; s.flash = 'min_val'; }
+      });
+    }
+  }
+  steps.push({
+    line: 6, kind: 'good', badge: 'Done',
+    text: `Scan complete. Max is <code>${maxVal}</code>, min is <code>${minVal}</code>.`,
+    apply(s) { s.done = true; s.probe = -1; s.max = maxVal; s.min = minVal; s.flash = null; }
+  });
+  return steps;
+}
+
+function render(state) {
+  const stage = document.getElementById('stage');
+  const cells = state.arr.map((v, i) => {
+    let cls = 'cell';
+    if (state.probe === i) cls += ' probe';
+    if (state.max !== undefined && v === state.max && (state.done || i <= state.i)) cls += ' match';
+    if (state.min !== undefined && v === state.min && (state.done || i <= state.i)) cls += ' min';
+    return `<div class="${cls}"><span class="idx">${i}</span><div class="v">${v}</div></div>`;
+  }).join('');
+  const vars = CompSimu.renderVars([
+    { name: 'i', value: state.i < 0 ? undefined : state.i, flash: state.flash === 'i' },
+    { name: 'max_val', value: state.max, flash: state.flash === 'max_val' },
+    { name: 'min_val', value: state.min, flash: state.flash === 'min_val' },
+  ]);
+  stage.innerHTML = `<div class="array-row">${cells}</div>${vars}`;
+}
+
+CompSimu.createPlayer({
+  programs: {
+    demo: {
+      file: 'max_min.py', label: 'max & min',
+      ready: 'Seed max/min from the first element, then scan the rest.',
+      lines: [
+        'max_val = arr[0]',
+        'min_val = arr[0]',
+        'for i in range(1, len(arr)):',
+        '    if arr[i] > max_val:',
+        '        max_val = arr[i]',
+        '    if arr[i] < min_val:',
+        '        min_val = arr[i]',
+      ],
+      steps: buildSteps(ARR),
+    },
+  },
+  initialMode: 'demo',
+  initialState: () => ({ arr: [...ARR], i: -1, probe: -1, max: undefined, min: undefined, done: false, flash: null }),
+  render,
+});
+
+</script>
+</body>
+</html>

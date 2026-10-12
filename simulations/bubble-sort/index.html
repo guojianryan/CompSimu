@@ -94,7 +94,7 @@
             <div class="code-lines" id="code"></div>
           </div>
           <div class="stage-panel">
-            <div class="stage-head"><span>Array as bars</span><span id="stageMode">demo</span></div>
+            <div class="stage-head"><span>Array + variables</span><span id="stageMode">demo</span></div>
             <div class="stage viz-stage" id="stage"></div>
           </div>
         </div>
@@ -164,9 +164,12 @@
         <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
       </div>
       <div>
-        <h4>Simulations</h4>
+                <h4>Simulations</h4>
         <ul>
           <li><a href="../python-swap/index.html">Swapping two variables</a></li>
+          <li><a href="../array-sum/index.html">Totalling an array</a></li>
+          <li><a href="../count-occurrences/index.html">Counting occurrences</a></li>
+          <li><a href="../max-min/index.html">Finding max &amp; min</a></li>
           <li><a href="../linear-search/index.html">Linear search</a></li>
           <li><a href="../binary-search/index.html">Binary search</a></li>
           <li><a href="../bubble-sort/index.html">Bubble sort</a></li>
@@ -267,7 +270,12 @@ function render(state) {
     const h = Math.round((v / max) * 130) + 16;
     return `<div class="${cls}" style="height:${h}px"><span>${v}</span></div>`;
   }).join('');
-  stage.innerHTML = `<div class="bars">${bars}</div><div class="ds-meta">pass focus · green = sorted suffix</div>`;
+  const vars = CompSimu.renderVars([
+    { name: 'pass_i', value: state.i < 0 ? undefined : state.i },
+    { name: 'j', value: state.j < 0 ? undefined : state.j },
+    { name: 'temp', value: state.swapping && state.j >= 0 ? state.arr[state.j] : undefined },
+  ]);
+  stage.innerHTML = `<div class="bars">${bars}</div>${vars}`;
 }
 
 CompSimu.createPlayer({

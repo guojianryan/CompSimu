@@ -47,12 +47,27 @@
 .stage-empty { text-align: center; color: var(--stone); font-size: 14px; }
 
 .vars { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+.vars-track { gap: 12px; margin-top: 4px; }
+.vars-label {
+  width: 100%; text-align: center; margin: 0 0 2px;
+  font: 600 11px/1.4 var(--sans); letter-spacing: .5px; text-transform: uppercase; color: var(--steel);
+}
 .var {
   --c: var(--brand-tag);
   width: 136px; padding: 12px; text-align: center; position: relative; background: var(--canvas);
   border: 1px solid var(--hairline); border-top: 3px solid var(--c); border-radius: var(--r-lg); box-shadow: var(--shadow-soft);
   animation: var-pop .4s cubic-bezier(.2,1.3,.4,1);
 }
+.var.sm { width: 104px; padding: 10px 8px; }
+.var.sm .label { font-size: 12px; margin-bottom: 8px; }
+.var.sm .val { font-size: 26px; height: 48px; }
+.var[data-name="i"], .var[data-name="j"], .var[data-name="pass_i"] { --c: var(--brand-tag); }
+.var[data-name="total"], .var[data-name="count"], .var[data-name="sum"] { --c: var(--brand-green-deep); }
+.var[data-name="target"], .var[data-name="item"] { --c: var(--charcoal); }
+.var[data-name="lo"], .var[data-name="min"], .var[data-name="min_i"], .var[data-name="min_val"] { --c: var(--brand-tag); }
+.var[data-name="mid"], .var[data-name="max"], .var[data-name="max_val"] { --c: var(--brand-green-deep); }
+.var[data-name="hi"], .var[data-name="top"], .var[data-name="front"], .var[data-name="size"] { --c: var(--orange); }
+.var[data-name="temp"], .var[data-name="result"], .var[data-name="x"] { --c: var(--brand-green-deep); }
 .var .label { display: inline-block; font: 600 13px/1.4 var(--mono); padding: 1px 10px; border-radius: var(--r-full); background: var(--c); color: #fff; margin-bottom: 10px; }
 .var .val { font: 600 36px/1 var(--mono); height: 60px; display: grid; place-items: center; border-radius: var(--r-md); background: var(--surface-soft); border: 1px dashed var(--hairline); color: var(--ink); }
 .var .val.empty { color: var(--muted); font-size: 16px; }
