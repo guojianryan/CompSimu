@@ -35,7 +35,7 @@
       <span style="color:var(--ink)">Binary search</span>
     </nav>
     <h1 class="h1">Binary search</h1>
-    <p class="subtitle" style="max-width:720px">When the array is sorted, each comparison can throw away half of what remains. Follow lo, mid, and hi as they close in.</p>
+    <p class="subtitle" style="max-width:720px">When the array is sorted, each comparison can throw away half of what remains. The highlighted window is the part still being searched — watch it shrink as lo, mid, and hi close in.</p>
     <div class="meta">
       <span class="badge badge-tag">Algorithms</span>
       <span class="badge badge-soft">Beginner+</span>
@@ -75,7 +75,7 @@
       <div class="section-head" style="margin-bottom:24px">
         <span class="eyebrow">Interactive</span>
         <h2 class="h2">Run the simulation</h2>
-        <p class="subtitle">Grey cells are discarded. Blue / green / orange markers show lo, mid, and hi.</p>
+        <p class="subtitle">The blue-highlighted band is the active search range. Grey cells are already discarded. Markers show <code>lo</code>, <code>mid</code>, and <code>hi</code>.</p>
       </div>
 
       <div class="sim-shell">
@@ -213,47 +213,54 @@ const DATA = {
 function buildSteps(arr, target) {
   const steps = [];
   let lo = 0, hi = arr.length - 1;
+  const startHi = hi;
   steps.push({
     line: 0, badge: 'Setup',
-    text: `Sorted array <code>[${arr.join(', ')}]</code>. Search for <code>${target}</code>. Set <code>lo = 0</code>, <code>hi = ${hi}</code>.`,
+    text: `Sorted array <code>[${arr.join(', ')}]</code>. Search for <code>${target}</code>. The highlighted range starts as the whole array: <code>lo = 0</code> … <code>hi = ${startHi}</code>.`,
     apply(s) { s.lo = 0; s.hi = arr.length - 1; s.mid = -1; s.found = false; s.done = false; }
   });
   let guard = 0;
   while (lo <= hi && guard++ < 20) {
-    const mid = Math.floor((lo + hi) / 2);
+    const curLo = lo;
+    const curHi = hi;
+    const mid = Math.floor((curLo + curHi) / 2);
     steps.push({
       line: 2,
-      text: `Compute <code>mid = (${lo} + ${hi}) // 2 = ${mid}</code>. Look at <code>arr[${mid}] = ${arr[mid]}</code>.`,
-      apply(s) { s.lo = lo; s.hi = hi; s.mid = mid; }
+      text: `Still searching indices <code>${curLo}</code>–<code>${curHi}</code>. Compute <code>mid = (${curLo} + ${curHi}) // 2 = ${mid}</code> and check <code>arr[${mid}] = ${arr[mid]}</code>.`,
+      apply(s) { s.lo = curLo; s.hi = curHi; s.mid = mid; }
     });
     if (arr[mid] === target) {
       steps.push({
         line: 4, kind: 'good',
-        text: `<code>arr[${mid}]</code> equals the target. Return index <code>${mid}</code>.`,
-        apply(s) { s.found = true; s.done = true; s.mid = mid; }
+        text: `<code>arr[${mid}]</code> equals the target — found inside the highlighted range. Return index <code>${mid}</code>.`,
+        apply(s) { s.lo = curLo; s.hi = curHi; s.found = true; s.done = true; s.mid = mid; }
       });
       return steps;
     }
     if (arr[mid] < target) {
+      const nextLo = mid + 1;
       steps.push({
         line: 6,
-        text: `<code>${arr[mid]} &lt; ${target}</code> — target is to the right. Move <code>lo</code> to <code>${mid + 1}</code> and discard the left half.`,
-        apply(s) { s.lo = mid + 1; s.hi = hi; s.mid = mid; }
+        text: `<code>${arr[mid]} &lt; ${target}</code> — target is to the right. Move <code>lo</code> to <code>${nextLo}</code>; the left half leaves the highlighted search range.`,
+        apply(s) { s.lo = nextLo; s.hi = curHi; s.mid = mid; }
       });
-      lo = mid + 1;
+      lo = nextLo;
     } else {
+      const nextHi = mid - 1;
       steps.push({
         line: 8,
-        text: `<code>${arr[mid]} &gt; ${target}</code> — target is to the left. Move <code>hi</code> to <code>${mid - 1}</code> and discard the right half.`,
-        apply(s) { s.lo = lo; s.hi = mid - 1; s.mid = mid; }
+        text: `<code>${arr[mid]} &gt; ${target}</code> — target is to the left. Move <code>hi</code> to <code>${nextHi}</code>; the right half leaves the highlighted search range.`,
+        apply(s) { s.lo = curLo; s.hi = nextHi; s.mid = mid; }
       });
-      hi = mid - 1;
+      hi = nextHi;
     }
   }
+  const endLo = lo;
+  const endHi = hi;
   steps.push({
     line: 9, kind: 'warn',
-    text: `Now <code>lo &gt; hi</code>. The search range is empty — <code>${target}</code> is not in the array.`,
-    apply(s) { s.done = true; s.found = false; s.mid = -1; }
+    text: `Now <code>lo (${endLo}) &gt; hi (${endHi})</code>. The search range is empty — <code>${target}</code> is not in the array.`,
+    apply(s) { s.lo = endLo; s.hi = endHi; s.done = true; s.found = false; s.mid = -1; }
   });
   return steps;
 }
@@ -261,28 +268,61 @@ function buildSteps(arr, target) {
 function render(state) {
   const stage = document.getElementById('stage');
   const arr = state.arr;
+  const hasRange = !state.done && state.lo !== undefined && state.hi !== undefined && state.lo <= state.hi;
+  const emptyRange = state.done && !state.found;
+
+  const ptrs = arr.map((_, i) => {
+    const tags = [];
+    if (hasRange && i === state.lo) tags.push('lo');
+    if (!state.done && state.mid >= 0 && i === state.mid) tags.push('mid');
+    if (hasRange && i === state.hi) tags.push('hi');
+    if (state.found && i === state.mid) tags.push('mid');
+    if (!tags.length) return `<div class="ptr slot" aria-hidden="true">·</div>`;
+    if (tags.length === 1) return `<div class="ptr ${tags[0]}">${tags[0]}</div>`;
+    return `<div class="ptr stack">${tags.map((t) => `<span class="${t}">${t}</span>`).join('')}</div>`;
+  }).join('');
+
   const cells = arr.map((v, i) => {
     let cls = 'cell';
-    const inRange = state.lo <= i && i <= state.hi;
-    if (state.done && !state.found) cls += ' discard';
-    else if (!inRange && state.lo !== undefined) cls += ' discard';
-    if (i === state.mid && !state.done) cls += ' probe';
-    if (state.found && i === state.mid) cls += ' match';
+    const inRange = hasRange && state.lo <= i && i <= state.hi;
+    if (state.found && i === state.mid) {
+      cls += ' match';
+    } else if (emptyRange || (!inRange && state.lo !== undefined)) {
+      cls += ' discard';
+    } else if (inRange) {
+      cls += ' in-range';
+      if (i === state.lo) cls += ' range-start';
+      if (i === state.hi) cls += ' range-end';
+      if (i === state.mid) cls += ' probe';
+    }
     return `<div class="${cls}"><span class="idx">${i}</span><div class="v">${v}</div></div>`;
   }).join('');
+
+  let caption;
+  if (state.found) {
+    caption = `<div class="search-range-caption">Found at index <span class="mid-label">${state.mid}</span></div>`;
+  } else if (emptyRange) {
+    caption = `<div class="search-range-caption empty">Search range empty — target not present</div>`;
+  } else if (hasRange) {
+    const midInRange = state.mid >= state.lo && state.mid <= state.hi;
+    caption = `<div class="search-range-caption">Searching indices <span class="lo-label">${state.lo}</span> … <span class="hi-label">${state.hi}</span>${state.mid >= 0 && midInRange ? ` · mid <span class="mid-label">${state.mid}</span>` : ''}</div>`;
+  } else {
+    caption = `<div class="search-range-caption empty">Set lo and hi to begin</div>`;
+  }
+
   const vars = CompSimu.renderVars([
     { name: 'lo', value: state.lo },
     { name: 'mid', value: state.mid >= 0 ? state.mid : undefined },
     { name: 'hi', value: state.hi },
     { name: 'target', value: state.target },
   ]);
-  stage.innerHTML = `<div class="array-row">${cells}</div>${vars}`;
+  stage.innerHTML = `<div class="array-stage">${caption}<div class="ptr-row">${ptrs}</div><div class="array-row">${cells}</div></div>${vars}`;
 }
 
 const programs = {
   found: {
     file: 'binary_search.py', label: 'target found',
-    ready: 'Search for <code>13</code> in a sorted array. Watch the range shrink.',
+    ready: 'Search for <code>13</code> in a sorted array. Watch the highlighted search range shrink.',
     lines: [
       'lo, hi = 0, len(arr) - 1',
       'while lo <= hi:',
@@ -299,7 +339,7 @@ const programs = {
   },
   missing: {
     file: 'binary_search.py', label: 'target missing',
-    ready: 'Search for <code>9</code> — it is not in the array. See lo and hi cross.',
+    ready: 'Search for <code>9</code> — it is not in the array. Watch the highlighted range shrink until it is empty.',
     lines: [
       'lo, hi = 0, len(arr) - 1',
       'while lo <= hi:',
