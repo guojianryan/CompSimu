@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>CompSimu — Interactive simulations for learning computer science</title>
-<meta name="description" content="CompSimu builds step-by-step visual simulations that help students understand computer science and programming concepts." />
+<title>CompSimu — Interactive simulations for computer science</title>
+<meta name="description" content="CompSimu builds step-by-step visual simulations for computer science — from programming constructs to theoretical ideas." />
 <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="assets/css/site.css" />
 <style>
@@ -116,9 +116,9 @@
 <header class="hero">
   <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
   <div class="container hero-inner">
-    <a class="hero-pill" href="#simulations"><span class="badge badge-green">New</span> Loop accumulators, search, sort &amp; data structures →</a>
-    <h1 class="h-hero">Learn computer science by watching code run.</h1>
-    <p class="subtitle">CompSimu builds interactive, step-by-step simulations of programming and CS concepts — so students can <em>see</em> what happens in memory, one line at a time.</p>
+    <a class="hero-pill" href="#simulations"><span class="badge badge-green">Library</span> Programming today · theory simulations on the way →</a>
+    <h1 class="h-hero">Make computer science visible.</h1>
+    <p class="subtitle">Interactive, step-by-step simulations for computer science — programming constructs, algorithms, and theoretical ideas — so students can <em>see</em> how concepts work, one step at a time.</p>
     <div class="hero-actions">
       <a class="btn btn-green" href="#simulations">Explore simulations</a>
       <a class="btn btn-secondary" style="background:rgba(255,255,255,.6)" href="#how">How it works</a>
@@ -136,7 +136,7 @@
           <div class="mbox b"><span class="n">b</span><div class="v">10</div></div>
           <div class="mbox t"><span class="n">temp</span><div class="v">5</div></div>
         </div>
-        <div class="mock-caption"><span class="badge badge-tag">Line 3</span> Copy <code>a</code> into <code>temp</code> — a safety copy of 5 before <code>a</code> gets overwritten.</div>
+        <div class="mock-caption"><span class="badge badge-tag">Example</span> A programming simulation — theory topics (automata, logic, and more) follow the same step-by-step style.</div>
       </div>
     </div>
   </div>
@@ -156,13 +156,14 @@
         <div class="section-head" style="margin:0">
           <span class="eyebrow">Library</span>
           <h2 class="h2">Simulations</h2>
-          <p class="subtitle">Each simulation focuses on one idea and lets you control the pace. More are on the way.</p>
+          <p class="subtitle">Each simulation focuses on one idea — in code or in theory — and lets you control the pace.</p>
         </div>
         <div class="pill-tabs" role="tablist" id="filters">
           <button class="pill-tab active" data-filter="all">All</button>
-          <button class="pill-tab" data-filter="python">Python</button>
+          <button class="pill-tab" data-filter="python">Programming</button>
           <button class="pill-tab" data-filter="algorithms">Algorithms</button>
           <button class="pill-tab" data-filter="data">Data structures</button>
+          <button class="pill-tab" data-filter="theory">Theory</button>
         </div>
       </div>
 
@@ -176,7 +177,7 @@
             </div>
           </div>
           <div class="sim-body">
-            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Python</span><span class="badge badge-soft">Beginner</span></div>
+            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Programming</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Swapping two variables</h3>
             <p>Watch values copy between memory boxes as a temp-variable swap runs line by line — and see why the naive approach loses data.</p>
             <div class="sim-foot"><span>Variables · Assignment</span><span class="btn-link">Open →</span></div>
@@ -186,7 +187,7 @@
         <a class="card sim-card" href="simulations/array-sum/index.html" data-cat="python">
           <div class="sim-thumb"><span class="thumb-glyph">total ▸ 0 → 22</span></div>
           <div class="sim-body">
-            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Python</span><span class="badge badge-soft">Beginner</span></div>
+            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Programming</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Totalling an array</h3>
             <p>Keep a running total in a labeled box while a for loop adds each array element.</p>
             <div class="sim-foot"><span>Loops · Accumulators</span><span class="btn-link">Open →</span></div>
@@ -196,7 +197,7 @@
         <a class="card sim-card" href="simulations/count-occurrences/index.html" data-cat="python">
           <div class="sim-thumb"><span class="thumb-glyph">count ▸ 0 → 3</span></div>
           <div class="sim-body">
-            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Python</span><span class="badge badge-soft">Beginner</span></div>
+            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Programming</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Counting occurrences</h3>
             <p>Scan the list and watch the <code>count</code> box increase every time the target appears.</p>
             <div class="sim-foot"><span>Loops · Counters</span><span class="btn-link">Open →</span></div>
@@ -206,7 +207,7 @@
         <a class="card sim-card" href="simulations/max-min/index.html" data-cat="python">
           <div class="sim-thumb"><span class="thumb-glyph">max · min</span></div>
           <div class="sim-body">
-            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Python</span><span class="badge badge-soft">Beginner</span></div>
+            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Programming</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Finding max &amp; min</h3>
             <p>Track the largest and smallest values seen so far in labeled boxes as the loop runs.</p>
             <div class="sim-foot"><span>Loops · Comparisons</span><span class="btn-link">Open →</span></div>
@@ -276,16 +277,34 @@
         <div class="card sim-card soon" data-cat="python">
           <div class="sim-thumb"><span class="thumb-glyph">f(3) → f(2) → f(1)</span></div>
           <div class="sim-body">
-            <div class="sim-meta"><span class="badge badge-soft">Coming soon</span><span class="badge badge-soft">Python</span></div>
+            <div class="sim-meta"><span class="badge badge-soft">Coming soon</span><span class="badge badge-soft">Programming</span></div>
             <h3 class="h5">Recursion &amp; the call stack</h3>
             <p>Watch stack frames pile up and unwind as a recursive function runs.</p>
+          </div>
+        </div>
+
+        <div class="card sim-card soon" data-cat="theory">
+          <div class="sim-thumb"><span class="thumb-glyph">δ(q, a) → q′</span></div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-soft">Coming soon</span><span class="badge badge-soft">Theory</span></div>
+            <h3 class="h5">Finite automata</h3>
+            <p>Feed a string into a state machine and watch which states accept or reject it.</p>
+          </div>
+        </div>
+
+        <div class="card sim-card soon" data-cat="theory">
+          <div class="sim-thumb"><span class="thumb-glyph">A ∧ B → C</span></div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-soft">Coming soon</span><span class="badge badge-soft">Theory</span></div>
+            <h3 class="h5">Boolean logic</h3>
+            <p>Toggle inputs and see how AND, OR, and NOT gates combine into truth tables.</p>
           </div>
         </div>
 
         <a class="card sim-card suggest" href="#contribute" data-cat="all">
           <span class="plus">+</span>
           <h3 class="h5">Suggest a simulation</h3>
-          <p class="muted" style="margin:0;font-size:14px">Have a concept students struggle with? We’d love to build it.</p>
+          <p class="muted" style="margin:0;font-size:14px">Programming or theory — if students struggle with it, we’d love to simulate it.</p>
         </a>
       </div>
     </div>
@@ -298,23 +317,23 @@
       <div class="section-head">
         <span class="eyebrow">Our approach</span>
         <h2 class="h2">Built for understanding, not memorising</h2>
-        <p class="subtitle">Most beginner bugs come from a fuzzy mental model of what the computer is actually doing. CompSimu makes that model visible.</p>
+        <p class="subtitle">Whether the topic is a loop in Python or a machine in automata theory, fuzzy mental models get clearer when you can watch the idea unfold.</p>
       </div>
       <div class="features">
         <div class="card-feature feature">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="1.8"><path d="M5 4h14M5 9h9M5 14h14M5 19h7"/><path d="M2 14h1" stroke="#00b48a" stroke-width="3"/></svg></div>
-          <h3 class="h5">Step through real code</h3>
-          <p>The line being executed is highlighted. Step forward, step back, or press play and watch it run at your pace.</p>
+          <h3 class="h5">Step at your own pace</h3>
+          <p>Advance one step at a time, step back, or press play. The active step is always highlighted so you never lose your place.</p>
         </div>
         <div class="card-feature feature">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="1.8"><rect x="3" y="6" width="7" height="12" rx="2"/><rect x="14" y="6" width="7" height="12" rx="2"/><path d="M10 12h4" stroke="#00b48a"/></svg></div>
-          <h3 class="h5">See memory change</h3>
-          <p>Variables, arrays and stacks are drawn as boxes. Values visibly move and copy between them as each line runs.</p>
+          <h3 class="h5">See state change</h3>
+          <p>Variables, arrays, stacks — and later automata, gates, and other models — are drawn as labeled boxes that update as each step runs.</p>
         </div>
         <div class="card-feature feature">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="1.8"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5" stroke="#00b48a"/></svg></div>
           <h3 class="h5">Plain-language explanations</h3>
-          <p>Every step comes with a short explanation of what happened and why — including the common mistakes.</p>
+          <p>Every step comes with a short explanation of what happened and why — including the traps students commonly hit.</p>
         </div>
       </div>
     </div>
@@ -324,10 +343,10 @@
     <div class="container audience">
       <div class="card" style="padding:32px">
         <span class="badge badge-tag">For students</span>
-        <h3 class="h4" style="margin-top:12px">Build intuition before you write code</h3>
+        <h3 class="h4" style="margin-top:12px">Build intuition before the exam — or the code</h3>
         <ul class="check-list">
           <li>Replay any step as many times as you need</li>
-          <li>Compare correct and broken versions side by side</li>
+          <li>See how variables, structures, and models change</li>
           <li>Keyboard shortcuts for fast stepping</li>
         </ul>
       </div>
@@ -349,7 +368,7 @@
         <div>
           <span class="eyebrow" style="color:var(--brand-green-soft)">Open source</span>
           <h2 class="h2" style="margin:12px 0">Help us build the next simulation</h2>
-          <p style="margin:0 0 24px;font-size:17px">Every simulation is a plain HTML page with no build step. Pick a concept, add a folder under <code style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.2)">simulations/</code>, and open a pull request.</p>
+          <p style="margin:0 0 24px;font-size:17px">Every simulation is a plain HTML page with no build step. Pick a programming or theory concept, add a folder under <code style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.2)">simulations/</code>, and open a pull request.</p>
           <div style="display:flex;gap:12px;flex-wrap:wrap">
             <a class="btn btn-on-dark" href="simulations/python-swap/index.html">See an example</a>
             <a class="btn btn-ghost-dark" href="#simulations">Browse the library</a>
@@ -374,7 +393,7 @@
     <div class="footer-grid">
       <div>
         <a class="logo" href="index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
-        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science — programming and theory alike.</p>
       </div>
       <div>
         <h4>Simulations</h4>
