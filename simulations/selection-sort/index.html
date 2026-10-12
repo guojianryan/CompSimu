@@ -221,13 +221,13 @@ function buildSteps(arr0) {
     });
     for (let j = i + 1; j < n; j++) {
       steps.push({
-        line: 2,
+        line: 3,
         text: `Check <code>arr[${j}]=${arr[j]}</code> against current min <code>arr[${min}]=${arr[min]}</code>.`,
         apply(s) { s.j = j; s.min = min; s.swapping = false; }
       });
       if (arr[j] < arr[min]) {
         steps.push({
-          line: 3,
+          line: 4,
           text: `New minimum! Update <code>min_i</code> to <code>${j}</code>.`,
           apply(s) { s.j = j; s.min = j; }
         });
@@ -236,7 +236,7 @@ function buildSteps(arr0) {
     }
     if (min !== i) {
       steps.push({
-        line: 4,
+        line: 5,
         text: `Swap <code>arr[${i}]=${arr[i]}</code> with minimum <code>arr[${min}]=${arr[min]}</code>.`,
         apply(s) {
           const t = s.arr[i]; s.arr[i] = s.arr[min]; s.arr[min] = t;
@@ -246,7 +246,7 @@ function buildSteps(arr0) {
       const t = arr[i]; arr[i] = arr[min]; arr[min] = t;
     } else {
       steps.push({
-        line: 4,
+        line: 5,
         text: `Minimum is already at index <code>${i}</code> — no swap needed.`,
         apply(s) { s.swapping = false; s.j = -1; }
       });
@@ -287,8 +287,9 @@ CompSimu.createPlayer({
         'for i in range(n - 1):',
         '    min_i = i',
         '    for j in range(i + 1, n):',
-        '        if arr[j] < arr[min_i]: min_i = j',
-        '    swap arr[i], arr[min_i]',
+        '        if arr[j] < arr[min_i]:',
+        '            min_i = j',
+        '    arr[i], arr[min_i] = arr[min_i], arr[i]',
       ],
       steps: buildSteps(START),
     },

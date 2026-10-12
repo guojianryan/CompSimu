@@ -219,14 +219,14 @@ function buildSteps(arr0) {
     });
     for (let j = 0; j < n - 1 - pass; j++) {
       steps.push({
-        line: 1,
+        line: 2,
         text: `Compare neighbours <code>arr[${j}]=${arr[j]}</code> and <code>arr[${j + 1}]=${arr[j + 1]}</code>.`,
         apply(s) { s.j = j; s.swapping = false; }
       });
       if (arr[j] > arr[j + 1]) {
         const a = arr[j], b = arr[j + 1];
         steps.push({
-          line: 2,
+          line: 3,
           text: `Out of order (<code>${a} &gt; ${b}</code>) — swap them.`,
           apply(s) {
             const t = s.arr[j]; s.arr[j] = s.arr[j + 1]; s.arr[j + 1] = t;
@@ -278,7 +278,8 @@ CompSimu.createPlayer({
       lines: [
         'for pass_i in range(n - 1):',
         '    for j in range(n - 1 - pass_i):',
-        '        if arr[j] > arr[j + 1]: swap',
+        '        if arr[j] > arr[j + 1]:',
+        '            arr[j], arr[j + 1] = arr[j + 1], arr[j]',
       ],
       steps: buildSteps(START),
     },

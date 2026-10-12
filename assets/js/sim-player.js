@@ -3,13 +3,22 @@
   function $(id) { return document.getElementById(id); }
 
   function highlightPython(line) {
-    return String(line)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/(#.*)$/g, '<span class="tok-cm">$1</span>')
-      .replace(/\b(for|while|if|elif|else|in|range|len|True|False|None|def|return|print|not|and|or)\b/g, '<span class="tok-op">$1</span>')
-      .replace(/\b(\d+)\b/g, '<span class="tok-num">$1</span>')
-      .replace(/(".*?")/g, '<span class="tok-temp">$1</span>')
-      .replace(/('.*?')/g, '<span class="tok-temp">$1</span>');
+    // Tokenize so indentation/spaces stay intact and comments/strings are not re-colored.
+    const src = String(line);
+    const parts = [];
+    const re = /(#.*)$|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|\b(for|while|if|elif|else|in|from|import|True|False|None|def|return|print|not|and|or)\b|\b(\d+)\b|([^#'"\w]+|\w+)/g;
+    let m;
+    while ((m = re.exec(src))) {
+      if (m[1]) parts.push(['cm', m[1]]);
+      else if (m[2] || m[3]) parts.push(['temp', m[2] || m[3]]);
+      else if (m[4]) parts.push(['op', m[4]]);
+      else if (m[5]) parts.push(['num', m[5]]);
+      else parts.push([null, m[6]]);
+    }
+    return parts.map(([kind, text]) => {
+      const esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return kind ? `<span class="tok-${kind}">${esc}</span>` : esc;
+    }).join('');
   }
 
   function createPlayer(opts) {
@@ -35,7 +44,7 @@
     function renderCode() {
       const p = program();
       codeEl.innerHTML = p.lines.map((l, i) =>
-        `<div class="ln" data-i="${i}"><span class="num">${i + 1}</span><span>${highlightPython(l)}</span></div>`
+        `<div class="ln" data-i="${i}"><span class="num">${i + 1}</span><span class="src">${highlightPython(l)}</span></div>`
       ).join('');
       if ($('fileName')) $('fileName').textContent = p.file;
       if ($('stageMode')) $('stageMode').textContent = p.label;
