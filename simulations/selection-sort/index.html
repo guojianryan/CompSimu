@@ -75,7 +75,7 @@
       <div class="section-head" style="margin-bottom:24px">
         <span class="eyebrow">Interactive</span>
         <h2 class="h2">Run the simulation</h2>
-        <p class="subtitle">Green cells are sorted. The mint outline marks the current minimum candidate.</p>
+        <p class="subtitle">Green bars are sorted. The mint bar is the current minimum candidate; blue is being compared.</p>
       </div>
 
       <div class="sim-shell">
@@ -95,7 +95,7 @@
             <div class="code-lines" id="code"></div>
           </div>
           <div class="stage-panel">
-            <div class="stage-head"><span>Array + variables</span><span id="stageMode">demo</span></div>
+            <div class="stage-head"><span>Bars + variables</span><span id="stageMode">demo</span></div>
             <div class="stage viz-stage" id="stage"></div>
           </div>
         </div>
@@ -217,52 +217,58 @@ function buildSteps(arr0) {
   });
   for (let i = 0; i < n - 1; i++) {
     let min = i;
+    const passI = i;
     steps.push({
       line: 0,
-      text: `Pass for index <code>${i}</code>. Assume <code>min_i = ${i}</code> (value <code>${arr[i]}</code>).` ,
-      apply(s) { s.i = i; s.min = i; s.j = -1; s.swapping = false; }
+      text: `Pass for index <code>${passI}</code>. Assume <code>min_i = ${passI}</code> (value <code>${arr[passI]}</code>).`,
+      apply(s) { s.i = passI; s.min = passI; s.j = -1; s.swapping = false; }
     });
     for (let j = i + 1; j < n; j++) {
+      const idx = j;
+      const minNow = min;
       steps.push({
         line: 3,
-        text: `Check <code>arr[${j}]=${arr[j]}</code> against current min <code>arr[${min}]=${arr[min]}</code>.`,
-        apply(s) { s.j = j; s.min = min; s.swapping = false; }
+        text: `Check <code>arr[${idx}]=${arr[idx]}</code> against current min <code>arr[${minNow}]=${arr[minNow]}</code>.`,
+        apply(s) { s.j = idx; s.min = minNow; s.swapping = false; }
       });
-      if (arr[j] < arr[min]) {
+      if (arr[idx] < arr[minNow]) {
         steps.push({
           line: 4,
-          text: `New minimum! Update <code>min_i</code> to <code>${j}</code>.`,
-          apply(s) { s.j = j; s.min = j; }
+          text: `New minimum! Update <code>min_i</code> to <code>${idx}</code>.`,
+          apply(s) { s.j = idx; s.min = idx; }
         });
-        min = j;
+        min = idx;
       }
     }
-    if (min !== i) {
+    const minFinal = min;
+    if (minFinal !== passI) {
       steps.push({
         line: 5,
-        text: `Swap <code>arr[${i}]=${arr[i]}</code> with minimum <code>arr[${min}]=${arr[min]}</code>.`,
+        text: `Swap <code>arr[${passI}]=${arr[passI]}</code> with minimum <code>arr[${minFinal}]=${arr[minFinal]}</code>.`,
         apply(s) {
-          const t = s.arr[i]; s.arr[i] = s.arr[min]; s.arr[min] = t;
-          s.i = i; s.min = min; s.j = -1; s.swapping = true;
+          const t = s.arr[passI]; s.arr[passI] = s.arr[minFinal]; s.arr[minFinal] = t;
+          s.i = passI; s.min = minFinal; s.j = -1; s.swapping = true;
         }
       });
-      const t = arr[i]; arr[i] = arr[min]; arr[min] = t;
+      const t = arr[passI]; arr[passI] = arr[minFinal]; arr[minFinal] = t;
     } else {
       steps.push({
         line: 5,
-        text: `Minimum is already at index <code>${i}</code> — no swap needed.`,
+        text: `Minimum is already at index <code>${passI}</code> — no swap needed.`,
         apply(s) { s.swapping = false; s.j = -1; }
       });
     }
+    const sortedVal = arr[passI];
     steps.push({
       line: 0, kind: 'good',
-      text: `Index <code>${i}</code> is now sorted with value <code>${arr[i]}</code>.`,
-      apply(s) { s.sortedTo = i; s.j = -1; s.min = -1; s.swapping = false; }
+      text: `Index <code>${passI}</code> is now sorted with value <code>${sortedVal}</code>.`,
+      apply(s) { s.sortedTo = passI; s.j = -1; s.min = -1; s.swapping = false; }
     });
   }
+  const finalArr = arr.slice();
   steps.push({
     line: 0, kind: 'good', badge: 'Done',
-    text: `Sorted: <code>[${arr.join(', ')}]</code>. The last element falls into place automatically.`,
+    text: `Sorted: <code>[${finalArr.join(', ')}]</code>. The last element falls into place automatically.`,
     apply(s) { s.sortedTo = n - 1; s.min = -1; s.j = -1; }
   });
   return steps;
@@ -270,20 +276,22 @@ function buildSteps(arr0) {
 
 function render(state) {
   const stage = document.getElementById('stage');
-  const cells = state.arr.map((v, i) => {
-    let cls = 'cell';
+  const max = Math.max(...state.arr);
+  const bars = state.arr.map((v, i) => {
+    let cls = 'bar';
     if (i <= state.sortedTo) cls += ' sorted';
     if (i === state.min) cls += ' min';
     if (i === state.j) cls += ' probe';
     if (state.swapping && (i === state.i || i === state.min)) cls += i === state.i ? ' swap-a' : ' swap-b';
-    return `<div class="${cls}"><span class="idx">${i}</span><div class="v">${v}</div></div>`;
+    const h = Math.round((v / max) * 130) + 16;
+    return `<div class="${cls}" style="height:${h}px"><span>${v}</span></div>`;
   }).join('');
   const vars = CompSimu.renderVars([
     { name: 'i', value: state.i < 0 ? undefined : state.i },
     { name: 'j', value: state.j < 0 ? undefined : state.j },
     { name: 'min_i', value: state.min < 0 ? undefined : state.min },
   ]);
-  stage.innerHTML = `<div class="array-row">${cells}</div>${vars}`;
+  stage.innerHTML = `<div class="bars">${bars}</div>${vars}`;
 }
 
 CompSimu.createPlayer({
