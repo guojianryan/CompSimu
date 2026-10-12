@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Bubble sort — CompSimu</title>
-<meta name="description" content="Watch bubble sort compare neighbours and swap until the largest values bubble to the end." />
+<meta name="description" content="Watch bubble sort compare neighbours and swap until the largest values bubble to the end — and stop early with a swapped flag." />
 <link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="../../assets/css/site.css" />
 <link rel="stylesheet" href="../../assets/css/simulation.css" />
@@ -35,7 +35,7 @@
       <span style="color:var(--ink)">Bubble sort</span>
     </nav>
     <h1 class="h1">Bubble sort</h1>
-    <p class="subtitle" style="max-width:720px">Compare each pair of neighbours. Swap if they’re out of order. After each pass, the next-largest value settles at the end.</p>
+    <p class="subtitle" style="max-width:720px">Compare each pair of neighbours. Swap if they’re out of order. A <code>swapped</code> flag lets the sort stop early when a pass makes no changes.</p>
     <div class="meta">
       <span class="badge badge-tag">Algorithms</span>
       <span class="badge badge-soft">Beginner</span>
@@ -52,19 +52,23 @@
         <span class="eyebrow">The idea</span>
         <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Largest values “bubble” up</h2>
         <p>Bubble sort repeatedly walks the list, swapping adjacent items that are in the wrong order. After one full pass, the largest unsorted value is in its final place.</p>
-        <p>Each pass can ignore one more item at the end — those green bars are already sorted.</p>
-        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Easy to understand, but slow for large lists (<code>O(n²)</code>). Great for learning swaps and loops.</span></div>
+        <p>Each pass starts with <code>swapped = False</code>. Any swap sets it to <code>True</code>. If a pass finishes with no swaps, the list is already sorted — <code>break</code> and skip the remaining passes.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Without the flag, bubble sort always does <code>O(n²)</code> work. With it, nearly-sorted data can finish in roughly one pass.</span></div>
       </div>
       <div class="card" style="display:flex;flex-direction:column;gap:14px">
-        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Nested loops</span></div>
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Early exit</span></div>
         <div class="code-block">
           <div class="code-block-header"><span>bubble_sort.py</span><span>Python</span></div>
 <pre><span class="tok-op">for</span> pass_i <span class="tok-op">in</span> <span class="tok-op">range</span>(n - <span class="tok-num">1</span>):
+    swapped = <span class="tok-op">False</span>
     <span class="tok-op">for</span> j <span class="tok-op">in</span> <span class="tok-op">range</span>(n - <span class="tok-num">1</span> - pass_i):
         <span class="tok-op">if</span> arr[j] &gt; arr[j + <span class="tok-num">1</span>]:
-            arr[j], arr[j + <span class="tok-num">1</span>] = arr[j + <span class="tok-num">1</span>], arr[j]</pre>
+            arr[j], arr[j + <span class="tok-num">1</span>] = arr[j + <span class="tok-num">1</span>], arr[j]
+            swapped = <span class="tok-op">True</span>
+    <span class="tok-op">if not</span> swapped:
+        <span class="tok-op">break</span></pre>
         </div>
-        <p class="muted" style="margin:0;font-size:14px">Start: <code>[5, 2, 8, 1, 4]</code></p>
+        <p class="muted" style="margin:0;font-size:14px">Try both modes: shuffled vs almost sorted.</p>
       </div>
     </div>
   </section>
@@ -74,13 +78,14 @@
       <div class="section-head" style="margin-bottom:24px">
         <span class="eyebrow">Interactive</span>
         <h2 class="h2">Run the simulation</h2>
-        <p class="subtitle">Orange and blue bars are being compared. Green bars are in their final sorted positions.</p>
+        <p class="subtitle">Orange and blue bars are being compared. Green bars are in their final sorted positions. Watch the <code>swapped</code> box.</p>
       </div>
 
       <div class="sim-shell">
         <div class="sim-toolbar">
           <div class="pill-tabs" role="tablist">
-            <button class="pill-tab active" data-mode="demo" role="tab">Full sort</button>
+            <button class="pill-tab active" data-mode="shuffled" role="tab">Shuffled</button>
+            <button class="pill-tab" data-mode="almost" role="tab">Almost sorted</button>
           </div>
           <div class="progress-wrap">
             <span id="stepLabel">Step 0 / 0</span>
@@ -124,24 +129,24 @@
       <div class="section-head">
         <span class="eyebrow">Remember</span>
         <h2 class="h2">What bubble sort teaches</h2>
-        <p class="subtitle">Adjacent swaps and shrinking unsorted regions.</p>
+        <p class="subtitle">Adjacent swaps, shrinking unsorted regions, and early exit.</p>
       </div>
       <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
         
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
           <span class="badge badge-tag" style="align-self:flex-start">Pass</span>
           <h3 class="h5">One pass locks one item</h3>
-          <p class="muted" style="margin:0;font-size:14px">After pass k, the last k items are sorted and never move again.</p>
+          <p class="muted" style="margin:0;font-size:14px">After pass k, the last k items are sorted and never move again — unless you break early because nothing swapped.</p>
         </div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
-          <span class="badge badge-soft" style="align-self:flex-start">Swap</span>
-          <h3 class="h5">Only neighbours swap</h3>
-          <p class="muted" style="margin:0;font-size:14px">That’s why large values slowly migrate right like bubbles rising.</p>
+          <span class="badge badge-soft" style="align-self:flex-start">swapped</span>
+          <h3 class="h5">No swaps → done</h3>
+          <p class="muted" style="margin:0;font-size:14px">Reset <code>swapped</code> each pass. If it stays <code>False</code>, the array is sorted — <code>break</code>.</p>
         </div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
           <span class="badge badge-error" style="align-self:flex-start">O(n²)</span>
-          <h3 class="h5">Quadratic comparisons</h3>
-          <p class="muted" style="margin:0;font-size:14px">Nested loops mean work grows quickly — useful for teaching, rare in production.</p>
+          <h3 class="h5">Best case becomes O(n)</h3>
+          <p class="muted" style="margin:0;font-size:14px">Worst case is still quadratic, but already-sorted input finishes after one clean pass.</p>
         </div>
       </div>
       <div class="card-feature next-card" style="margin-top:40px">
@@ -203,7 +208,21 @@
 <script src="../../assets/js/sim-player.js"></script>
 <script>
 
-const START = [5, 2, 8, 1, 4];
+const DATA = {
+  shuffled: { arr: [5, 2, 8, 1, 4] },
+  almost: { arr: [2, 1, 3, 4, 5] },
+};
+
+const LINES = [
+  'for pass_i in range(n - 1):',
+  '    swapped = False',
+  '    for j in range(n - 1 - pass_i):',
+  '        if arr[j] > arr[j + 1]:',
+  '            arr[j], arr[j + 1] = arr[j + 1], arr[j]',
+  '            swapped = True',
+  '    if not swapped:',
+  '        break',
+];
 
 function buildSteps(arr0) {
   const arr = [...arr0];
@@ -211,50 +230,105 @@ function buildSteps(arr0) {
   const steps = [];
   steps.push({
     line: 0, badge: 'Setup',
-    text: `Start with <code>[${arr.join(', ')}]</code>. We will bubble the largest unsorted value to the end each pass.`,
-    apply(s) { s.arr = [...arr0]; s.i = -1; s.j = -1; s.sortedFrom = n; s.swapping = false; }
+    text: `Start with <code>[${arr.join(', ')}]</code>. Each pass resets <code>swapped</code>; if a pass makes no swaps, we stop early.`,
+    apply(s) {
+      s.arr = [...arr0]; s.i = -1; s.j = -1;
+      s.sortedFrom = n; s.swapping = false; s.swapped = undefined; s.flash = null;
+    }
   });
   for (let pass = 0; pass < n - 1; pass++) {
+    const passNum = pass;
     steps.push({
-      line: 0,
-      text: `Pass <code>${pass + 1}</code>: scan from the left; the last <code>${pass}</code> item${pass === 1 ? '' : 's'} stay put.`,
-      apply(s) { s.i = pass; s.j = -1; s.swapping = false; }
+      line: 1,
+      text: `Pass <code>${passNum + 1}</code>: set <code>swapped = False</code>. The last <code>${passNum}</code> item${passNum === 1 ? '' : 's'} stay put.`,
+      apply(s) {
+        s.i = passNum; s.j = -1; s.swapping = false;
+        s.swapped = false; s.flash = 'swapped';
+      }
     });
+    let swapped = false;
     for (let j = 0; j < n - 1 - pass; j++) {
+      const jj = j;
+      const left = arr[j];
+      const right = arr[j + 1];
+      const swappedBefore = swapped;
       steps.push({
-        line: 2,
-        text: `Compare neighbours <code>arr[${j}]=${arr[j]}</code> and <code>arr[${j + 1}]=${arr[j + 1]}</code>.`,
-        apply(s) { s.j = j; s.swapping = false; }
+        line: 3,
+        text: `Compare neighbours <code>arr[${jj}]=${left}</code> and <code>arr[${jj + 1}]=${right}</code>.`,
+        apply(s) {
+          s.j = jj; s.swapping = false; s.swapped = swappedBefore; s.flash = null;
+        }
       });
       if (arr[j] > arr[j + 1]) {
         const a = arr[j], b = arr[j + 1];
+        swapped = true;
         steps.push({
-          line: 3,
+          line: 4,
           text: `Out of order (<code>${a} &gt; ${b}</code>) — swap them.`,
           apply(s) {
-            const t = s.arr[j]; s.arr[j] = s.arr[j + 1]; s.arr[j + 1] = t;
-            s.j = j; s.swapping = true;
+            const t = s.arr[jj]; s.arr[jj] = s.arr[jj + 1]; s.arr[jj + 1] = t;
+            s.j = jj; s.swapping = true; s.swapped = swappedBefore; s.flash = null;
           }
         });
         arr[j] = b; arr[j + 1] = a;
+        steps.push({
+          line: 5,
+          text: `Mark <code>swapped = True</code> — this pass changed the array.`,
+          apply(s) {
+            s.j = jj; s.swapping = true; s.swapped = true; s.flash = 'swapped';
+          }
+        });
       } else {
         steps.push({
-          line: 2,
-          text: `Already in order (<code>${arr[j]} ≤ ${arr[j + 1]}</code>) — no swap.`,
-          apply(s) { s.j = j; s.swapping = false; }
+          line: 3,
+          text: `Already in order (<code>${left} ≤ ${right}</code>) — no swap; <code>swapped</code> stays <code>${swappedBefore ? 'True' : 'False'}</code>.`,
+          apply(s) {
+            s.j = jj; s.swapping = false; s.swapped = swappedBefore; s.flash = null;
+          }
         });
       }
     }
+    const endSwapped = swapped;
+    const locked = arr[n - 1 - pass];
+    const lockedIdx = n - 1 - pass;
     steps.push({
-      line: 0, kind: 'good',
-      text: `End of pass <code>${pass + 1}</code>: <code>${arr[n - 1 - pass]}</code> is locked at index <code>${n - 1 - pass}</code>.`,
-      apply(s) { s.sortedFrom = n - 1 - pass; s.j = -1; s.swapping = false; }
+      line: 6,
+      text: endSwapped
+        ? `End of pass <code>${passNum + 1}</code>: <code>swapped</code> is <code>True</code>, so keep going. <code>${locked}</code> is locked at index <code>${lockedIdx}</code>.`
+        : `End of pass <code>${passNum + 1}</code>: <code>swapped</code> is still <code>False</code> — nothing moved.`,
+      kind: endSwapped ? 'good' : 'warn',
+      apply(s) {
+        s.j = -1; s.swapping = false; s.swapped = endSwapped; s.flash = 'swapped';
+        if (endSwapped) s.sortedFrom = n - 1 - passNum;
+      }
     });
+    if (!endSwapped) {
+      steps.push({
+        line: 7, kind: 'good', badge: 'Early exit',
+        text: `<code>if not swapped: break</code> — the array is already sorted. Skip the remaining passes.`,
+        apply(s) {
+          s.sortedFrom = 0; s.j = -1; s.swapping = false;
+          s.swapped = false; s.flash = 'swapped';
+        }
+      });
+      steps.push({
+        line: 7, kind: 'good', badge: 'Done',
+        text: `Sorted: <code>[${arr.join(', ')}]</code>. The <code>swapped</code> flag saved unnecessary passes.`,
+        apply(s) {
+          s.sortedFrom = 0; s.j = -1; s.swapping = false;
+          s.swapped = false; s.flash = null;
+        }
+      });
+      return steps;
+    }
   }
   steps.push({
     line: 0, kind: 'good', badge: 'Done',
-    text: `Sorted: <code>[${arr.join(', ')}]</code>. Every pass placed one more value at the end.`,
-    apply(s) { s.sortedFrom = 0; s.j = -1; s.swapping = false; }
+    text: `Sorted: <code>[${arr.join(', ')}]</code>. Every pass that swapped locked one more value at the end.`,
+    apply(s) {
+      s.sortedFrom = 0; s.j = -1; s.swapping = false;
+      s.swapped = undefined; s.flash = null;
+    }
   });
   return steps;
 }
@@ -270,30 +344,44 @@ function render(state) {
     const h = Math.round((v / max) * 130) + 16;
     return `<div class="${cls}" style="height:${h}px"><span>${v}</span></div>`;
   }).join('');
+  const swappedVal = state.swapped === undefined
+    ? undefined
+    : (state.swapped ? 'True' : 'False');
   const vars = CompSimu.renderVars([
     { name: 'pass_i', value: state.i < 0 ? undefined : state.i },
     { name: 'j', value: state.j < 0 ? undefined : state.j },
+    { name: 'swapped', value: swappedVal, flash: state.flash === 'swapped' },
     { name: 'temp', value: state.swapping && state.j >= 0 ? state.arr[state.j] : undefined },
   ]);
   stage.innerHTML = `<div class="bars">${bars}</div>${vars}`;
 }
 
-CompSimu.createPlayer({
-  programs: {
-    demo: {
-      file: 'bubble_sort.py', label: 'bubble sort',
-      ready: 'Press <b>Step</b> to compare the first pair of neighbours.',
-      lines: [
-        'for pass_i in range(n - 1):',
-        '    for j in range(n - 1 - pass_i):',
-        '        if arr[j] > arr[j + 1]:',
-        '            arr[j], arr[j + 1] = arr[j + 1], arr[j]',
-      ],
-      steps: buildSteps(START),
-    },
+const programs = {
+  shuffled: {
+    file: 'bubble_sort.py', label: 'shuffled',
+    ready: 'Shuffled list — watch <code>swapped</code> stay <code>True</code> for several passes.',
+    lines: LINES,
+    steps: buildSteps(DATA.shuffled.arr),
   },
-  initialMode: 'demo',
-  initialState: () => ({ arr: [...START], i: -1, j: -1, sortedFrom: START.length, swapping: false }),
+  almost: {
+    file: 'bubble_sort.py', label: 'almost sorted',
+    ready: 'Almost sorted — after one swap pass, <code>swapped</code> stays <code>False</code> and we break.',
+    lines: LINES,
+    steps: buildSteps(DATA.almost.arr),
+  },
+};
+
+CompSimu.createPlayer({
+  programs,
+  initialMode: 'shuffled',
+  initialState: (mode) => {
+    const d = DATA[mode || 'shuffled'];
+    return {
+      arr: [...d.arr], i: -1, j: -1,
+      sortedFrom: d.arr.length, swapping: false,
+      swapped: undefined, flash: null,
+    };
+  },
   render,
 });
 
