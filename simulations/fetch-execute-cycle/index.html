@@ -53,7 +53,7 @@
         <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Fetch, then execute</h2>
         <p>The CPU never “sees” a whole program at once. It repeatedly: <strong>fetch</strong> the next instruction from memory, <strong>decode</strong> it, then <strong>execute</strong> it — using registers as staging posts for addresses and data.</p>
         <p>This demo runs a tiny program that loads <code>10</code>, adds <code>25</code>, and stores <code>35</code> back into RAM.</p>
-        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Follow the highlighted box: address path uses <code>PC</code> → <code>MAR</code>; data path uses <code>MDR</code> ↔ RAM.</span></div>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Three buses link CPU and RAM: <strong>address</strong> (where), <strong>data</strong> (what), and <strong>control</strong> (read/write).</span></div>
       </div>
       <div class="card" style="display:flex;flex-direction:column;gap:14px">
         <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Program</span><span class="h5" style="font-size:16px">Add two numbers</span></div>
@@ -74,7 +74,7 @@
       <div class="section-head" style="margin-bottom:24px">
         <span class="eyebrow">Interactive</span>
         <h2 class="h2">Run the simulation</h2>
-        <p class="subtitle">PC, IR, MAR, MDR, CU, accumulator, ALU, and RAM all update as each micro-step runs.</p>
+        <p class="subtitle">CPU on the left, RAM on the right. Watch the address, data, and control buses light up between them.</p>
       </div>
 
       <div class="sim-shell">
@@ -95,7 +95,7 @@
             <div class="code-lines" id="code"></div>
           </div>
           <div class="stage-panel">
-            <div class="stage-head"><span>CPU · registers + RAM</span><span id="stageMode">demo</span></div>
+            <div class="stage-head"><span>CPU · buses · RAM</span><span id="stageMode">demo</span></div>
             <div class="stage viz-stage fec-stage" id="stage"></div>
           </div>
         </div>
@@ -129,19 +129,19 @@
       </div>
       <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
-          <span class="badge badge-tag" style="align-self:flex-start">Fetch</span>
-          <h3 class="h5">PC · MAR · MDR · IR</h3>
-          <p class="muted" style="margin:0;font-size:14px"><code>PC</code> holds the next address. That address goes to <code>MAR</code>, RAM fills <code>MDR</code>, and the instruction is copied into <code>IR</code>.</p>
+          <span class="badge badge-tag" style="align-self:flex-start">Address</span>
+          <h3 class="h5">Address bus · MAR</h3>
+          <p class="muted" style="margin:0;font-size:14px"><code>PC</code> or an operand is copied into <code>MAR</code>, which drives the address bus so RAM knows which cell to use.</p>
         </div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
           <span class="badge badge-soft" style="align-self:flex-start">Control</span>
-          <h3 class="h5">CU orchestrates</h3>
-          <p class="muted" style="margin:0;font-size:14px">The control unit reads <code>IR</code>, decides the phase (fetch / decode / execute), and steers data between registers and RAM.</p>
+          <h3 class="h5">Control bus · CU</h3>
+          <p class="muted" style="margin:0;font-size:14px">The CU sends <code>READ</code> or <code>WRITE</code> on the control bus, and steers the fetch / decode / execute phases.</p>
         </div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
-          <span class="badge badge-ok" style="align-self:flex-start">Execute</span>
-          <h3 class="h5">ACC · ALU · RAM</h3>
-          <p class="muted" style="margin:0;font-size:14px">Loads and stores move values through the accumulator. <code>ADD</code> uses the ALU, then writes the result back to <code>ACC</code> (and sometimes RAM).</p>
+          <span class="badge badge-ok" style="align-self:flex-start">Data</span>
+          <h3 class="h5">Data bus · MDR · ACC</h3>
+          <p class="muted" style="margin:0;font-size:14px">Values travel the data bus through <code>MDR</code>. Loads fill the accumulator; stores send <code>ACC</code> back into RAM.</p>
         </div>
       </div>
       <div class="card-feature next-card" style="margin-top:40px">
@@ -234,6 +234,24 @@ function parseInstr(text) {
   return { op: parts[0], addr: parts[1] != null ? +parts[1] : null };
 }
 
+/** @returns {{ address: string|null, data: string|null, control: string|null, dataDir: 'in'|'out'|null }} */
+function emptyBuses() {
+  return { address: null, data: null, control: null, dataDir: null };
+}
+
+function setBuses(s, opts = {}) {
+  s.buses = {
+    address: opts.address != null ? String(opts.address) : null,
+    data: opts.data != null ? String(opts.data) : null,
+    control: opts.control || null,
+    dataDir: opts.dataDir || null,
+  };
+}
+
+function clearBuses(s) {
+  s.buses = emptyBuses();
+}
+
 /**
  * Append fetch micro-steps for the instruction currently at PC.
  * Returns the PC value after fetch (already incremented) and the IR text.
@@ -248,7 +266,7 @@ function appendFetch(steps, line, pcBefore) {
       s.mar = pcBefore;
       s.active = ['pc', 'mar', 'cu'];
       s.flash = 'mar';
-      s.bus = `address ${pcBefore}`;
+      setBuses(s, { address: pcBefore });
       s.alu = null;
       s.ramFocus = pcBefore;
     }
@@ -256,14 +274,19 @@ function appendFetch(steps, line, pcBefore) {
 
   steps.push({
     line, badge: 'Fetch',
-    text: `Read memory: <code>RAM[${pcBefore}]</code> → <code>MDR</code>. The instruction word is now on the data bus.`,
+    text: `Read memory: <code>RAM[${pcBefore}]</code> → <code>MDR</code>. Control says <strong>READ</strong>; the instruction rides the data bus.`,
     apply(s) {
       s.phase = 'fetch';
       s.cu = 'Fetch: RAM → MDR';
       s.mdr = s.ram[pcBefore];
       s.active = ['mar', 'mdr', 'ram', 'cu'];
       s.flash = 'mdr';
-      s.bus = `data ${cellText(s.ram[pcBefore])}`;
+      setBuses(s, {
+        address: pcBefore,
+        data: cellText(s.ram[pcBefore]),
+        control: 'READ',
+        dataDir: 'in',
+      });
       s.ramFocus = pcBefore;
       s.alu = null;
     }
@@ -278,7 +301,7 @@ function appendFetch(steps, line, pcBefore) {
       s.ir = s.mdr;
       s.active = ['mdr', 'ir', 'cu'];
       s.flash = 'ir';
-      s.bus = null;
+      clearBuses(s);
       s.ramFocus = pcBefore;
       s.alu = null;
     }
@@ -294,7 +317,7 @@ function appendFetch(steps, line, pcBefore) {
       s.pc = pcAfter;
       s.active = ['pc', 'cu'];
       s.flash = 'pc';
-      s.bus = null;
+      clearBuses(s);
       s.ramFocus = null;
       s.alu = null;
     }
@@ -314,7 +337,7 @@ function appendDecode(steps, line, irText) {
       s.cu = `Decode: ${irText}`;
       s.active = ['ir', 'cu'];
       s.flash = 'cu';
-      s.bus = null;
+      clearBuses(s);
       s.ramFocus = null;
       s.alu = null;
     }
@@ -324,28 +347,33 @@ function appendDecode(steps, line, irText) {
 function appendLDA(steps, line, addr) {
   steps.push({
     line, badge: 'Execute',
-    text: `<code>LDA</code>: put operand address <code>${addr}</code> into <code>MAR</code>.`,
+    text: `<code>LDA</code>: put operand address <code>${addr}</code> into <code>MAR</code> — it drives the address bus.`,
     apply(s) {
       s.phase = 'execute';
       s.cu = `Execute LDA: addr → MAR`;
       s.mar = addr;
       s.active = ['ir', 'mar', 'cu'];
       s.flash = 'mar';
-      s.bus = `address ${addr}`;
+      setBuses(s, { address: addr });
       s.ramFocus = addr;
       s.alu = null;
     }
   });
   steps.push({
     line, badge: 'Execute',
-    text: `Read <code>RAM[${addr}]</code> into <code>MDR</code>.`,
+    text: `Control bus signals <strong>READ</strong>. <code>RAM[${addr}]</code> travels the data bus into <code>MDR</code>.`,
     apply(s) {
       s.phase = 'execute';
       s.cu = 'Execute LDA: RAM → MDR';
       s.mdr = s.ram[addr];
       s.active = ['mar', 'mdr', 'ram', 'cu'];
       s.flash = 'mdr';
-      s.bus = `data ${cellText(s.ram[addr])}`;
+      setBuses(s, {
+        address: addr,
+        data: cellText(s.ram[addr]),
+        control: 'READ',
+        dataDir: 'in',
+      });
       s.ramFocus = addr;
       s.alu = null;
     }
@@ -359,7 +387,7 @@ function appendLDA(steps, line, addr) {
       s.acc = s.mdr;
       s.active = ['mdr', 'acc', 'cu'];
       s.flash = 'acc';
-      s.bus = null;
+      clearBuses(s);
       s.ramFocus = addr;
       s.alu = null;
     }
@@ -369,35 +397,40 @@ function appendLDA(steps, line, addr) {
 function appendADD(steps, line, addr) {
   steps.push({
     line, badge: 'Execute',
-    text: `<code>ADD</code>: put operand address <code>${addr}</code> into <code>MAR</code>.`,
+    text: `<code>ADD</code>: put operand address <code>${addr}</code> into <code>MAR</code> — address bus selects the cell.`,
     apply(s) {
       s.phase = 'execute';
       s.cu = 'Execute ADD: addr → MAR';
       s.mar = addr;
       s.active = ['ir', 'mar', 'cu'];
       s.flash = 'mar';
-      s.bus = `address ${addr}`;
+      setBuses(s, { address: addr });
       s.ramFocus = addr;
       s.alu = null;
     }
   });
   steps.push({
     line, badge: 'Execute',
-    text: `Read <code>RAM[${addr}]</code> into <code>MDR</code> — this is the second operand.`,
+    text: `Control bus signals <strong>READ</strong>. The second operand rides the data bus into <code>MDR</code>.`,
     apply(s) {
       s.phase = 'execute';
       s.cu = 'Execute ADD: RAM → MDR';
       s.mdr = s.ram[addr];
       s.active = ['mar', 'mdr', 'ram', 'cu'];
       s.flash = 'mdr';
-      s.bus = `data ${cellText(s.ram[addr])}`;
+      setBuses(s, {
+        address: addr,
+        data: cellText(s.ram[addr]),
+        control: 'READ',
+        dataDir: 'in',
+      });
       s.ramFocus = addr;
       s.alu = null;
     }
   });
   steps.push({
     line, badge: 'Execute',
-    text: `ALU computes <code>ACC + MDR</code>. Watch the ALU box show the sum.`,
+    text: `ALU computes <code>ACC + MDR</code> inside the CPU — buses stay quiet.`,
     apply(s) {
       const a = Number(s.acc);
       const b = Number(s.mdr);
@@ -406,7 +439,7 @@ function appendADD(steps, line, addr) {
       s.alu = `${a} + ${b}`;
       s.active = ['acc', 'mdr', 'alu', 'cu'];
       s.flash = 'alu';
-      s.bus = null;
+      clearBuses(s);
       s.ramFocus = addr;
       s._aluResult = a + b;
     }
@@ -422,7 +455,7 @@ function appendADD(steps, line, addr) {
       s.alu = String(result);
       s.active = ['alu', 'acc', 'cu'];
       s.flash = 'acc';
-      s.bus = null;
+      clearBuses(s);
       s.ramFocus = addr;
     }
   });
@@ -431,42 +464,47 @@ function appendADD(steps, line, addr) {
 function appendSTA(steps, line, addr) {
   steps.push({
     line, badge: 'Execute',
-    text: `<code>STA</code>: put destination address <code>${addr}</code> into <code>MAR</code>.`,
+    text: `<code>STA</code>: put destination address <code>${addr}</code> into <code>MAR</code> — address bus selects the cell.`,
     apply(s) {
       s.phase = 'execute';
       s.cu = 'Execute STA: addr → MAR';
       s.mar = addr;
       s.active = ['ir', 'mar', 'cu'];
       s.flash = 'mar';
-      s.bus = `address ${addr}`;
+      setBuses(s, { address: addr });
       s.ramFocus = addr;
       s.alu = null;
     }
   });
   steps.push({
     line, badge: 'Execute',
-    text: `Copy <code>ACC</code> into <code>MDR</code> — the value that will be written.`,
+    text: `Copy <code>ACC</code> into <code>MDR</code> — prepare the value that will leave on the data bus.`,
     apply(s) {
       s.phase = 'execute';
       s.cu = 'Execute STA: ACC → MDR';
       s.mdr = s.acc;
       s.active = ['acc', 'mdr', 'cu'];
       s.flash = 'mdr';
-      s.bus = `data ${cellText(s.acc)}`;
+      setBuses(s, { address: addr });
       s.ramFocus = addr;
       s.alu = null;
     }
   });
   steps.push({
     line, badge: 'Execute', kind: 'good',
-    text: `Write <code>MDR</code> into <code>RAM[${addr}]</code>. Memory now holds the result.`,
+    text: `Control bus signals <strong>WRITE</strong>. <code>MDR</code> rides the data bus into <code>RAM[${addr}]</code>.`,
     apply(s) {
       s.phase = 'execute';
       s.cu = 'Execute STA: MDR → RAM';
       s.ram[addr] = s.mdr;
       s.active = ['mdr', 'mar', 'ram', 'cu'];
       s.flash = 'ram';
-      s.bus = `store ${cellText(s.mdr)}`;
+      setBuses(s, {
+        address: addr,
+        data: cellText(s.mdr),
+        control: 'WRITE',
+        dataDir: 'out',
+      });
       s.ramFocus = addr;
       s.alu = null;
     }
@@ -482,7 +520,7 @@ function appendHLT(steps, line) {
       s.cu = 'Halt';
       s.active = ['cu', 'ir'];
       s.flash = 'cu';
-      s.bus = null;
+      clearBuses(s);
       s.ramFocus = null;
       s.alu = null;
       s.halted = true;
@@ -519,7 +557,7 @@ function buildProgramSteps(mode) {
       s.phase = 'idle';
       s.active = ['pc', 'ram'];
       s.flash = null;
-      s.bus = null;
+      clearBuses(s);
       s.ramFocus = null;
       s.halted = false;
       s._aluResult = null;
@@ -550,7 +588,7 @@ function buildProgramSteps(mode) {
       s.cu = 'Done';
       s.active = mode === 'load' ? ['acc', 'cu'] : ['acc', 'ram', 'cu'];
       s.flash = mode === 'load' ? 'acc' : 'ram';
-      s.bus = null;
+      clearBuses(s);
       s.ramFocus = mode === 'load' ? null : 7;
       s.halted = true;
       s.alu = null;
@@ -586,6 +624,25 @@ function regBox(name, value, active, flash, title) {
   </div>`;
 }
 
+function busLane(kind, label, value, dir) {
+  const active = value != null && value !== '';
+  const dirClass = dir === 'in' ? 'dir-in' : dir === 'out' ? 'dir-out' : '';
+  const tip = {
+    address: 'Address bus — which RAM cell to access',
+    data: 'Data bus — value moving between CPU and RAM',
+    control: 'Control bus — READ / WRITE command from the CU',
+  }[kind] || label;
+  return `<div class="fec-bus ${kind}${active ? ' active' : ''} ${dirClass}" title="${tip}">
+    <div class="fec-bus-label">${label}</div>
+    <div class="fec-bus-track">
+      <span class="fec-bus-end left"></span>
+      <span class="fec-bus-wire"></span>
+      <span class="fec-bus-end right"></span>
+      ${active ? `<span class="fec-bus-chip">${value}</span>` : ''}
+    </div>
+  </div>`;
+}
+
 function render(state) {
   const stage = document.getElementById('stage');
   const active = new Set(state.active || []);
@@ -598,12 +655,13 @@ function render(state) {
     execute: 'Execute',
     halt: 'Halt',
   }[phase] || phase;
+  const buses = state.buses || emptyBuses();
 
-  const ramCells = (state.ram || []).map((cell, i) => {
+  const ramRows = (state.ram || []).map((cell, i) => {
     const focus = state.ramFocus === i;
     const isInstr = typeof cell === 'string';
     const cls = [
-      'fec-cell',
+      'fec-row',
       focus ? 'focus' : '',
       active.has('ram') && focus ? 'active' : '',
       isInstr ? 'instr' : 'data',
@@ -616,43 +674,40 @@ function render(state) {
   }).join('');
 
   const cuActive = active.has('cu');
-  const html = `
+  stage.innerHTML = `
     <div class="fec-wrap">
       <div class="fec-phase ${phase}">
         <span class="phase-pill">${phaseLabel}</span>
         <span class="phase-cu${cuActive ? ' on' : ''}${flash === 'cu' ? ' flash' : ''}">CU · ${state.cu || 'Idle'}</span>
-        ${state.bus ? `<span class="phase-bus">${state.bus}</span>` : ''}
       </div>
 
-      <div class="fec-cpu">
-        <div class="fec-cpu-label">CPU</div>
-        <div class="fec-regs">
-          ${regBox('PC', fmt(state.pc), active.has('pc'), flash === 'pc', 'Program Counter — address of next instruction')}
-          ${regBox('IR', fmt(state.ir), active.has('ir'), flash === 'ir', 'Instruction Register — current instruction')}
-          ${regBox('MAR', fmt(state.mar), active.has('mar'), flash === 'mar', 'Memory Address Register — address for RAM access')}
-          ${regBox('MDR', fmt(state.mdr), active.has('mdr'), flash === 'mdr', 'Memory Data Register — data to/from RAM')}
-          ${regBox('ACC', fmt(state.acc), active.has('acc'), flash === 'acc', 'Accumulator — working value')}
-          ${regBox('ALU', fmt(state.alu), active.has('alu'), flash === 'alu', 'Arithmetic Logic Unit — computes results')}
+      <div class="fec-board">
+        <div class="fec-cpu">
+          <div class="fec-cpu-label">CPU</div>
+          <div class="fec-regs">
+            ${regBox('PC', fmt(state.pc), active.has('pc'), flash === 'pc', 'Program Counter — address of next instruction')}
+            ${regBox('IR', fmt(state.ir), active.has('ir'), flash === 'ir', 'Instruction Register — current instruction')}
+            ${regBox('MAR', fmt(state.mar), active.has('mar'), flash === 'mar', 'Memory Address Register — drives the address bus')}
+            ${regBox('MDR', fmt(state.mdr), active.has('mdr'), flash === 'mdr', 'Memory Data Register — buffer on the data bus')}
+            ${regBox('ACC', fmt(state.acc), active.has('acc'), flash === 'acc', 'Accumulator — working value')}
+            ${regBox('ALU', fmt(state.alu), active.has('alu'), flash === 'alu', 'Arithmetic Logic Unit — computes results')}
+          </div>
         </div>
-      </div>
 
-      <div class="fec-ram${active.has('ram') ? ' active' : ''}${flash === 'ram' ? ' flash' : ''}">
-        <div class="fec-ram-label">RAM</div>
-        <div class="fec-ram-grid">${ramCells}</div>
+        <div class="fec-buses" aria-label="System buses">
+          ${busLane('address', 'Address bus', buses.address, 'out')}
+          ${busLane('data', 'Data bus', buses.data, buses.dataDir)}
+          ${busLane('control', 'Control bus', buses.control, 'out')}
+        </div>
+
+        <div class="fec-ram${active.has('ram') ? ' active' : ''}${flash === 'ram' ? ' flash' : ''}">
+          <div class="fec-ram-label">RAM</div>
+          <div class="fec-ram-head"><span>Address</span><span>Value</span></div>
+          <div class="fec-ram-list">${ramRows}</div>
+        </div>
       </div>
     </div>
   `;
-
-  const vars = CompSimu.renderVars([
-    { name: 'PC', value: fmt(state.pc), flash: flash === 'pc' },
-    { name: 'IR', value: fmt(state.ir), flash: flash === 'ir' },
-    { name: 'MAR', value: fmt(state.mar), flash: flash === 'mar' },
-    { name: 'MDR', value: fmt(state.mdr), flash: flash === 'mdr' },
-    { name: 'ACC', value: fmt(state.acc), flash: flash === 'acc' },
-    { name: 'ALU', value: fmt(state.alu), flash: flash === 'alu' },
-  ], 'Registers');
-
-  stage.innerHTML = html + vars;
 }
 
 function blankState(mode) {
@@ -668,7 +723,7 @@ function blankState(mode) {
     phase: 'idle',
     active: [],
     flash: null,
-    bus: null,
+    buses: emptyBuses(),
     ramFocus: null,
     halted: false,
     _aluResult: null,
