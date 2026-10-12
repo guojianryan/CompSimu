@@ -77,7 +77,7 @@
       <div class="section-head" style="margin-bottom:24px">
         <span class="eyebrow">Interactive</span>
         <h2 class="h2">Run the simulation</h2>
-        <p class="subtitle">Orange packets carry each distance reading. The dashed line marks the 1&nbsp;m threshold. Green action means “open”.</p>
+        <p class="subtitle">Watch the person approach, then follow the icons: <strong>sensor → microprocessor → motor</strong>. Blue packets carry distance; green/red packets carry the door command.</p>
       </div>
 
       <div class="sim-shell">
@@ -98,7 +98,7 @@
             <div class="code-lines" id="code"></div>
           </div>
           <div class="stage-panel">
-            <div class="stage-head"><span>Scene + data path</span><span id="stageMode">demo</span></div>
+            <div class="stage-head"><span>Scene · sensor → MCU → motor</span><span id="stageMode">demo</span></div>
             <div class="stage viz-stage ir-stage" id="stage"></div>
           </div>
         </div>
@@ -234,11 +234,37 @@ const LINES = [
   '        door.close()',
 ];
 
+const ICONS = {
+  person: `<svg class="ir-person-svg" viewBox="0 0 44 72" fill="none" aria-hidden="true">
+    <circle cx="22" cy="12" r="8" fill="#3a3f46"/>
+    <path d="M14 24c0-2 3.5-4 8-4s8 2 8 4v18c0 1.5-1.2 2.5-2.5 2.5H16.5C15.2 44.5 14 43.5 14 42V24z" fill="#2a2e34"/>
+    <path d="M16.5 44.5 L13 66h6l3-16 3 16h6L28.5 44.5z" fill="#2a2e34"/>
+    <path d="M14 28 L6 38" stroke="#2a2e34" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M30 28 L38 38" stroke="#2a2e34" stroke-width="3.5" stroke-linecap="round"/>
+  </svg>`,
+  sensor: `<svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <rect x="11" y="18" width="10" height="8" rx="2" fill="currentColor"/>
+    <circle cx="16" cy="14" r="3" fill="currentColor"/>
+    <path d="M8 12c2.5-3 5.5-4.5 8-4.5S23.5 9 26 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M10.5 15c1.6-1.8 3.5-2.7 5.5-2.7s3.9.9 5.5 2.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+  </svg>`,
+  mcu: `<svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <rect x="8" y="8" width="16" height="16" rx="2.5" fill="currentColor"/>
+    <rect x="11" y="11" width="10" height="10" rx="1" fill="#fff" opacity=".25"/>
+    <path d="M12 4v4M16 4v4M20 4v4M12 24v4M16 24v4M20 24v4M4 12h4M4 16h4M4 20h4M24 12h4M24 16h4M24 20h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>`,
+  motor: `<svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <circle cx="16" cy="16" r="9" stroke="currentColor" stroke-width="2.2"/>
+    <circle cx="16" cy="16" r="3" fill="currentColor"/>
+    <path d="M16 5v4M16 23v4M5 16h4M23 16h4M8.5 8.5l2.8 2.8M20.7 20.7l2.8 2.8M8.5 23.5l2.8-2.8M20.7 11.3l2.8-2.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>`,
+};
+
 function buildSteps(readings) {
   const steps = [];
   steps.push({
     line: 0, badge: 'Setup',
-    text: `Automatic door with an IR sensor. Threshold is <code>${THRESHOLD.toFixed(1)}</code> m. The sensor will keep sending distance readings to the microprocessor.`,
+    text: `Automatic door with an IR sensor, microprocessor, and motor. Threshold is <code>${THRESHOLD.toFixed(1)}</code> m. Distance data will stream from sensor → chip → motor command.`,
     apply(s) {
       s.distance = readings[0];
       s.reading = undefined;
@@ -246,8 +272,11 @@ function buildSteps(readings) {
       s.action = undefined;
       s.packetFlying = false;
       s.packetValue = undefined;
+      s.cmdFlying = false;
+      s.cmdValue = undefined;
       s.stream = [];
       s.deciding = false;
+      s.walking = false;
       s.sample = 0;
     }
   });
@@ -256,26 +285,32 @@ function buildSteps(readings) {
     const sample = i + 1;
     const near = dist <= THRESHOLD;
     const streamAfter = readings.slice(0, sample).map((v) => v);
+    const action = near ? 'open' : 'close';
 
     steps.push({
       line: 2, badge: `Sample ${sample}`,
-      text: `Sensor measures <code>${dist.toFixed(1)} m</code>. A data packet leaves the IR sensor and travels to the microprocessor.`,
+      text: `Sensor measures <code>${dist.toFixed(1)} m</code>. A <strong>data packet</strong> travels along the wire from the IR sensor to the microprocessor.`,
       apply(s, ctx) {
         s.distance = dist;
         s.packetValue = dist;
         s.deciding = false;
         s.sample = sample;
         s.action = undefined;
+        s.cmdFlying = false;
+        s.cmdValue = undefined;
+        s.walking = true;
         if (ctx && ctx.animate) {
           s.packetFlying = true;
           return (async () => {
-            if (ctx.sleep) await ctx.sleep(650);
+            if (ctx.sleep) await ctx.sleep(700);
             s.packetFlying = false;
+            s.walking = false;
             s.reading = dist;
             s.stream = streamAfter.slice();
           })();
         }
         s.packetFlying = false;
+        s.walking = false;
         s.reading = dist;
         s.stream = streamAfter.slice();
       }
@@ -291,43 +326,45 @@ function buildSteps(readings) {
         s.distance = dist;
         s.reading = dist;
         s.packetFlying = false;
+        s.cmdFlying = false;
         s.stream = streamAfter.slice();
         s.deciding = true;
+        s.walking = false;
         s.sample = sample;
       }
     });
 
-    if (near) {
-      steps.push({
-        line: 4, kind: 'good', badge: 'Open',
-        text: `Decision: send <code>door.open()</code>. The microprocessor signals the door mechanism.`,
-        apply(s) {
-          s.distance = dist;
-          s.reading = dist;
-          s.stream = streamAfter.slice();
-          s.doorOpen = true;
-          s.action = 'open';
-          s.deciding = false;
-          s.packetFlying = false;
-          s.sample = sample;
+    steps.push({
+      line: near ? 4 : 6,
+      kind: near ? 'good' : undefined,
+      badge: near ? 'Open' : 'Close',
+      text: near
+        ? `Decision: send <code>open</code>. A <strong>command packet</strong> leaves the microprocessor for the motor, which opens the door.`
+        : `Decision: send <code>close</code>. A <strong>command packet</strong> leaves the microprocessor for the motor — door stays shut.`,
+      apply(s, ctx) {
+        s.distance = dist;
+        s.reading = dist;
+        s.stream = streamAfter.slice();
+        s.deciding = false;
+        s.packetFlying = false;
+        s.walking = false;
+        s.sample = sample;
+        s.cmdValue = action;
+        if (ctx && ctx.animate) {
+          s.cmdFlying = true;
+          s.action = undefined;
+          return (async () => {
+            if (ctx.sleep) await ctx.sleep(700);
+            s.cmdFlying = false;
+            s.action = action;
+            s.doorOpen = near;
+          })();
         }
-      });
-    } else {
-      steps.push({
-        line: 6, badge: 'Close',
-        text: `Decision: send <code>door.close()</code>. Keep the door shut (or close it if it was open).`,
-        apply(s) {
-          s.distance = dist;
-          s.reading = dist;
-          s.stream = streamAfter.slice();
-          s.doorOpen = false;
-          s.action = 'close';
-          s.deciding = false;
-          s.packetFlying = false;
-          s.sample = sample;
-        }
-      });
-    }
+        s.cmdFlying = false;
+        s.action = action;
+        s.doorOpen = near;
+      }
+    });
   });
 
   const last = readings[readings.length - 1];
@@ -335,14 +372,17 @@ function buildSteps(readings) {
   steps.push({
     line: 1, kind: 'good', badge: 'Done',
     text: opened
-      ? `Loop complete for this walk-through. Whenever a reading was ≤ 1.0&nbsp;m, the chip opened the door; otherwise it closed it.`
-      : `Loop complete. Every reading stayed above 1.0&nbsp;m, so the microprocessor never sent an open signal.`,
+      ? `Loop complete. Data kept flowing sensor → microprocessor; whenever distance was ≤ 1.0&nbsp;m, a command opened the door via the motor.`
+      : `Loop complete. Readings still streamed every sample, but every value stayed above 1.0&nbsp;m — so the motor only ever received <code>close</code>.`,
     apply(s) {
       s.distance = last;
       s.reading = last;
       s.stream = readings.slice();
       s.packetFlying = false;
+      s.cmdFlying = false;
+      s.cmdValue = last <= THRESHOLD ? 'open' : 'close';
       s.deciding = false;
+      s.walking = false;
       s.doorOpen = last <= THRESHOLD;
       s.action = last <= THRESHOLD ? 'open' : 'close';
     }
@@ -355,60 +395,84 @@ function render(state) {
   const stage = document.getElementById('stage');
   const left = distToLeft(state.distance ?? MAX_DIST);
   const threshLeft = distToLeft(THRESHOLD);
-  const near = (state.reading ?? state.distance ?? MAX_DIST) <= THRESHOLD;
-  const beamWidth = Math.round(40 + ((state.distance ?? MAX_DIST) / MAX_DIST) * 120);
+  const nearNow = (state.distance ?? MAX_DIST) <= THRESHOLD;
+  const beamWidth = Math.round(50 + ((state.distance ?? MAX_DIST) / MAX_DIST) * 130);
 
   const stream = (state.stream || []).map((v, i, arr) => {
     const cls = `bit${v <= THRESHOLD ? ' near' : ''}${i === arr.length - 1 ? ' latest' : ''}`;
     return `<span class="${cls}">${v.toFixed(1)}</span>`;
   }).join('');
 
-  const actionLabel = state.action === 'open' ? 'open' : state.action === 'close' ? 'close' : '—';
-  const actionCls = state.action === 'open' ? 'open' : state.action === 'close' ? 'close' : '';
-
-  const packet = state.packetFlying && state.packetValue != null
-    ? `<div class="ir-packet fly">${Number(state.packetValue).toFixed(1)} m</div>`
-    : (state.packetValue != null && state.reading != null
-      ? `<div class="ir-packet" style="opacity:0">${Number(state.packetValue).toFixed(1)} m</div>`
-      : '');
+  const sensorActive = state.packetFlying || state.reading != null;
+  const mcuActive = state.deciding || state.reading != null || state.cmdFlying;
+  const motorActive = !!state.action || state.cmdFlying;
+  const dataPkt = state.packetFlying && state.packetValue != null
+    ? `<div class="ir-pkt data fly-data">${Number(state.packetValue).toFixed(1)} m</div>`
+    : '';
+  const cmdPkt = state.cmdFlying && state.cmdValue
+    ? `<div class="ir-pkt cmd fly-cmd ${state.cmdValue}">${state.cmdValue}</div>`
+    : '';
 
   const scene = `
-    <div class="ir-scene" aria-hidden="true">
-      <div class="sky-label">Corridor · automatic door</div>
-      <div class="ir-beam${near ? ' near' : ''}" style="border-right-width:${beamWidth}px"></div>
-      <div class="ir-threshold-mark" style="left:${threshLeft}%"><em>1.0 m</em></div>
-      <div class="ir-person" style="left:${left}%">
-        <div class="dist-tag">${(state.distance ?? 0).toFixed(1)} m</div>
-        <div class="head"></div>
-        <div class="body"></div>
-        <div class="legs"></div>
-      </div>
-      <div class="ir-door-unit${state.doorOpen ? ' open' : ''}">
-        <div class="ir-door-frame">
-          <div class="ir-door-leaf left"></div>
-          <div class="ir-door-leaf right"></div>
+    <div class="ir-wrap" aria-hidden="true">
+      <div class="ir-corridor">
+        <div class="scene-caption">Person approaching the door</div>
+        <div class="ir-beam${nearNow ? ' near' : ''}" style="width:${beamWidth}px"></div>
+        <div class="ir-threshold-mark" style="left:${threshLeft}%"><em>1.0 m</em></div>
+        <div class="ir-person${state.walking ? ' walking' : ''}" style="left:${left}%">
+          <div class="dist-tag">${(state.distance ?? 0).toFixed(1)} m</div>
+          ${ICONS.person}
         </div>
-        <div class="ir-sensor${state.packetFlying || state.reading != null ? ' active' : ''}" title="IR sensor"></div>
+        <div class="ir-door-unit${state.doorOpen ? ' open' : ''}">
+          <div class="ir-door-frame">
+            <div class="ir-door-leaf left"></div>
+            <div class="ir-door-leaf right"></div>
+          </div>
+        </div>
+        <div class="ir-floor-scale">
+          <span>3 m</span><span>2 m</span><span>1 m</span><span>0</span>
+        </div>
       </div>
-      <div class="ir-data-link"></div>
-      ${packet}
-      <div class="ir-mcu${state.deciding ? ' deciding' : ''}">
-        <div class="chip">MCU</div>
-        <div class="mcu-label">Microprocessor</div>
-        <div class="mcu-action ${actionCls}">${actionLabel === '—' ? 'waiting' : actionLabel + '()'}</div>
+
+      <div class="ir-pipeline">
+        <div class="ir-node sensor${sensorActive ? ' active' : ''}${state.packetFlying ? ' ping' : ''}">
+          <div class="icon">${ICONS.sensor}</div>
+          <div class="name">IR sensor</div>
+          <div class="meta">${state.distance != null ? state.distance.toFixed(1) + ' m' : '—'}</div>
+        </div>
+        <div class="ir-link data${state.packetFlying ? ' live' : ''}">
+          <div class="link-label">data</div>
+          <div class="track"></div>
+          <div class="arrow"></div>
+          ${dataPkt}
+        </div>
+        <div class="ir-node mcu${mcuActive ? ' active' : ''}${state.deciding ? ' deciding' : ''}">
+          <div class="icon">${ICONS.mcu}</div>
+          <div class="name">Microprocessor</div>
+          <div class="meta">${state.deciding ? 'decide…' : (state.reading != null ? 'got ' + state.reading.toFixed(1) : 'waiting')}</div>
+        </div>
+        <div class="ir-link cmd${state.cmdFlying ? ' live' : ''}">
+          <div class="link-label">command</div>
+          <div class="track"></div>
+          <div class="arrow"></div>
+          ${cmdPkt}
+        </div>
+        <div class="ir-node motor${motorActive ? ' active' : ''} ${state.action || ''} ${state.cmdFlying ? 'spin' : ''}">
+          <div class="icon">${ICONS.motor}</div>
+          <div class="name">Motor</div>
+          <div class="meta">${state.action ? state.action + '()' : (state.cmdFlying ? 'signal…' : 'idle')}</div>
+        </div>
       </div>
-      <div class="ir-floor-scale">
-        <span>3 m</span><span>2 m</span><span>1 m</span><span>0</span>
-      </div>
+
+      <div class="ir-stream"><span class="stream-label">Readings sent</span>${stream || '<span class="muted" style="font-size:13px">— waiting for first sample —</span>'}</div>
     </div>
-    <div class="ir-stream"><span class="stream-label">Readings sent</span>${stream || '<span class="muted" style="font-size:13px">— waiting for first sample —</span>'}</div>
   `;
 
   const vars = CompSimu.renderVars([
     { name: 'distance', value: state.distance != null ? state.distance.toFixed(1) : undefined, flash: state.packetFlying },
     { name: 'reading', value: state.reading != null ? state.reading.toFixed(1) : undefined, flash: !state.packetFlying && state.reading != null && state.deciding },
     { name: 'threshold', value: THRESHOLD.toFixed(1) },
-    { name: 'action', value: state.action, flash: !!state.action && !state.deciding && !state.packetFlying },
+    { name: 'action', value: state.action, flash: !!state.action && !state.cmdFlying },
   ]);
 
   stage.innerHTML = scene + vars;
@@ -417,13 +481,13 @@ function render(state) {
 const programs = {
   approach: {
     file: 'door_control.py', label: 'approaches',
-    ready: 'A person will walk toward the door. Watch distance packets stream to the microprocessor.',
+    ready: 'A person will walk toward the door. Follow icons: sensor → microprocessor → motor.',
     lines: LINES,
     steps: buildSteps(DATA.approach.readings),
   },
   far: {
     file: 'door_control.py', label: 'stays far',
-    ready: 'The person stays beyond 1&nbsp;m. Readings still flow — but the decision stays <code>close</code>.',
+    ready: 'The person stays beyond 1&nbsp;m. Data still flows — but every command to the motor is <code>close</code>.',
     lines: LINES,
     steps: buildSteps(DATA.far.readings),
   },
@@ -442,8 +506,11 @@ CompSimu.createPlayer({
       action: undefined,
       packetFlying: false,
       packetValue: undefined,
+      cmdFlying: false,
+      cmdValue: undefined,
       stream: [],
       deciding: false,
+      walking: false,
       sample: 0,
     };
   },
