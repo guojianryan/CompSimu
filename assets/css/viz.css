@@ -90,64 +90,63 @@
 }
 
 /* Infrared door-sensor control system scene */
-.ir-stage { min-height: 340px; gap: 14px; }
-.ir-scene {
-  position: relative; width: 100%; max-width: 560px; margin: 0 auto;
-  height: 210px; border-radius: var(--r-md); overflow: hidden;
+.ir-stage { min-height: 420px; gap: 12px; }
+.ir-wrap { width: 100%; max-width: 580px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+
+.ir-corridor {
+  position: relative; height: 168px; border-radius: var(--r-md); overflow: hidden;
   background:
-    linear-gradient(180deg, #e8eef6 0%, #dfe7f1 55%, #cfd8e4 55%, #c5cdd8 100%);
+    linear-gradient(180deg, #e7eef7 0%, #dce6f1 58%, #c8d2de 58%, #b9c4d1 100%);
   border: 1px solid var(--hairline);
 }
-.ir-scene .sky-label {
-  position: absolute; top: 8px; left: 12px;
+.ir-corridor .scene-caption {
+  position: absolute; top: 8px; left: 12px; z-index: 2;
   font: 600 11px/1 var(--sans); letter-spacing: .4px; text-transform: uppercase; color: var(--steel);
 }
 .ir-floor-scale {
-  position: absolute; left: 12px; right: 118px; bottom: 28px; height: 18px;
+  position: absolute; left: 14px; right: 88px; bottom: 22px; height: 16px;
   display: flex; justify-content: space-between; align-items: flex-end;
-  font: 600 10px/1 var(--mono); color: var(--steel); pointer-events: none;
+  font: 600 10px/1 var(--mono); color: var(--steel); pointer-events: none; z-index: 2;
 }
 .ir-floor-scale span { position: relative; }
 .ir-floor-scale span::before {
-  content: ''; position: absolute; left: 50%; bottom: 12px; width: 1px; height: 6px; background: var(--stone);
+  content: ''; position: absolute; left: 50%; bottom: 11px; width: 1px; height: 6px; background: var(--stone);
 }
 .ir-threshold-mark {
-  position: absolute; bottom: 46px; width: 2px; height: 52px;
+  position: absolute; bottom: 38px; width: 2px; height: 70px;
   background: repeating-linear-gradient(180deg, var(--brand-warn) 0 4px, transparent 4px 8px);
   transform: translateX(-50%); z-index: 2;
 }
 .ir-threshold-mark em {
-  position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
   font: 700 10px/1 var(--mono); color: var(--brand-warn); white-space: nowrap; font-style: normal;
+  background: rgba(255,255,255,.85); padding: 1px 5px; border-radius: var(--r-full);
 }
+
 .ir-person {
-  position: absolute; bottom: 46px; width: 28px; height: 56px;
-  transform: translateX(-50%); transition: left .55s cubic-bezier(.2,.8,.2,1); z-index: 3;
+  position: absolute; bottom: 38px; width: 44px; height: 72px;
+  transform: translateX(-50%); transition: left .55s cubic-bezier(.2,.8,.2,1); z-index: 4;
 }
-.ir-person .body {
-  width: 18px; height: 28px; margin: 10px auto 0; border-radius: 6px 6px 4px 4px;
-  background: var(--charcoal, #2a2a2c);
-}
-.ir-person .head {
-  width: 14px; height: 14px; margin: 0 auto; border-radius: 50%; background: #5a5a5e;
-}
-.ir-person .legs {
-  width: 16px; height: 14px; margin: 0 auto; border-radius: 0 0 3px 3px;
-  background: linear-gradient(90deg, #3a3a3e 0 46%, transparent 46% 54%, #3a3a3e 54%);
-}
+.ir-person.walking .ir-person-svg { animation: ir-walk-bob .55s ease; }
+.ir-person-svg { width: 44px; height: 72px; display: block; overflow: visible; }
 .ir-person .dist-tag {
-  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+  position: absolute; top: -4px; left: 50%; transform: translateX(-50%);
   font: 700 11px/1 var(--mono); color: var(--brand-tag); white-space: nowrap;
-  background: rgba(255,255,255,.9); padding: 2px 6px; border-radius: var(--r-full);
-  border: 1px solid rgba(55,114,207,.25);
+  background: #fff; padding: 3px 7px; border-radius: var(--r-full);
+  border: 1px solid rgba(55,114,207,.28); box-shadow: var(--shadow-soft);
 }
+@keyframes ir-walk-bob {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-3px); }
+  100% { transform: translateY(0); }
+}
+
 .ir-door-unit {
-  position: absolute; right: 12px; bottom: 46px; width: 96px; height: 120px; z-index: 4;
+  position: absolute; right: 10px; bottom: 38px; width: 72px; height: 100px; z-index: 3;
 }
 .ir-door-frame {
   position: absolute; inset: 0; border: 3px solid #4a5563; border-bottom: none;
-  border-radius: 6px 6px 0 0; background: rgba(255,255,255,.35);
-  overflow: hidden;
+  border-radius: 6px 6px 0 0; background: rgba(255,255,255,.4); overflow: hidden;
 }
 .ir-door-leaf {
   position: absolute; top: 0; bottom: 0; width: 50%;
@@ -158,74 +157,116 @@
 .ir-door-leaf.right { right: 0; }
 .ir-door-unit.open .ir-door-leaf.left { transform: translateX(-92%); }
 .ir-door-unit.open .ir-door-leaf.right { transform: translateX(92%); }
-.ir-door-unit.open .ir-door-frame { background: rgba(0,212,164,.12); box-shadow: inset 0 0 0 2px rgba(0,180,138,.35); }
-.ir-sensor {
-  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-  width: 22px; height: 12px; border-radius: 3px; background: var(--ink);
-  box-shadow: 0 0 0 2px #fff; z-index: 5;
+.ir-door-unit.open .ir-door-frame {
+  background: rgba(0,212,164,.14); box-shadow: inset 0 0 0 2px rgba(0,180,138,.35);
 }
-.ir-sensor::after {
-  content: ''; position: absolute; left: 50%; top: 100%; width: 6px; height: 6px;
-  margin-left: -3px; border-radius: 50%; background: var(--orange);
-  box-shadow: 0 0 8px rgba(245,90,60,.7);
-  animation: ir-pulse 1.2s ease-in-out infinite;
-}
-.ir-sensor.active::after { background: var(--brand-green); box-shadow: 0 0 10px rgba(0,212,164,.75); }
 .ir-beam {
-  position: absolute; top: 24px; right: 58px; width: 0; height: 0; z-index: 2; pointer-events: none;
-  border-top: 28px solid transparent; border-bottom: 28px solid transparent;
-  border-right: 140px solid rgba(245,90,60,.12);
-  transform-origin: right center; transition: opacity .3s, border-right-width .45s;
-  opacity: .85;
+  position: absolute; top: 42px; right: 46px; height: 36px; z-index: 2; pointer-events: none;
+  width: 140px; transform-origin: right center;
+  background: linear-gradient(90deg, transparent, rgba(245,90,60,.18));
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+  opacity: .9; transition: width .45s ease, background .3s;
 }
-.ir-beam.near { border-right-color: rgba(0,212,164,.18); }
+.ir-beam.near { background: linear-gradient(90deg, transparent, rgba(0,212,164,.22)); }
+
+/* Pipeline: Sensor → MCU → Motor */
+.ir-pipeline {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1fr 1.15fr 1fr;
+  align-items: center; gap: 4px;
+  padding: 10px 8px; border-radius: var(--r-md);
+  background: var(--canvas); border: 1px solid var(--hairline);
+}
+.ir-node {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 8px 4px; border-radius: var(--r-md); text-align: center;
+  border: 1px solid transparent; transition: border-color .25s, background .25s, box-shadow .25s;
+}
+.ir-node .icon {
+  width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center;
+  border: 1px solid var(--hairline); background: var(--surface-soft);
+}
+.ir-node .icon svg { width: 28px; height: 28px; display: block; }
+.ir-node .name {
+  font: 700 11px/1.2 var(--sans); letter-spacing: .2px; color: var(--ink);
+}
+.ir-node .meta {
+  font: 600 10px/1.2 var(--mono); color: var(--steel); min-height: 1.2em;
+}
+.ir-node.sensor .icon { color: var(--orange); background: rgba(245,90,60,.08); border-color: rgba(245,90,60,.25); }
+.ir-node.mcu .icon { color: var(--brand-tag); background: rgba(55,114,207,.08); border-color: rgba(55,114,207,.25); }
+.ir-node.motor .icon { color: var(--brand-green-deep); background: rgba(0,180,138,.1); border-color: rgba(0,180,138,.28); }
+.ir-node.active {
+  background: rgba(55,114,207,.04); border-color: rgba(55,114,207,.22);
+  box-shadow: 0 0 0 3px rgba(55,114,207,.08);
+}
+.ir-node.sensor.active { background: rgba(245,90,60,.06); border-color: rgba(245,90,60,.3); box-shadow: 0 0 0 3px rgba(245,90,60,.1); }
+.ir-node.motor.active.open { background: rgba(0,212,164,.08); border-color: rgba(0,180,138,.35); box-shadow: 0 0 0 3px rgba(0,212,164,.12); }
+.ir-node.motor.active.close { background: rgba(212,86,86,.06); border-color: rgba(212,86,86,.28); }
+.ir-node.mcu.deciding .icon { animation: val-flash .6s ease; }
+.ir-node.sensor.ping .icon { animation: ir-pulse 1s ease-in-out infinite; }
+.ir-node.motor.spin .icon svg { animation: ir-spin .8s linear; }
+
+.ir-link {
+  position: relative; height: 44px; display: flex; align-items: center; justify-content: center;
+}
+.ir-link .track {
+  position: absolute; left: 2px; right: 2px; top: 50%; height: 3px; margin-top: -1.5px;
+  border-radius: 2px; overflow: hidden;
+}
+.ir-link.data .track { background: linear-gradient(90deg, rgba(245,90,60,.35), rgba(55,114,207,.55)); }
+.ir-link.cmd .track { background: linear-gradient(90deg, rgba(55,114,207,.45), rgba(0,180,138,.55)); }
+.ir-link .track::after {
+  content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  transform: translateX(-100%); opacity: .0;
+}
+.ir-link.live .track::after { animation: ir-track-shimmer 1s linear infinite; opacity: 1; }
+.ir-link .link-label {
+  position: absolute; top: 2px; left: 0; right: 0; text-align: center;
+  font: 700 9px/1 var(--sans); letter-spacing: .45px; text-transform: uppercase; color: var(--steel);
+}
+.ir-link .arrow {
+  position: absolute; right: 0; top: 50%; width: 0; height: 0; margin-top: -4px;
+  border-top: 4px solid transparent; border-bottom: 4px solid transparent;
+  border-left: 6px solid var(--brand-tag);
+}
+.ir-link.cmd .arrow { border-left-color: var(--brand-green-deep); }
+
+.ir-pkt {
+  position: absolute; top: 50%; left: 0; z-index: 2;
+  transform: translate(-10%, -50%); opacity: 0; pointer-events: none;
+  min-width: 40px; padding: 4px 8px; border-radius: var(--r-full); text-align: center;
+  font: 700 11px/1.2 var(--mono); color: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,.16);
+}
+.ir-pkt.data { background: var(--brand-tag); }
+.ir-pkt.cmd { background: var(--brand-green-deep); }
+.ir-pkt.cmd.close { background: var(--brand-error); }
+.ir-pkt.fly-data { animation: ir-fly-data .7s cubic-bezier(.2,.75,.2,1) forwards; }
+.ir-pkt.fly-cmd { animation: ir-fly-cmd .7s cubic-bezier(.2,.75,.2,1) forwards; }
+@keyframes ir-fly-data {
+  0% { opacity: 0; left: 0; transform: translate(-10%, -50%) scale(.85); }
+  12% { opacity: 1; }
+  100% { opacity: 1; left: 100%; transform: translate(-90%, -50%) scale(1); }
+}
+@keyframes ir-fly-cmd {
+  0% { opacity: 0; left: 0; transform: translate(-10%, -50%) scale(.85); }
+  12% { opacity: 1; }
+  100% { opacity: 1; left: 100%; transform: translate(-90%, -50%) scale(1); }
+}
+@keyframes ir-track-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
 @keyframes ir-pulse {
-  0%, 100% { opacity: .55; transform: scale(.9); }
-  50% { opacity: 1; transform: scale(1.15); }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+@keyframes ir-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.ir-mcu {
-  position: absolute; right: 12px; top: 10px; width: 86px; padding: 8px 8px 10px;
-  background: var(--canvas); border: 1px solid var(--hairline); border-radius: var(--r-md);
-  box-shadow: var(--shadow-soft); z-index: 6; text-align: center;
-}
-.ir-mcu .chip {
-  height: 36px; border-radius: 4px; background: #1b1f24; color: var(--brand-green-soft);
-  display: grid; place-items: center; font: 700 10px/1 var(--mono); letter-spacing: .3px;
-  margin-bottom: 6px; border: 1px solid #333;
-}
-.ir-mcu .mcu-label { font: 600 10px/1.2 var(--sans); color: var(--steel); text-transform: uppercase; letter-spacing: .4px; }
-.ir-mcu .mcu-action {
-  margin-top: 6px; font: 700 11px/1.2 var(--mono); padding: 4px 6px; border-radius: var(--r-xs);
-  background: var(--surface-soft); color: var(--muted); border: 1px dashed var(--hairline);
-}
-.ir-mcu .mcu-action.open { background: rgba(0,212,164,.14); color: var(--brand-green-deep); border-style: solid; border-color: rgba(0,180,138,.35); }
-.ir-mcu .mcu-action.close { background: rgba(212,86,86,.08); color: var(--brand-error); border-style: solid; border-color: rgba(212,86,86,.25); }
-.ir-mcu.deciding .chip { animation: val-flash .6s ease; }
-
-.ir-data-link {
-  position: absolute; top: 28px; right: 98px; width: 72px; height: 4px; z-index: 5;
-  background: linear-gradient(90deg, var(--orange), var(--brand-tag));
-  border-radius: 2px; opacity: .55;
-}
-.ir-data-link::before {
-  content: 'data'; position: absolute; top: -14px; left: 0; right: 0; text-align: center;
-  font: 700 9px/1 var(--sans); letter-spacing: .5px; text-transform: uppercase; color: var(--brand-tag);
-}
-.ir-packet {
-  position: absolute; top: 18px; right: 150px; z-index: 7;
-  min-width: 44px; padding: 3px 7px; border-radius: var(--r-full);
-  background: var(--brand-tag); color: #fff; font: 700 11px/1.2 var(--mono);
-  box-shadow: 0 4px 12px rgba(55,114,207,.35); opacity: 0; pointer-events: none;
-}
-.ir-packet.fly {
-  animation: ir-packet-fly .65s cubic-bezier(.2,.7,.2,1) forwards;
-}
-@keyframes ir-packet-fly {
-  0% { opacity: 0; transform: translateX(0) scale(.85); }
-  15% { opacity: 1; }
-  100% { opacity: 1; transform: translateX(78px) scale(1); }
-}
 .ir-stream {
   display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center;
   min-height: 28px;
@@ -240,7 +281,9 @@
 .ir-stream .bit.near { background: rgba(0,212,164,.14); color: var(--brand-green-deep); border-color: rgba(0,180,138,.3); }
 .ir-stream .bit.latest { box-shadow: 0 0 0 2px rgba(55,114,207,.2); transform: scale(1.06); }
 
-@media (max-width: 600px) {
-  .ir-scene { height: 230px; }
-  .ir-beam { border-right-width: 90px; }
+@media (max-width: 700px) {
+  .ir-pipeline { grid-template-columns: 1fr; gap: 8px; }
+  .ir-link { height: 36px; }
+  .ir-link .track { left: 20%; right: 20%; }
+  .ir-corridor { height: 180px; }
 }
