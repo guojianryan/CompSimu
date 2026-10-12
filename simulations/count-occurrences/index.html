@@ -216,24 +216,20 @@ function buildSteps(arr, target) {
   steps.push({
     line: 0, badge: 'Setup',
     text: `Create <code>count = 0</code>. Target value is <code>${target}</code>.`,
-    apply(s) { s.count = 0; s.i = -1; s.probe = -1; s.matched = []; s.done = false; s.flash = 'count'; }
+    apply(s) {
+      s.count = 0; s.i = -1; s.probe = -1; s.matched = []; s.done = false;
+      s.flash = 'count'; s.bump = null;
+    }
   });
   for (let i = 0; i < arr.length; i++) {
     const idx = i;
     const val = arr[i];
     const hit = val === target;
+    const countBefore = count;
     steps.push({
       line: 1,
       text: `Index <code>i = ${idx}</code>. Compare <code>arr[${idx}] = ${val}</code> with target <code>${target}</code>.`,
-      apply(s) { s.i = idx; s.probe = idx; s.flash = 'i'; }
-    });
-    steps.push({
-      line: 2,
-      text: hit
-        ? `Match! Increase the counter.`
-        : `Not equal — leave <code>count</code> unchanged.`,
-      kind: hit ? 'good' : undefined,
-      apply(s) { s.i = idx; s.probe = idx; s.flash = hit ? 'count' : null; }
+      apply(s) { s.i = idx; s.probe = idx; s.flash = 'i'; s.bump = null; }
     });
     if (hit) {
       count += 1;
@@ -241,10 +237,35 @@ function buildSteps(arr, target) {
       const nextCount = count;
       const matchedNow = matched.slice();
       steps.push({
-        line: 3,
-        text: `<code>count = ${nextCount}</code> after finding another <code>${target}</code>.`,
+        line: 2,
         kind: 'good',
-        apply(s) { s.count = nextCount; s.matched = matchedNow.slice(); s.i = idx; s.probe = idx; s.flash = 'count'; }
+        text: `Match! Increase by one: <code>count = ${countBefore} + 1 = ${nextCount}</code>.`,
+        apply(s) {
+          s.count = nextCount;
+          s.matched = matchedNow.slice();
+          s.i = idx; s.probe = idx;
+          s.flash = 'count'; s.bump = '+1';
+        }
+      });
+      steps.push({
+        line: 3,
+        kind: 'good',
+        text: `<code>count</code> is now <code>${nextCount}</code>. Keep scanning for more matches.`,
+        apply(s) {
+          s.count = nextCount;
+          s.matched = matchedNow.slice();
+          s.i = idx; s.probe = idx;
+          s.flash = 'count'; s.bump = null;
+        }
+      });
+    } else {
+      steps.push({
+        line: 2,
+        text: `Not equal — leave <code>count</code> at <code>${countBefore}</code>.`,
+        apply(s) {
+          s.count = countBefore; s.i = idx; s.probe = idx;
+          s.flash = null; s.bump = null;
+        }
       });
     }
   }
@@ -253,9 +274,12 @@ function buildSteps(arr, target) {
   steps.push({
     line: 3, kind: finalCount ? 'good' : 'warn', badge: 'Done',
     text: finalCount
-      ? `Finished. <code>${target}</code> appears <code>${finalCount}</code> time${finalCount === 1 ? '' : 's'}.`
-      : `Finished. <code>${target}</code> never appeared — <code>count</code> is still <code>0</code>.`,
-    apply(s) { s.done = true; s.probe = -1; s.count = finalCount; s.matched = finalMatched.slice(); s.flash = 'count'; }
+      ? `Finished. <code>${target}</code> appears <code>${finalCount}</code> time${finalCount === 1 ? '' : 's'} — <code>count</code> went up by 1 on each match.`
+      : `Finished. <code>${target}</code> never appeared — <code>count</code> stayed <code>0</code>.`,
+    apply(s) {
+      s.done = true; s.probe = -1; s.count = finalCount;
+      s.matched = finalMatched.slice(); s.flash = 'count'; s.bump = null;
+    }
   });
   return steps;
 }
@@ -273,7 +297,7 @@ function render(state) {
   const vars = CompSimu.renderVars([
     { name: 'i', value: state.i < 0 ? undefined : state.i, flash: state.flash === 'i' },
     { name: 'target', value: state.target },
-    { name: 'count', value: state.count, flash: state.flash === 'count' },
+    { name: 'count', value: state.count, flash: state.flash === 'count', badge: state.bump || undefined },
   ]);
   stage.innerHTML = `<div class="array-row">${cells}</div>${vars}`;
 }
@@ -308,7 +332,7 @@ CompSimu.createPlayer({
   initialMode: 'hits',
   initialState: (mode) => {
     const d = DATA[mode || 'hits'];
-    return { arr: [...d.arr], target: d.target, i: -1, probe: -1, count: undefined, matched: [], done: false, flash: null };
+    return { arr: [...d.arr], target: d.target, i: -1, probe: -1, count: undefined, matched: [], done: false, flash: null, bump: null };
   },
   render,
 });

@@ -72,6 +72,12 @@
 .var .val { font: 600 36px/1 var(--mono); height: 60px; display: grid; place-items: center; border-radius: var(--r-md); background: var(--surface-soft); border: 1px dashed var(--hairline); color: var(--ink); }
 .var .val.empty { color: var(--muted); font-size: 16px; }
 .var .val.flash { animation: val-flash .6s ease; }
+.var-bump {
+  position: absolute; top: -10px; right: -8px; background: var(--brand-green-deep); color: #fff;
+  font: 700 12px/1.3 var(--mono); padding: 2px 8px; border-radius: var(--r-full);
+  animation: var-pop .35s cubic-bezier(.2,1.3,.4,1);
+  box-shadow: rgba(0,180,138,.25) 0 4px 10px;
+}
 .lost-badge { position: absolute; top: -10px; right: -8px; background: var(--brand-error); color: #fff; font: 600 11px/1.4 var(--sans); padding: 2px 8px; border-radius: var(--r-full); animation: var-pop .35s ease; }
 @keyframes var-pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes val-flash {
