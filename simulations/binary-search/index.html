@@ -219,13 +219,13 @@ function buildSteps(arr, target) {
   while (lo <= hi && guard++ < 20) {
     const mid = Math.floor((lo + hi) / 2);
     steps.push({
-      line: 1,
+      line: 2,
       text: `Compute <code>mid = (${lo} + ${hi}) // 2 = ${mid}</code>. Look at <code>arr[${mid}] = ${arr[mid]}</code>.`,
       apply(s) { s.lo = lo; s.hi = hi; s.mid = mid; }
     });
     if (arr[mid] === target) {
       steps.push({
-        line: 2, kind: 'good',
+        line: 4, kind: 'good',
         text: `<code>arr[${mid}]</code> equals the target. Return index <code>${mid}</code>.`,
         apply(s) { s.found = true; s.done = true; s.mid = mid; }
       });
@@ -233,14 +233,14 @@ function buildSteps(arr, target) {
     }
     if (arr[mid] < target) {
       steps.push({
-        line: 3,
+        line: 6,
         text: `<code>${arr[mid]} &lt; ${target}</code> — target is to the right. Move <code>lo</code> to <code>${mid + 1}</code> and discard the left half.`,
         apply(s) { s.lo = mid + 1; s.hi = hi; s.mid = mid; }
       });
       lo = mid + 1;
     } else {
       steps.push({
-        line: 4,
+        line: 8,
         text: `<code>${arr[mid]} &gt; ${target}</code> — target is to the left. Move <code>hi</code> to <code>${mid - 1}</code> and discard the right half.`,
         apply(s) { s.lo = lo; s.hi = mid - 1; s.mid = mid; }
       });
@@ -248,7 +248,7 @@ function buildSteps(arr, target) {
     }
   }
   steps.push({
-    line: 5, kind: 'warn',
+    line: 9, kind: 'warn',
     text: `Now <code>lo &gt; hi</code>. The search range is empty — <code>${target}</code> is not in the array.`,
     apply(s) { s.done = true; s.found = false; s.mid = -1; }
   });
@@ -281,11 +281,15 @@ const programs = {
     ready: 'Search for <code>13</code> in a sorted array. Watch the range shrink.',
     lines: [
       'lo, hi = 0, len(arr) - 1',
-      'mid = (lo + hi) // 2',
-      'if arr[mid] == target: return mid',
-      'if arr[mid] < target: lo = mid + 1',
-      'else: hi = mid - 1',
-      '# lo > hi → not found',
+      'while lo <= hi:',
+      '    mid = (lo + hi) // 2',
+      '    if arr[mid] == target:',
+      '        return mid',
+      '    if arr[mid] < target:',
+      '        lo = mid + 1',
+      '    else:',
+      '        hi = mid - 1',
+      'return -1',
     ],
     steps: buildSteps(DATA.found.arr, DATA.found.target),
   },
@@ -294,11 +298,15 @@ const programs = {
     ready: 'Search for <code>9</code> — it is not in the array. See lo and hi cross.',
     lines: [
       'lo, hi = 0, len(arr) - 1',
-      'mid = (lo + hi) // 2',
-      'if arr[mid] == target: return mid',
-      'if arr[mid] < target: lo = mid + 1',
-      'else: hi = mid - 1',
-      '# lo > hi → not found',
+      'while lo <= hi:',
+      '    mid = (lo + hi) // 2',
+      '    if arr[mid] == target:',
+      '        return mid',
+      '    if arr[mid] < target:',
+      '        lo = mid + 1',
+      '    else:',
+      '        hi = mid - 1',
+      'return -1',
     ],
     steps: buildSteps(DATA.missing.arr, DATA.missing.target),
   },
