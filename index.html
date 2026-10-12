@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CompSimu — Interactive simulations for learning computer science</title>
+<meta name="description" content="CompSimu builds step-by-step visual simulations that help students understand computer science and programming concepts." />
+<link rel="icon" href="assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/css/site.css" />
+<style>
+  .hero {
+    position: relative; overflow: hidden; margin-top: -64px; padding: 184px 0 0;
+    background: linear-gradient(180deg, var(--hero-sky-from) 0%, #b9c9d6 45%, var(--hero-sky-to) 100%);
+  }
+  .cloud { position: absolute; border-radius: 50%; background: rgba(255,255,255,.75); filter: blur(28px); pointer-events: none; }
+  .cloud.c1 { width: 520px; height: 160px; top: 120px; left: -120px; }
+  .cloud.c2 { width: 420px; height: 140px; top: 70px; right: -80px; opacity: .8; }
+  .cloud.c3 { width: 700px; height: 200px; top: 420px; left: 30%; opacity: .6; }
+  .hero-inner { position: relative; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+  .hero .h-hero { color: var(--ink); max-width: 920px; }
+  .hero .subtitle { color: var(--slate); max-width: 640px; }
+  .hero-pill {
+    display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border-radius: var(--r-full);
+    background: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.9); font-size: 13px; color: var(--slate); text-decoration: none;
+  }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+  .mockup {
+    position: relative; margin: 64px auto 0; width: min(1000px, 100%); background: var(--canvas);
+    border: 1px solid var(--hairline-soft); border-radius: var(--r-lg) var(--r-lg) 0 0; box-shadow: var(--shadow-mockup);
+    border-bottom: 0; overflow: hidden;
+  }
+  .mockup-bar { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--hairline-soft); font-size: 13px; color: var(--steel); }
+  .mockup-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--hairline); display: block; }
+  .mockup-bar .url { margin-left: 12px; font-family: var(--mono); font-size: 12px; background: var(--surface); padding: 3px 10px; border-radius: var(--r-sm); }
+  .mockup-body { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; padding: 24px; text-align: left; }
+  .mock-line { display: block; padding: 2px 10px; margin: 0 -10px; border-radius: 4px; }
+  .mock-line.on { background: rgba(0,212,164,.16); box-shadow: inset 2px 0 0 var(--brand-green); }
+  .mock-stage { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; gap: 16px; padding: 24px; position: relative; }
+  .mbox { width: 104px; background: var(--canvas); border: 1px solid var(--hairline); border-radius: var(--r-lg); padding: 10px; text-align: center; box-shadow: var(--shadow-soft); }
+  .mbox .n { font: 600 12px var(--mono); padding: 1px 8px; border-radius: var(--r-full); color: #fff; display: inline-block; }
+  .mbox .v { font: 600 30px var(--mono); margin-top: 6px; background: var(--surface-soft); border-radius: var(--r-md); padding: 6px 0; }
+  .mbox.a .n { background: var(--brand-tag); } .mbox.b .n { background: var(--orange); } .mbox.t .n { background: var(--brand-green); color: var(--primary); }
+  .mbox.t { border-color: var(--brand-green); }
+  .mock-caption { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; font-size: 14px; color: var(--slate); background: rgba(55,114,207,.06); border: 1px solid rgba(55,114,207,.18); border-radius: var(--r-md); padding: 10px 14px; }
+
+  .logo-strip { display: flex; flex-wrap: wrap; gap: 12px 40px; justify-content: center; color: var(--steel); font-weight: 500; padding: 40px 0; border-bottom: 1px solid var(--hairline-soft); }
+  .logo-strip span { display: inline-flex; gap: 8px; align-items: center; }
+  .logo-strip b { color: var(--ink); font-weight: 600; }
+
+  .sim-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+  .sim-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .sim-card { display: flex; flex-direction: column; padding: 0; overflow: hidden; text-decoration: none; transition: border-color .15s, box-shadow .15s, transform .15s; }
+  a.sim-card:hover { border-color: var(--stone); box-shadow: var(--shadow-mockup); transform: translateY(-2px); }
+  .sim-thumb { height: 168px; background: var(--surface); border-bottom: 1px solid var(--hairline); display: grid; place-items: center; position: relative; }
+  .sim-body { padding: 24px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .sim-body p { margin: 0; color: var(--steel); font-size: 14px; }
+  .sim-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sim-foot { margin-top: auto; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--steel); }
+  .sim-card.featured { border: 2px solid var(--brand-green); box-shadow: rgba(0,212,164,.08) 0 8px 24px; }
+  .sim-card.soon { background: var(--surface-soft); }
+  .sim-card.soon .sim-thumb { background: repeating-linear-gradient(135deg, var(--surface), var(--surface) 10px, var(--surface-soft) 10px, var(--surface-soft) 20px); }
+  .sim-card.soon .h5 { color: var(--slate); }
+  .sim-card.suggest { border-style: dashed; align-items: center; justify-content: center; text-align: center; padding: 32px; gap: 12px; }
+  .plus { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--hairline); display: grid; place-items: center; font-size: 22px; color: var(--steel); background: var(--canvas); }
+  .thumb-swap { display: flex; gap: 10px; align-items: center; }
+  .thumb-swap .mbox { width: 72px; padding: 6px; } .thumb-swap .mbox .v { font-size: 22px; padding: 2px 0; }
+  .thumb-arrow { font: 500 20px var(--mono); color: var(--steel); }
+  .thumb-bars { display: flex; align-items: flex-end; gap: 8px; height: 72px; }
+  .thumb-bars i { display: block; width: 16px; border-radius: 3px; background: var(--hairline); border: 1px solid #d6d6d6; }
+  .thumb-glyph { font: 500 15px var(--mono); color: var(--muted); letter-spacing: 2px; }
+
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .feature { display: flex; flex-direction: column; gap: 12px; }
+  .feature .icon { width: 40px; height: 40px; border-radius: var(--r-md); background: var(--canvas); border: 1px solid var(--hairline); display: grid; place-items: center; }
+  .feature .icon svg { width: 20px; height: 20px; }
+  .feature p { margin: 0; color: var(--steel); font-size: 15px; }
+  .check-list { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 8px; font-size: 14px; color: var(--slate); }
+  .check-list li { display: flex; gap: 8px; align-items: flex-start; }
+  .check-list li::before { content: "✓"; color: var(--brand-green-deep); font-weight: 700; }
+
+  .audience { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .band-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: center; }
+  .band-code { background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.12); border-radius: var(--r-md); }
+  .band-code pre { margin: 0; padding: 20px; font: 400 13px/1.7 var(--mono); color: #d8f5ec; overflow-x: auto; }
+
+  @media (max-width: 1023px) {
+    .sim-grid, .features { grid-template-columns: 1fr 1fr; }
+    .band-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 767px) {
+    .sim-grid, .features, .audience { grid-template-columns: 1fr; }
+    .mockup-body { grid-template-columns: 1fr; }
+    .mock-stage { gap: 8px; padding: 16px 8px; } .mbox { width: 84px; }
+    .hero { padding-top: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="site-nav on-hero" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="index.html#simulations">Simulations</a>
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="simulations/python-swap/index.html">Start learning</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+  <div class="container hero-inner">
+    <a class="hero-pill" href="simulations/python-swap/index.html"><span class="badge badge-green">New</span> Python variable swap simulation is live →</a>
+    <h1 class="h-hero">Learn computer science by watching code run.</h1>
+    <p class="subtitle">CompSimu builds interactive, step-by-step simulations of programming and CS concepts — so students can <em>see</em> what happens in memory, one line at a time.</p>
+    <div class="hero-actions">
+      <a class="btn btn-green" href="#simulations">Explore simulations</a>
+      <a class="btn btn-secondary" style="background:rgba(255,255,255,.6)" href="#how">How it works</a>
+    </div>
+
+    <div class="mockup" aria-hidden="true">
+      <div class="mockup-bar"><i></i><i></i><i></i><span class="url">compsimu / simulations / python-swap</span></div>
+      <div class="mockup-body">
+        <div class="code-block">
+          <div class="code-block-header"><span>swap_temp.py</span><span>Python</span></div>
+<pre><span class="mock-line"><span class="tok-a">a</span> <span class="tok-op">=</span> <span class="tok-num">5</span></span><span class="mock-line"><span class="tok-b">b</span> <span class="tok-op">=</span> <span class="tok-num">10</span></span><span class="mock-line on"><span class="tok-temp">temp</span> <span class="tok-op">=</span> <span class="tok-a">a</span></span><span class="mock-line"><span class="tok-a">a</span> <span class="tok-op">=</span> <span class="tok-b">b</span></span><span class="mock-line"><span class="tok-b">b</span> <span class="tok-op">=</span> <span class="tok-temp">temp</span></span></pre>
+        </div>
+        <div class="mock-stage">
+          <div class="mbox a"><span class="n">a</span><div class="v">5</div></div>
+          <div class="mbox b"><span class="n">b</span><div class="v">10</div></div>
+          <div class="mbox t"><span class="n">temp</span><div class="v">5</div></div>
+        </div>
+        <div class="mock-caption"><span class="badge badge-tag">Line 3</span> Copy <code>a</code> into <code>temp</code> — a safety copy of 5 before <code>a</code> gets overwritten.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container logo-strip">
+  <span><b>Free</b> &amp; open source</span>
+  <span><b>No install</b> — runs in any browser</span>
+  <span><b>Step-by-step</b> explanations</span>
+  <span><b>Classroom</b> ready</span>
+</div>
+
+<main>
+  <section class="section" id="simulations">
+    <div class="container">
+      <div class="sim-toolbar">
+        <div class="section-head" style="margin:0">
+          <span class="eyebrow">Library</span>
+          <h2 class="h2">Simulations</h2>
+          <p class="subtitle">Each simulation focuses on one idea and lets you control the pace. More are on the way.</p>
+        </div>
+        <div class="pill-tabs" role="tablist" id="filters">
+          <button class="pill-tab active" data-filter="all">All</button>
+          <button class="pill-tab" data-filter="python">Python</button>
+          <button class="pill-tab" data-filter="algorithms">Algorithms</button>
+          <button class="pill-tab" data-filter="data">Data structures</button>
+        </div>
+      </div>
+
+      <div class="sim-grid" id="simGrid">
+        <a class="card sim-card featured" href="simulations/python-swap/index.html" data-cat="python">
+          <div class="sim-thumb">
+            <div class="thumb-swap">
+              <div class="mbox a"><span class="n">a</span><div class="v">10</div></div>
+              <span class="thumb-arrow">⇄</span>
+              <div class="mbox b"><span class="n">b</span><div class="v">5</div></div>
+            </div>
+          </div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Python</span><span class="badge badge-soft">Beginner</span></div>
+            <h3 class="h5">Swapping two variables</h3>
+            <p>Watch values copy between memory boxes as a temp-variable swap runs line by line — and see why the naive approach loses data.</p>
+            <div class="sim-foot"><span>Variables · Assignment</span><span class="btn-link">Open →</span></div>
+          </div>
+        </a>
+
+        <div class="card sim-card soon" data-cat="algorithms">
+          <div class="sim-thumb"><span class="thumb-glyph">[ 2 · 5 · 8 · 13 · 21 ]</span></div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-soft">Coming soon</span><span class="badge badge-soft">Algorithms</span></div>
+            <h3 class="h5">Binary search</h3>
+            <p>Halve the search space each step and watch low, mid and high pointers converge.</p>
+          </div>
+        </div>
+
+        <div class="card sim-card soon" data-cat="algorithms">
+          <div class="sim-thumb"><div class="thumb-bars"><i style="height:22%"></i><i style="height:48%"></i><i style="height:34%"></i><i style="height:80%"></i><i style="height:62%"></i><i style="height:100%"></i></div></div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-soft">Coming soon</span><span class="badge badge-soft">Algorithms</span></div>
+            <h3 class="h5">Bubble sort</h3>
+            <p>Compare neighbours, swap, repeat — see how the largest values bubble to the end.</p>
+          </div>
+        </div>
+
+        <div class="card sim-card soon" data-cat="data">
+          <div class="sim-thumb"><span class="thumb-glyph">push ▸ [ ■ ■ ■ ]</span></div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-soft">Coming soon</span><span class="badge badge-soft">Data structures</span></div>
+            <h3 class="h5">Stacks &amp; queues</h3>
+            <p>Push, pop, enqueue, dequeue — compare LIFO and FIFO behaviour side by side.</p>
+          </div>
+        </div>
+
+        <div class="card sim-card soon" data-cat="python">
+          <div class="sim-thumb"><span class="thumb-glyph">f(3) → f(2) → f(1)</span></div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-soft">Coming soon</span><span class="badge badge-soft">Python</span></div>
+            <h3 class="h5">Recursion &amp; the call stack</h3>
+            <p>Watch stack frames pile up and unwind as a recursive function runs.</p>
+          </div>
+        </div>
+
+        <a class="card sim-card suggest" href="#contribute" data-cat="all">
+          <span class="plus">+</span>
+          <h3 class="h5">Suggest a simulation</h3>
+          <p class="muted" style="margin:0;font-size:14px">Have a concept students struggle with? We’d love to build it.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section class="section" id="how">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Our approach</span>
+        <h2 class="h2">Built for understanding, not memorising</h2>
+        <p class="subtitle">Most beginner bugs come from a fuzzy mental model of what the computer is actually doing. CompSimu makes that model visible.</p>
+      </div>
+      <div class="features">
+        <div class="card-feature feature">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="1.8"><path d="M5 4h14M5 9h9M5 14h14M5 19h7"/><path d="M2 14h1" stroke="#00b48a" stroke-width="3"/></svg></div>
+          <h3 class="h5">Step through real code</h3>
+          <p>The line being executed is highlighted. Step forward, step back, or press play and watch it run at your pace.</p>
+        </div>
+        <div class="card-feature feature">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="1.8"><rect x="3" y="6" width="7" height="12" rx="2"/><rect x="14" y="6" width="7" height="12" rx="2"/><path d="M10 12h4" stroke="#00b48a"/></svg></div>
+          <h3 class="h5">See memory change</h3>
+          <p>Variables, arrays and stacks are drawn as boxes. Values visibly move and copy between them as each line runs.</p>
+        </div>
+        <div class="card-feature feature">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" stroke-width="1.8"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5" stroke="#00b48a"/></svg></div>
+          <h3 class="h5">Plain-language explanations</h3>
+          <p>Every step comes with a short explanation of what happened and why — including the common mistakes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="audience" style="padding-top:0">
+    <div class="container audience">
+      <div class="card" style="padding:32px">
+        <span class="badge badge-tag">For students</span>
+        <h3 class="h4" style="margin-top:12px">Build intuition before you write code</h3>
+        <ul class="check-list">
+          <li>Replay any step as many times as you need</li>
+          <li>Compare correct and broken versions side by side</li>
+          <li>Keyboard shortcuts for fast stepping</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:32px">
+        <span class="badge badge-ok">For teachers</span>
+        <h3 class="h4" style="margin-top:12px">Project it, share a link, done</h3>
+        <ul class="check-list">
+          <li>No accounts, installs or plugins — just a URL</li>
+          <li>Each simulation is a single page that works offline</li>
+          <li>Designed to be readable on a classroom projector</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="contribute" style="padding-top:0">
+    <div class="container">
+      <div class="band-dark band-grid">
+        <div>
+          <span class="eyebrow" style="color:var(--brand-green-soft)">Open source</span>
+          <h2 class="h2" style="margin:12px 0">Help us build the next simulation</h2>
+          <p style="margin:0 0 24px;font-size:17px">Every simulation is a plain HTML page with no build step. Pick a concept, add a folder under <code style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.2)">simulations/</code>, and open a pull request.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <a class="btn btn-on-dark" href="simulations/python-swap/index.html">See an example</a>
+            <a class="btn btn-ghost-dark" href="#simulations">Browse the library</a>
+          </div>
+        </div>
+        <div class="band-code">
+<pre>compsimu/
+├── index.html
+├── assets/css/site.css
+└── simulations/
+    ├── python-swap/index.html
+    └── <span style="color:var(--brand-green)">your-simulation/index.html</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Simulations</h4>
+        <ul>
+          <li><a href="simulations/python-swap/index.html">Swapping two variables</a></li>
+          <li class="soon">Binary search (soon)</li>
+          <li class="soon">Bubble sort (soon)</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="index.html#how">How it works</a></li>
+          <li><a href="index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="index.html#contribute">Contribute</a></li>
+          <li><a href="index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.querySelector('.site-nav');
+  const onScroll = () => nav.classList.toggle('on-hero', window.scrollY < 40);
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  document.querySelectorAll('#filters .pill-tab').forEach((btn) => btn.addEventListener('click', () => {
+    document.querySelectorAll('#filters .pill-tab').forEach((b) => b.classList.toggle('active', b === btn));
+    const f = btn.dataset.filter;
+    document.querySelectorAll('#simGrid .sim-card').forEach((c) => {
+      c.style.display = f === 'all' || c.dataset.cat === f || c.dataset.cat === 'all' ? '' : 'none';
+    });
+  }));
+</script>
+</body>
+</html>
