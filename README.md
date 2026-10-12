@@ -1,6 +1,6 @@
 # CompSimu
 
-Interactive, step-by-step simulations that help students learn computer science and programming.
+Interactive, step-by-step simulations that help students learn computer science — from programming constructs to theoretical topics.
 
 The site is plain static HTML/CSS/JS with no build step, so it can be hosted directly on GitHub Pages.
 
