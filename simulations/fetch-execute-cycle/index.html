@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fetch–execute cycle — CompSimu</title>
+<meta name="description" content="Step through the fetch–execute cycle and watch PC, IR, MAR, MDR, CU, accumulator, ALU, and RAM work together." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Fetch–execute cycle</span>
+    </nav>
+    <h1 class="h1">Fetch–execute cycle</h1>
+    <p class="subtitle" style="max-width:720px">Every instruction is fetched from RAM, decoded by the control unit, then executed. Watch the registers and buses light up one micro-step at a time.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Theory</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">Architecture · CPU</span>
+      <span class="badge badge-soft">~8 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Fetch, then execute</h2>
+        <p>The CPU never “sees” a whole program at once. It repeatedly: <strong>fetch</strong> the next instruction from memory, <strong>decode</strong> it, then <strong>execute</strong> it — using registers as staging posts for addresses and data.</p>
+        <p>This demo runs a tiny program that loads <code>10</code>, adds <code>25</code>, and stores <code>35</code> back into RAM.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Follow the highlighted box: address path uses <code>PC</code> → <code>MAR</code>; data path uses <code>MDR</code> ↔ RAM.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Program</span><span class="h5" style="font-size:16px">Add two numbers</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>add.asm</span><span>Assembly</span></div>
+<pre><span class="tok-op">LDA</span> <span class="tok-num">5</span>    <span class="tok-cm"># ACC ← RAM[5]</span>
+<span class="tok-op">ADD</span> <span class="tok-num">6</span>    <span class="tok-cm"># ACC ← ACC + RAM[6]</span>
+<span class="tok-op">STA</span> <span class="tok-num">7</span>    <span class="tok-cm"># RAM[7] ← ACC</span>
+<span class="tok-op">HLT</span>      <span class="tok-cm"># stop</span></pre>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">Data at addresses <code>5</code> and <code>6</code>: <code>10</code> and <code>25</code>. Result lands in address <code>7</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">PC, IR, MAR, MDR, CU, accumulator, ALU, and RAM all update as each micro-step runs.</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="add" role="tab">Add 10 + 25</button>
+            <button class="pill-tab" data-mode="load" role="tab">Load only</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels fec-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">add.asm</span><span>Assembly</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>CPU · registers + RAM</span><span id="stageMode">demo</span></div>
+            <div class="stage viz-stage fec-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">What each part does</h2>
+        <p class="subtitle">Registers are tiny, named memory cells inside the CPU.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">Fetch</span>
+          <h3 class="h5">PC · MAR · MDR · IR</h3>
+          <p class="muted" style="margin:0;font-size:14px"><code>PC</code> holds the next address. That address goes to <code>MAR</code>, RAM fills <code>MDR</code>, and the instruction is copied into <code>IR</code>.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-soft" style="align-self:flex-start">Control</span>
+          <h3 class="h5">CU orchestrates</h3>
+          <p class="muted" style="margin:0;font-size:14px">The control unit reads <code>IR</code>, decides the phase (fetch / decode / execute), and steers data between registers and RAM.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">Execute</span>
+          <h3 class="h5">ACC · ALU · RAM</h3>
+          <p class="muted" style="margin:0;font-size:14px">Loads and stores move values through the accumulator. <code>ADD</code> uses the ALU, then writes the result back to <code>ACC</code> (and sometimes RAM).</p>
+        </div>
+      </div>
+      <div class="card-feature next-card" style="margin-top:40px">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Infrared door sensor</h3>
+          <p class="muted" style="margin:6px 0 0">Zoom out from the CPU to a sense–decide–act control loop in the real world.</p>
+        </div>
+        <a class="btn btn-primary" href="../ir-door-sensor/index.html">Open IR door sensor</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+/** Format a RAM cell for display */
+function cellText(cell) {
+  if (cell == null) return '—';
+  if (typeof cell === 'number') return String(cell);
+  return cell;
+}
+
+function cloneRam(ram) {
+  return ram.map((c) => (c && typeof c === 'object' ? { ...c } : c));
+}
+
+function initialRam(mode) {
+  if (mode === 'load') {
+    return [
+      'LDA 4',
+      'HLT',
+      null,
+      null,
+      42,
+      null,
+      null,
+      null,
+    ];
+  }
+  return [
+    'LDA 5',
+    'ADD 6',
+    'STA 7',
+    'HLT',
+    null,
+    10,
+    25,
+    0,
+  ];
+}
+
+function fmt(v) {
+  if (v === undefined || v === null || v === '') return undefined;
+  return String(v);
+}
+
+function parseInstr(text) {
+  if (!text || typeof text !== 'string') return { op: null, addr: null };
+  const parts = text.trim().split(/\s+/);
+  return { op: parts[0], addr: parts[1] != null ? +parts[1] : null };
+}
+
+/**
+ * Append fetch micro-steps for the instruction currently at PC.
+ * Returns the PC value after fetch (already incremented) and the IR text.
+ */
+function appendFetch(steps, line, pcBefore) {
+  steps.push({
+    line, badge: 'Fetch',
+    text: `Fetch begins. Copy <code>PC</code> (<code>${pcBefore}</code>) into <code>MAR</code> — the address bus now points at the next instruction.`,
+    apply(s) {
+      s.phase = 'fetch';
+      s.cu = 'Fetch: PC → MAR';
+      s.mar = pcBefore;
+      s.active = ['pc', 'mar', 'cu'];
+      s.flash = 'mar';
+      s.bus = `address ${pcBefore}`;
+      s.alu = null;
+      s.ramFocus = pcBefore;
+    }
+  });
+
+  steps.push({
+    line, badge: 'Fetch',
+    text: `Read memory: <code>RAM[${pcBefore}]</code> → <code>MDR</code>. The instruction word is now on the data bus.`,
+    apply(s) {
+      s.phase = 'fetch';
+      s.cu = 'Fetch: RAM → MDR';
+      s.mdr = s.ram[pcBefore];
+      s.active = ['mar', 'mdr', 'ram', 'cu'];
+      s.flash = 'mdr';
+      s.bus = `data ${cellText(s.ram[pcBefore])}`;
+      s.ramFocus = pcBefore;
+      s.alu = null;
+    }
+  });
+
+  steps.push({
+    line, badge: 'Fetch',
+    text: `Copy <code>MDR</code> into <code>IR</code>. The instruction register now holds what will be decoded.`,
+    apply(s) {
+      s.phase = 'fetch';
+      s.cu = 'Fetch: MDR → IR';
+      s.ir = s.mdr;
+      s.active = ['mdr', 'ir', 'cu'];
+      s.flash = 'ir';
+      s.bus = null;
+      s.ramFocus = pcBefore;
+      s.alu = null;
+    }
+  });
+
+  const pcAfter = pcBefore + 1;
+  steps.push({
+    line, badge: 'Fetch',
+    text: `Increment <code>PC</code> to <code>${pcAfter}</code> so the next fetch will target the following instruction.`,
+    apply(s) {
+      s.phase = 'fetch';
+      s.cu = 'Fetch: PC ← PC + 1';
+      s.pc = pcAfter;
+      s.active = ['pc', 'cu'];
+      s.flash = 'pc';
+      s.bus = null;
+      s.ramFocus = null;
+      s.alu = null;
+    }
+  });
+}
+
+function appendDecode(steps, line, irText) {
+  const { op, addr } = parseInstr(irText);
+  const detail = addr != null
+    ? `<code>${op}</code> with operand address <code>${addr}</code>`
+    : `<code>${op}</code>`;
+  steps.push({
+    line, badge: 'Decode',
+    text: `Control unit decodes <code>IR</code>: ${detail}. Execute phase starts.`,
+    apply(s) {
+      s.phase = 'decode';
+      s.cu = `Decode: ${irText}`;
+      s.active = ['ir', 'cu'];
+      s.flash = 'cu';
+      s.bus = null;
+      s.ramFocus = null;
+      s.alu = null;
+    }
+  });
+}
+
+function appendLDA(steps, line, addr) {
+  steps.push({
+    line, badge: 'Execute',
+    text: `<code>LDA</code>: put operand address <code>${addr}</code> into <code>MAR</code>.`,
+    apply(s) {
+      s.phase = 'execute';
+      s.cu = `Execute LDA: addr → MAR`;
+      s.mar = addr;
+      s.active = ['ir', 'mar', 'cu'];
+      s.flash = 'mar';
+      s.bus = `address ${addr}`;
+      s.ramFocus = addr;
+      s.alu = null;
+    }
+  });
+  steps.push({
+    line, badge: 'Execute',
+    text: `Read <code>RAM[${addr}]</code> into <code>MDR</code>.`,
+    apply(s) {
+      s.phase = 'execute';
+      s.cu = 'Execute LDA: RAM → MDR';
+      s.mdr = s.ram[addr];
+      s.active = ['mar', 'mdr', 'ram', 'cu'];
+      s.flash = 'mdr';
+      s.bus = `data ${cellText(s.ram[addr])}`;
+      s.ramFocus = addr;
+      s.alu = null;
+    }
+  });
+  steps.push({
+    line, badge: 'Execute', kind: 'good',
+    text: `Copy <code>MDR</code> into the <strong>accumulator</strong>. The load is complete.`,
+    apply(s) {
+      s.phase = 'execute';
+      s.cu = 'Execute LDA: MDR → ACC';
+      s.acc = s.mdr;
+      s.active = ['mdr', 'acc', 'cu'];
+      s.flash = 'acc';
+      s.bus = null;
+      s.ramFocus = addr;
+      s.alu = null;
+    }
+  });
+}
+
+function appendADD(steps, line, addr) {
+  steps.push({
+    line, badge: 'Execute',
+    text: `<code>ADD</code>: put operand address <code>${addr}</code> into <code>MAR</code>.`,
+    apply(s) {
+      s.phase = 'execute';
+      s.cu = 'Execute ADD: addr → MAR';
+      s.mar = addr;
+      s.active = ['ir', 'mar', 'cu'];
+      s.flash = 'mar';
+      s.bus = `address ${addr}`;
+      s.ramFocus = addr;
+      s.alu = null;
+    }
+  });
+  steps.push({
+    line, badge: 'Execute',
+    text: `Read <code>RAM[${addr}]</code> into <code>MDR</code> — this is the second operand.`,
+    apply(s) {
+      s.phase = 'execute';
+      s.cu = 'Execute ADD: RAM → MDR';
+      s.mdr = s.ram[addr];
+      s.active = ['mar', 'mdr', 'ram', 'cu'];
+      s.flash = 'mdr';
+      s.bus = `data ${cellText(s.ram[addr])}`;
+      s.ramFocus = addr;
+      s.alu = null;
+    }
+  });
+  steps.push({
+    line, badge: 'Execute',
+    text: `ALU computes <code>ACC + MDR</code>. Watch the ALU box show the sum.`,
+    apply(s) {
+      const a = Number(s.acc);
+      const b = Number(s.mdr);
+      s.phase = 'execute';
+      s.cu = 'Execute ADD: ALU';
+      s.alu = `${a} + ${b}`;
+      s.active = ['acc', 'mdr', 'alu', 'cu'];
+      s.flash = 'alu';
+      s.bus = null;
+      s.ramFocus = addr;
+      s._aluResult = a + b;
+    }
+  });
+  steps.push({
+    line, badge: 'Execute', kind: 'good',
+    text: `Write the ALU result back into the <strong>accumulator</strong>.`,
+    apply(s) {
+      s.phase = 'execute';
+      s.cu = 'Execute ADD: ALU → ACC';
+      const result = s._aluResult != null ? s._aluResult : Number(s.acc) + Number(s.mdr);
+      s.acc = result;
+      s.alu = String(result);
+      s.active = ['alu', 'acc', 'cu'];
+      s.flash = 'acc';
+      s.bus = null;
+      s.ramFocus = addr;
+    }
+  });
+}
+
+function appendSTA(steps, line, addr) {
+  steps.push({
+    line, badge: 'Execute',
+    text: `<code>STA</code>: put destination address <code>${addr}</code> into <code>MAR</code>.`,
+    apply(s) {
+      s.phase = 'execute';
+      s.cu = 'Execute STA: addr → MAR';
+      s.mar = addr;
+      s.active = ['ir', 'mar', 'cu'];
+      s.flash = 'mar';
+      s.bus = `address ${addr}`;
+      s.ramFocus = addr;
+      s.alu = null;
+    }
+  });
+  steps.push({
+    line, badge: 'Execute',
+    text: `Copy <code>ACC</code> into <code>MDR</code> — the value that will be written.`,
+    apply(s) {
+      s.phase = 'execute';
+      s.cu = 'Execute STA: ACC → MDR';
+      s.mdr = s.acc;
+      s.active = ['acc', 'mdr', 'cu'];
+      s.flash = 'mdr';
+      s.bus = `data ${cellText(s.acc)}`;
+      s.ramFocus = addr;
+      s.alu = null;
+    }
+  });
+  steps.push({
+    line, badge: 'Execute', kind: 'good',
+    text: `Write <code>MDR</code> into <code>RAM[${addr}]</code>. Memory now holds the result.`,
+    apply(s) {
+      s.phase = 'execute';
+      s.cu = 'Execute STA: MDR → RAM';
+      s.ram[addr] = s.mdr;
+      s.active = ['mdr', 'mar', 'ram', 'cu'];
+      s.flash = 'ram';
+      s.bus = `store ${cellText(s.mdr)}`;
+      s.ramFocus = addr;
+      s.alu = null;
+    }
+  });
+}
+
+function appendHLT(steps, line) {
+  steps.push({
+    line, badge: 'Halt', kind: 'good',
+    text: `<code>HLT</code>: the control unit stops the cycle. No more fetches.`,
+    apply(s) {
+      s.phase = 'halt';
+      s.cu = 'Halt';
+      s.active = ['cu', 'ir'];
+      s.flash = 'cu';
+      s.bus = null;
+      s.ramFocus = null;
+      s.alu = null;
+      s.halted = true;
+    }
+  });
+}
+
+function buildProgramSteps(mode) {
+  const steps = [];
+  const ram0 = initialRam(mode);
+  const program = mode === 'load'
+    ? [{ line: 0, text: 'LDA 4' }, { line: 1, text: 'HLT' }]
+    : [
+        { line: 0, text: 'LDA 5' },
+        { line: 1, text: 'ADD 6' },
+        { line: 2, text: 'STA 7' },
+        { line: 3, text: 'HLT' },
+      ];
+
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: mode === 'load'
+      ? 'Tiny program in RAM: load the value at address <code>4</code> (<code>42</code>), then halt. Registers start empty; <code>PC = 0</code>.'
+      : 'Program and data sit in the same RAM. Instructions at <code>0–3</code>; data <code>10</code> and <code>25</code> at <code>5</code> and <code>6</code>; result slot at <code>7</code>.',
+    apply(s) {
+      s.pc = 0;
+      s.ir = null;
+      s.mar = null;
+      s.mdr = null;
+      s.cu = 'Idle';
+      s.acc = 0;
+      s.alu = null;
+      s.ram = cloneRam(ram0);
+      s.phase = 'idle';
+      s.active = ['pc', 'ram'];
+      s.flash = null;
+      s.bus = null;
+      s.ramFocus = null;
+      s.halted = false;
+      s._aluResult = null;
+    }
+  });
+
+  let pc = 0;
+  for (const instr of program) {
+    const irText = instr.text;
+    const { op, addr } = parseInstr(irText);
+    appendFetch(steps, instr.line, pc);
+    pc += 1;
+    appendDecode(steps, instr.line, irText);
+    if (op === 'LDA') appendLDA(steps, instr.line, addr);
+    else if (op === 'ADD') appendADD(steps, instr.line, addr);
+    else if (op === 'STA') appendSTA(steps, instr.line, addr);
+    else if (op === 'HLT') appendHLT(steps, instr.line);
+  }
+
+  steps.push({
+    line: program[program.length - 1].line,
+    badge: 'Done', kind: 'good',
+    text: mode === 'load'
+      ? 'Cycle finished. The accumulator holds <code>42</code>, loaded from RAM through MAR → MDR → ACC.'
+      : 'Cycle finished. <code>10 + 25 = 35</code> was computed in the ALU and stored at <code>RAM[7]</code>.',
+    apply(s) {
+      s.phase = 'halt';
+      s.cu = 'Done';
+      s.active = mode === 'load' ? ['acc', 'cu'] : ['acc', 'ram', 'cu'];
+      s.flash = mode === 'load' ? 'acc' : 'ram';
+      s.bus = null;
+      s.ramFocus = mode === 'load' ? null : 7;
+      s.halted = true;
+      s.alu = null;
+    }
+  });
+
+  return steps;
+}
+
+const LINES_ADD = [
+  'LDA 5    # ACC ← RAM[5]',
+  'ADD 6    # ACC ← ACC + RAM[6]',
+  'STA 7    # RAM[7] ← ACC',
+  'HLT      # stop',
+];
+
+const LINES_LOAD = [
+  'LDA 4    # ACC ← RAM[4]',
+  'HLT      # stop',
+];
+
+function regBox(name, value, active, flash, title) {
+  const empty = value === undefined || value === null || value === '';
+  const shown = empty ? '—' : value;
+  const cls = [
+    'fec-reg',
+    active ? 'active' : '',
+    flash ? 'flash' : '',
+  ].filter(Boolean).join(' ');
+  return `<div class="${cls}" data-reg="${name}" title="${title || name}">
+    <span class="reg-name">${name}</span>
+    <span class="reg-val${empty ? ' empty' : ''}">${shown}</span>
+  </div>`;
+}
+
+function render(state) {
+  const stage = document.getElementById('stage');
+  const active = new Set(state.active || []);
+  const flash = state.flash;
+  const phase = state.phase || 'idle';
+  const phaseLabel = {
+    idle: 'Ready',
+    fetch: 'Fetch',
+    decode: 'Decode',
+    execute: 'Execute',
+    halt: 'Halt',
+  }[phase] || phase;
+
+  const ramCells = (state.ram || []).map((cell, i) => {
+    const focus = state.ramFocus === i;
+    const isInstr = typeof cell === 'string';
+    const cls = [
+      'fec-cell',
+      focus ? 'focus' : '',
+      active.has('ram') && focus ? 'active' : '',
+      isInstr ? 'instr' : 'data',
+      cell == null ? 'empty' : '',
+    ].filter(Boolean).join(' ');
+    return `<div class="${cls}">
+      <span class="addr">${i}</span>
+      <span class="content">${cellText(cell)}</span>
+    </div>`;
+  }).join('');
+
+  const cuActive = active.has('cu');
+  const html = `
+    <div class="fec-wrap">
+      <div class="fec-phase ${phase}">
+        <span class="phase-pill">${phaseLabel}</span>
+        <span class="phase-cu${cuActive ? ' on' : ''}${flash === 'cu' ? ' flash' : ''}">CU · ${state.cu || 'Idle'}</span>
+        ${state.bus ? `<span class="phase-bus">${state.bus}</span>` : ''}
+      </div>
+
+      <div class="fec-cpu">
+        <div class="fec-cpu-label">CPU</div>
+        <div class="fec-regs">
+          ${regBox('PC', fmt(state.pc), active.has('pc'), flash === 'pc', 'Program Counter — address of next instruction')}
+          ${regBox('IR', fmt(state.ir), active.has('ir'), flash === 'ir', 'Instruction Register — current instruction')}
+          ${regBox('MAR', fmt(state.mar), active.has('mar'), flash === 'mar', 'Memory Address Register — address for RAM access')}
+          ${regBox('MDR', fmt(state.mdr), active.has('mdr'), flash === 'mdr', 'Memory Data Register — data to/from RAM')}
+          ${regBox('ACC', fmt(state.acc), active.has('acc'), flash === 'acc', 'Accumulator — working value')}
+          ${regBox('ALU', fmt(state.alu), active.has('alu'), flash === 'alu', 'Arithmetic Logic Unit — computes results')}
+        </div>
+      </div>
+
+      <div class="fec-ram${active.has('ram') ? ' active' : ''}${flash === 'ram' ? ' flash' : ''}">
+        <div class="fec-ram-label">RAM</div>
+        <div class="fec-ram-grid">${ramCells}</div>
+      </div>
+    </div>
+  `;
+
+  const vars = CompSimu.renderVars([
+    { name: 'PC', value: fmt(state.pc), flash: flash === 'pc' },
+    { name: 'IR', value: fmt(state.ir), flash: flash === 'ir' },
+    { name: 'MAR', value: fmt(state.mar), flash: flash === 'mar' },
+    { name: 'MDR', value: fmt(state.mdr), flash: flash === 'mdr' },
+    { name: 'ACC', value: fmt(state.acc), flash: flash === 'acc' },
+    { name: 'ALU', value: fmt(state.alu), flash: flash === 'alu' },
+  ], 'Registers');
+
+  stage.innerHTML = html + vars;
+}
+
+function blankState(mode) {
+  return {
+    pc: 0,
+    ir: null,
+    mar: null,
+    mdr: null,
+    cu: 'Idle',
+    acc: 0,
+    alu: null,
+    ram: cloneRam(initialRam(mode)),
+    phase: 'idle',
+    active: [],
+    flash: null,
+    bus: null,
+    ramFocus: null,
+    halted: false,
+    _aluResult: null,
+  };
+}
+
+const programs = {
+  add: {
+    file: 'add.asm',
+    label: 'add 10 + 25',
+    ready: 'Press <b>Step</b> to fetch the first instruction. Watch PC → MAR → MDR → IR, then the execute path through ACC and the ALU.',
+    lines: LINES_ADD,
+    steps: buildProgramSteps('add'),
+  },
+  load: {
+    file: 'load.asm',
+    label: 'load only',
+    ready: 'A shorter program: fetch <code>LDA 4</code>, load <code>42</code> into the accumulator, then halt.',
+    lines: LINES_LOAD,
+    steps: buildProgramSteps('load'),
+  },
+};
+
+CompSimu.createPlayer({
+  programs,
+  initialMode: 'add',
+  initialState: (mode) => blankState(mode || 'add'),
+  render,
+});
+</script>
+</body>
+</html>

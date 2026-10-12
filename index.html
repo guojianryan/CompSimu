@@ -89,6 +89,7 @@
   .sim-thumb.t-stack { background: linear-gradient(160deg, #ffe8d4 0%, #fff3e8 55%, #fffaf4 100%); }
   .sim-thumb.t-queue { background: linear-gradient(160deg, #dcecfa 0%, #eef5fb 55%, #f7fafc 100%); }
   .sim-thumb.t-ir { background: linear-gradient(160deg, #e7eef7 0%, #dfe7f1 50%, #cfd8e4 100%); }
+  .sim-thumb.t-fec { background: linear-gradient(160deg, #dce6f4 0%, #e8eef8 50%, #f0f4fa 100%); }
   .sim-thumb.t-recur { background: linear-gradient(160deg, #dce8e4 0%, #eaf2ef 55%, #f5f9f7 100%); }
   .sim-thumb.t-auto { background: linear-gradient(160deg, #e4ece8 0%, #eef4f1 55%, #f6f9f7 100%); }
   .sim-thumb.t-bool { background: linear-gradient(160deg, #f0e6d8 0%, #f7f0e8 55%, #fbf8f3 100%); }
@@ -202,6 +203,23 @@
   .thumb-ir .chip {
     position: absolute; right: 10px; top: 8px; font: 700 8px/1 var(--mono); letter-spacing: .3px;
     color: var(--brand-tag); background: #fff; padding: 3px 5px; border-radius: 4px; border: 1px solid rgba(55,114,207,.2);
+  }
+
+  .thumb-fec {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: min(200px, 88%);
+  }
+  .thumb-fec span {
+    display: grid; place-items: center; padding: 7px 4px; border-radius: 7px;
+    font: 700 10px/1 var(--mono); background: rgba(255,255,255,.92);
+    border: 1px solid rgba(55,114,207,.18); color: var(--slate);
+    box-shadow: 0 3px 8px rgba(0,0,0,.04);
+  }
+  .thumb-fec span.on {
+    background: rgba(0,212,164,.16); border-color: var(--brand-green-deep); color: var(--brand-green-deep);
+    animation: thumb-pulse 2.2s ease-in-out infinite;
+  }
+  .thumb-fec span.bus {
+    background: rgba(55,114,207,.12); border-color: rgba(55,114,207,.35); color: var(--brand-tag);
   }
 
   .thumb-frames { display: flex; flex-direction: column; gap: 5px; width: 120px; }
@@ -530,6 +548,23 @@
             <h3 class="h5">Infrared door sensor</h3>
             <p>Watch distance readings stream from an IR sensor to a microprocessor that opens the door within 1&nbsp;m.</p>
             <div class="sim-foot"><span>Sensors · Control</span><span class="btn-link">Open →</span></div>
+          </div>
+        </a>
+
+        <a class="card sim-card" href="simulations/fetch-execute-cycle/index.html" data-cat="theory">
+          <div class="sim-thumb t-fec">
+            <div class="thumb-scene">
+              <div class="thumb-fec">
+                <span class="bus">PC</span><span>IR</span><span class="on">ACC</span>
+                <span>MAR</span><span class="bus">MDR</span><span>ALU</span>
+              </div>
+            </div>
+          </div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Theory</span><span class="badge badge-soft">Beginner</span></div>
+            <h3 class="h5">Fetch–execute cycle</h3>
+            <p>Step through fetch and execute while PC, IR, MAR, MDR, CU, accumulator, ALU, and RAM light up.</p>
+            <div class="sim-foot"><span>Architecture · CPU</span><span class="btn-link">Open →</span></div>
           </div>
         </a>
 

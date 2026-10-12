@@ -6,7 +6,7 @@
     // Tokenize so indentation/spaces stay intact and comments/strings are not re-colored.
     const src = String(line);
     const parts = [];
-    const re = /(#.*)$|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|\b(for|while|if|elif|else|in|from|import|True|False|None|def|return|print|not|and|or)\b|\b(\d+)\b|([^#'"\w]+|\w+)/g;
+      const re = /(#.*)$|("(?:\\.|[^"\\])*")|('(?:\\.|[^'\\])*')|\b(for|while|if|elif|else|in|from|import|True|False|None|def|return|print|not|and|or|LDA|ADD|STA|HLT|SUB|JMP|STO|LOAD|STORE)\b|\b(\d+)\b|([^#'"\w]+|\w+)/g;
     let m;
     while ((m = re.exec(src))) {
       if (m[1]) parts.push(['cm', m[1]]);
