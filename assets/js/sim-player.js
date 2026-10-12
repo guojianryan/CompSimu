@@ -86,11 +86,23 @@
       const myGen = gen;
       const s = p.steps[idx];
       idx++;
-      updateUI();
-      if (s.apply) await s.apply(state, { sleep, dur, animate: true, gen: () => myGen === gen });
-      if (myGen !== gen) return;
-      busy = false;
-      updateUI();
+      const result = s.apply
+        ? s.apply(state, { sleep, dur, animate: true, gen: () => myGen === gen })
+        : null;
+      // Sync applies (most loop sims): update state before painting so boxes
+      // show the new value on the same step as the explanation.
+      // Async applies (e.g. python-swap flies): paint first, then finish animation.
+      if (result && typeof result.then === 'function') {
+        updateUI();
+        await result;
+        if (myGen !== gen) return;
+        busy = false;
+        updateUI();
+      } else {
+        if (myGen !== gen) return;
+        busy = false;
+        updateUI();
+      }
     }
 
     async function play() {
@@ -159,14 +171,20 @@
     return { setMode, reset, state: () => state };
   }
 
-  /** Build labeled variable boxes: [{ name, value, flash? }] */
+  /** Build labeled variable boxes: [{ name, value, flash?, badge? }] */
   function renderVars(vars, title) {
     const boxes = (vars || []).map((v) => {
       const empty = v.value === undefined || v.value === null || v.value === '';
       const shown = empty ? '—' : v.value;
+      const badge = v.badge
+        ? `<span class="var-bump">${v.badge}</span>`
+        : '';
+      // cache-bust flash animation when the same box keeps flashing across steps
+      const flashKey = v.flash ? ` style="animation-name:val-flash;animation-duration:.6s"` : '';
       return `<div class="var sm" data-name="${String(v.name).replace(/"/g, '')}">
         <span class="label">${v.name}</span>
-        <div class="val${empty ? ' empty' : ''}${v.flash ? ' flash' : ''}">${shown}</div>
+        <div class="val${empty ? ' empty' : ''}${v.flash ? ' flash' : ''}"${flashKey}>${shown}</div>
+        ${badge}
       </div>`;
     }).join('');
     const heading = title === false ? '' : `<div class="vars-label">${title || 'Variables'}</div>`;
