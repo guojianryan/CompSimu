@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stacks — CompSimu</title>
+<meta name="description" content="Push and pop on a stack and see last-in, first-out behaviour one operation at a time." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Stacks</span>
+    </nav>
+    <h1 class="h1">Stacks (LIFO)</h1>
+    <p class="subtitle" style="max-width:720px">A stack only lets you add and remove from the top. The last value you push is the first one you pop — last in, first out.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Data structures</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">LIFO</span>
+      <span class="badge badge-soft">~5 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Last in, first out</h2>
+        <p>Think of a stack of plates: you put a new plate on top, and you take from the top. You never slide one out of the middle.</p>
+        <p>In code, <code>push</code> adds to the top and <code>pop</code> removes from the top. That’s why stacks power undo history, the call stack, and depth-first search.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Only the <strong>top</strong> element is accessible. Peek reads it without removing it.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Operations</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>stack_demo.py</span><span>Python</span></div>
+<pre>stack = []
+stack.append(<span class="tok-num">3</span>)   <span class="tok-cm"># push</span>
+stack.append(<span class="tok-num">8</span>)
+stack.append(<span class="tok-num">1</span>)
+stack.pop()         <span class="tok-cm"># → 1</span>
+stack.append(<span class="tok-num">5</span>)
+stack.pop()         <span class="tok-cm"># → 5</span></pre>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">In Python, a list’s end acts as the stack top.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">The highlighted slot is the current top of the stack.</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="demo" role="tab">Push & pop</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">demo.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Stack</span><span id="stageMode">demo</span></div>
+            <div class="stage viz-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">Stack mental model</h2>
+        <p class="subtitle">Restrict access to one end and you get LIFO for free.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">LIFO</span>
+          <h3 class="h5">Last in, first out</h3>
+          <p class="muted" style="margin:0;font-size:14px">Pop always returns the most recently pushed value.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">Top</span>
+          <h3 class="h5">One access point</h3>
+          <p class="muted" style="margin:0;font-size:14px">You cannot reach middle elements without popping above them first.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-soft" style="align-self:flex-start">Uses</span>
+          <h3 class="h5">Everywhere in CS</h3>
+          <p class="muted" style="margin:0;font-size:14px">Function calls, undo/redo, parsing, and backtracking all use stacks.</p>
+        </div>
+      </div>
+      <div class="card-feature next-card" style="margin-top:40px">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Queues</h3>
+          <p class="muted" style="margin:6px 0 0">Flip the rule: first in, first out — like a line at a ticket counter.</p>
+        </div>
+        <a class="btn btn-primary" href="../queues/index.html">Open queues</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Simulations</h4>
+        <ul>
+          <li><a href="../python-swap/index.html">Swapping two variables</a></li>
+          <li><a href="../linear-search/index.html">Linear search</a></li>
+          <li><a href="../binary-search/index.html">Binary search</a></li>
+          <li><a href="../bubble-sort/index.html">Bubble sort</a></li>
+          <li><a href="../selection-sort/index.html">Selection sort</a></li>
+          <li><a href="../stacks/index.html">Stacks</a></li>
+          <li><a href="../queues/index.html">Queues</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+
+const OPS = [
+  { op: 'push', v: 3, line: 1, text: 'Push <code>3</code>. The stack was empty; 3 is now the top.' },
+  { op: 'push', v: 8, line: 2, text: 'Push <code>8</code>. It sits above 3 and becomes the new top.' },
+  { op: 'push', v: 1, line: 3, text: 'Push <code>1</code>. Top is now 1 — last in.' },
+  { op: 'pop', v: 1, line: 4, kind: 'good', text: 'Pop removes the top. Out comes <code>1</code> (last in, first out). Top is 8 again.' },
+  { op: 'push', v: 5, line: 5, text: 'Push <code>5</code>. It becomes the new top above 8.' },
+  { op: 'pop', v: 5, line: 6, kind: 'good', text: 'Pop again — <code>5</code> leaves. Remaining: bottom 3, top 8.' },
+];
+
+function buildSteps() {
+  return [
+    {
+      line: 0, badge: 'Setup',
+      text: 'Start with an empty stack. We will push and pop values one operation at a time.',
+      apply(s) { s.items = []; s.highlight = null; s.leaving = null; }
+    },
+    ...OPS.map((o) => ({
+      line: o.line, kind: o.kind, text: o.text,
+      apply(s) {
+        if (o.op === 'push') { s.items.push(o.v); s.highlight = o.v; s.leaving = null; }
+        else { s.leaving = s.items.pop(); s.highlight = s.items[s.items.length - 1] ?? null; }
+      }
+    })),
+  ];
+}
+
+function render(state) {
+  const stage = document.getElementById('stage');
+  if (!state.items.length) {
+    stage.innerHTML = '<div class="stage-empty">Stack is empty — press <b>Step</b> to push the first value.</div>';
+    return;
+  }
+  const slots = state.items.map((v) => {
+    let cls = 'slot';
+    if (v === state.highlight) cls += ' top';
+    if (v === state.leaving) cls += ' leaving';
+    return `<div class="${cls}">${v}</div>`;
+  }).join('');
+  stage.innerHTML = `
+    <div class="ds-labels" style="width:120px;justify-content:center"><span>top ↑</span></div>
+    <div class="stack-col">${slots}</div>
+    <div class="ds-meta">size: <b>${state.items.length}</b> · top: <b>${state.items[state.items.length - 1]}</b></div>`;
+}
+
+CompSimu.createPlayer({
+  programs: {
+    demo: {
+      file: 'stack_demo.py', label: 'push & pop',
+      ready: 'An empty stack. Press <b>Step</b> to push 3.',
+      lines: [
+        'stack = []',
+        'stack.append(3)   # push',
+        'stack.append(8)',
+        'stack.append(1)',
+        'stack.pop()       # → 1',
+        'stack.append(5)',
+        'stack.pop()       # → 5',
+      ],
+      steps: buildSteps(),
+    },
+  },
+  initialMode: 'demo',
+  initialState: () => ({ items: [], highlight: null, leaving: null }),
+  render,
+});
+
+</script>
+</body>
+</html>

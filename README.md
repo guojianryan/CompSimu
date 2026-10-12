@@ -7,11 +7,19 @@ The site is plain static HTML/CSS/JS with no build step, so it can be hosted dir
 ## Structure
 
 ```
-index.html                        Landing page and simulation library
-assets/css/site.css               Shared design tokens, nav, footer, buttons, cards
-assets/css/simulation.css         Shared simulation UI (code panel, memory stage, controls)
-assets/img/logo.svg               Favicon / logo
-simulations/python-swap/index.html  Swapping two variables in Python (temp-variable method)
+index.html                              Landing page and simulation library
+assets/css/site.css                     Shared design tokens, nav, footer, buttons, cards
+assets/css/simulation.css               Shared simulation UI (code panel, memory stage, controls)
+assets/css/viz.css                      Array / bar / stack / queue visualizations
+assets/js/sim-player.js                 Shared step / play / reset controller
+assets/img/logo.svg                     Favicon / logo
+simulations/python-swap/index.html      Swapping two variables (temp-variable method)
+simulations/linear-search/index.html    Linear search
+simulations/binary-search/index.html    Binary search
+simulations/bubble-sort/index.html      Bubble sort
+simulations/selection-sort/index.html   Selection sort
+simulations/stacks/index.html           Stacks (LIFO)
+simulations/queues/index.html           Queues (FIFO)
 ```
 
 All links are relative, so the site works both at a custom domain root and under a GitHub Pages project path (`https://<user>.github.io/CompSimu/`).

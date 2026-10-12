@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linear search — CompSimu</title>
+<meta name="description" content="Step through a linear search and watch each array element get checked until the target is found." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Linear search</span>
+    </nav>
+    <h1 class="h1">Linear search</h1>
+    <p class="subtitle" style="max-width:720px">Check items one by one from left to right. Simple, reliable — and you can see exactly how many comparisons it takes.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Algorithms</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">Arrays · Search</span>
+      <span class="badge badge-soft">~5 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Scan until you find it</h2>
+        <p>Linear search walks an array from index <code>0</code> to the end. At each position it asks: “Is this the value I’m looking for?”</p>
+        <p>If yes — stop. If no — move to the next index. Worst case you check every element; best case you find it first.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Works on <strong>unsorted</strong> data. Binary search needs sorted data; linear search does not.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Core loop</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>linear_search.py</span><span>Python</span></div>
+<pre><span class="tok-op">for</span> i <span class="tok-op">in</span> <span class="tok-op">range</span>(<span class="tok-op">len</span>(arr)):
+    <span class="tok-op">if</span> arr[i] == target:
+        <span class="tok-op">return</span> i
+<span class="tok-op">return</span> -<span class="tok-num">1</span></pre>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">Array: <code>[3, 8, 1, 7, 4]</code> · Target: <code>7</code></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">The highlighted cell is the one being compared to the target.</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="found" role="tab">Target found</button>
+            <button class="pill-tab" data-mode="missing" role="tab">Target missing</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">demo.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Array</span><span id="stageMode">demo</span></div>
+            <div class="stage viz-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">When to use linear search</h2>
+        <p class="subtitle">It’s the right tool when the list is small or unsorted.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">O(n)</span>
+          <h3 class="h5">Time grows with size</h3>
+          <p class="muted" style="margin:0;font-size:14px">In the worst case you look at every element once — fine for short lists, slow for huge ones.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">No prep</span>
+          <h3 class="h5">No sorting required</h3>
+          <p class="muted" style="margin:0;font-size:14px">Unlike binary search, the array can be in any order.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-soft" style="align-self:flex-start">Early exit</span>
+          <h3 class="h5">Stop when found</h3>
+          <p class="muted" style="margin:0;font-size:14px">You don’t keep scanning after a match — that saves work on average.</p>
+        </div>
+      </div>
+      <div class="card-feature next-card" style="margin-top:40px">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Binary search</h3>
+          <p class="muted" style="margin:6px 0 0">If the array is sorted, you can discard half the remaining items every step.</p>
+        </div>
+        <a class="btn btn-primary" href="../binary-search/index.html">Open binary search</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Simulations</h4>
+        <ul>
+          <li><a href="../python-swap/index.html">Swapping two variables</a></li>
+          <li><a href="../linear-search/index.html">Linear search</a></li>
+          <li><a href="../binary-search/index.html">Binary search</a></li>
+          <li><a href="../bubble-sort/index.html">Bubble sort</a></li>
+          <li><a href="../selection-sort/index.html">Selection sort</a></li>
+          <li><a href="../stacks/index.html">Stacks</a></li>
+          <li><a href="../queues/index.html">Queues</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+
+const DATA = {
+  found: { arr: [3, 8, 1, 7, 4], target: 7 },
+  missing: { arr: [3, 8, 1, 7, 4], target: 9 },
+};
+
+function buildSteps(arr, target) {
+  const steps = [];
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: `Search for <code>${target}</code> in <code>[${arr.join(', ')}]</code>. Start at index <code>0</code>.`,
+    apply(s) { s.i = 0; s.done = false; s.found = false; }
+  });
+  for (let i = 0; i < arr.length; i++) {
+    const v = arr[i];
+    const match = v === target;
+    steps.push({
+      line: 1,
+      text: `Compare <code>arr[${i}]</code> (<code>${v}</code>) with target <code>${target}</code>. ${match ? 'Match!' : 'Not equal — keep going.'}`,
+      kind: match ? 'good' : undefined,
+      apply(s) { s.i = i; s.probe = i; }
+    });
+    if (match) {
+      steps.push({
+        line: 2, kind: 'good',
+        text: `Return index <code>${i}</code>. Linear search found the target after <code>${i + 1}</code> comparison${i ? 's' : ''}.`,
+        apply(s) { s.found = true; s.done = true; s.probe = i; }
+      });
+      return steps;
+    }
+  }
+  steps.push({
+    line: 3, kind: 'warn',
+    text: `Checked every element. Target <code>${target}</code> is not in the array — return <code>-1</code>.`,
+    apply(s) { s.done = true; s.found = false; s.probe = -1; }
+  });
+  return steps;
+}
+
+function render(state) {
+  const stage = document.getElementById('stage');
+  const arr = state.arr;
+  const cells = arr.map((v, i) => {
+    let cls = 'cell';
+    if (state.probe === i) cls += state.found ? ' match' : ' probe';
+    if (state.done && state.found && i === state.probe) cls += ' match';
+    if (state.probe >= 0 && i < state.probe && !state.found) cls += ' discard';
+    if (state.done && !state.found) cls += ' discard';
+    return `<div class="${cls}"><span class="idx">${i}</span><div class="v">${v}</div></div>`;
+  }).join('');
+  const ptr = state.probe >= 0
+    ? `<div class="ptr-row"><span class="ptr i">i=${state.probe}</span><span class="ptr target">target=${state.target}</span></div>`
+    : `<div class="ptr-row"><span class="ptr target">target=${state.target}</span></div>`;
+  stage.innerHTML = ptr + `<div class="array-row">${cells}</div>` +
+    `<div class="ds-meta">comparisons so far: <b>${Math.max(0, state.probe + (state.done && state.found ? 1 : state.probe >= 0 ? 1 : 0))}</b></div>`;
+}
+
+const programs = {
+  found: {
+    file: 'linear_search.py', label: 'target found',
+    ready: 'We will search for <code>7</code> in <code>[3, 8, 1, 7, 4]</code>. Press <b>Step</b> to start.',
+    lines: [
+      'arr = [3, 8, 1, 7, 4]',
+      'if arr[i] == target:   # compare',
+      '    return i          # found',
+      'return -1             # not found',
+    ],
+    steps: buildSteps(DATA.found.arr, DATA.found.target),
+  },
+  missing: {
+    file: 'linear_search.py', label: 'target missing',
+    ready: 'Same array, but target is <code>9</code> — watch every cell get checked.',
+    lines: [
+      'arr = [3, 8, 1, 7, 4]',
+      'if arr[i] == target:   # compare',
+      '    return i          # found',
+      'return -1             # not found',
+    ],
+    steps: buildSteps(DATA.missing.arr, DATA.missing.target),
+  },
+};
+
+CompSimu.createPlayer({
+  programs,
+  initialMode: 'found',
+  initialState: (mode) => {
+    const d = DATA[mode || 'found'];
+    return { arr: [...d.arr], target: d.target, i: -1, probe: -1, found: false, done: false };
+  },
+  render,
+});
+
+</script>
+</body>
+</html>

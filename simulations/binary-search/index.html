@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Binary search — CompSimu</title>
+<meta name="description" content="Watch low, mid, and high pointers converge as binary search halves the search space each step." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Binary search</span>
+    </nav>
+    <h1 class="h1">Binary search</h1>
+    <p class="subtitle" style="max-width:720px">When the array is sorted, each comparison can throw away half of what remains. Follow lo, mid, and hi as they close in.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Algorithms</span>
+      <span class="badge badge-soft">Beginner+</span>
+      <span class="badge badge-soft">Arrays · Search</span>
+      <span class="badge badge-soft">~6 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Halve the problem each step</h2>
+        <p>Pick the middle element. If it’s too small, the target (if present) must be on the right — discard the left half. If it’s too big, discard the right half.</p>
+        <p>Repeat until you find the target or the range is empty. That’s why binary search needs a <strong>sorted</strong> array.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>With <code>n</code> items you need about <code>log₂(n)</code> comparisons — much fewer than linear search for large <code>n</code>.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Core loop</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>binary_search.py</span><span>Python</span></div>
+<pre><span class="tok-op">while</span> lo &lt;= hi:
+    mid = (lo + hi) // <span class="tok-num">2</span>
+    <span class="tok-op">if</span> arr[mid] == target: <span class="tok-op">return</span> mid
+    <span class="tok-op">if</span> arr[mid] &lt; target: lo = mid + <span class="tok-num">1</span>
+    <span class="tok-op">else</span>: hi = mid - <span class="tok-num">1</span></pre>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">Sorted array: <code>[2, 5, 8, 13, 21, 34]</code> · Target: <code>13</code></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">Grey cells are discarded. Blue / green / orange markers show lo, mid, and hi.</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="found" role="tab">Target found</button>
+            <button class="pill-tab" data-mode="missing" role="tab">Target missing</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">demo.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Sorted array</span><span id="stageMode">demo</span></div>
+            <div class="stage viz-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">Binary search essentials</h2>
+        <p class="subtitle">Three pointers, one invariant: the target can only live between lo and hi.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-error" style="align-self:flex-start">Sorted</span>
+          <h3 class="h5">Must be sorted first</h3>
+          <p class="muted" style="margin:0;font-size:14px">If the array is unsorted, discarding a half is wrong — you’d skip the target.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">O(log n)</span>
+          <h3 class="h5">Logarithmic time</h3>
+          <p class="muted" style="margin:0;font-size:14px">Each step halves the remaining range, so the search shrinks very quickly.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">Invariant</span>
+          <h3 class="h5">Keep lo ≤ hi</h3>
+          <p class="muted" style="margin:0;font-size:14px">When lo passes hi, the range is empty and the target is not present.</p>
+        </div>
+      </div>
+      <div class="card-feature next-card" style="margin-top:40px">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Bubble sort</h3>
+          <p class="muted" style="margin:6px 0 0">See how neighbour swaps gradually push large values to the end of the list.</p>
+        </div>
+        <a class="btn btn-primary" href="../bubble-sort/index.html">Open bubble sort</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Simulations</h4>
+        <ul>
+          <li><a href="../python-swap/index.html">Swapping two variables</a></li>
+          <li><a href="../linear-search/index.html">Linear search</a></li>
+          <li><a href="../binary-search/index.html">Binary search</a></li>
+          <li><a href="../bubble-sort/index.html">Bubble sort</a></li>
+          <li><a href="../selection-sort/index.html">Selection sort</a></li>
+          <li><a href="../stacks/index.html">Stacks</a></li>
+          <li><a href="../queues/index.html">Queues</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+
+const DATA = {
+  found: { arr: [2, 5, 8, 13, 21, 34], target: 13 },
+  missing: { arr: [2, 5, 8, 13, 21, 34], target: 9 },
+};
+
+function buildSteps(arr, target) {
+  const steps = [];
+  let lo = 0, hi = arr.length - 1;
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: `Sorted array <code>[${arr.join(', ')}]</code>. Search for <code>${target}</code>. Set <code>lo = 0</code>, <code>hi = ${hi}</code>.`,
+    apply(s) { s.lo = 0; s.hi = arr.length - 1; s.mid = -1; s.found = false; s.done = false; }
+  });
+  let guard = 0;
+  while (lo <= hi && guard++ < 20) {
+    const mid = Math.floor((lo + hi) / 2);
+    steps.push({
+      line: 1,
+      text: `Compute <code>mid = (${lo} + ${hi}) // 2 = ${mid}</code>. Look at <code>arr[${mid}] = ${arr[mid]}</code>.`,
+      apply(s) { s.lo = lo; s.hi = hi; s.mid = mid; }
+    });
+    if (arr[mid] === target) {
+      steps.push({
+        line: 2, kind: 'good',
+        text: `<code>arr[${mid}]</code> equals the target. Return index <code>${mid}</code>.`,
+        apply(s) { s.found = true; s.done = true; s.mid = mid; }
+      });
+      return steps;
+    }
+    if (arr[mid] < target) {
+      steps.push({
+        line: 3,
+        text: `<code>${arr[mid]} &lt; ${target}</code> — target is to the right. Move <code>lo</code> to <code>${mid + 1}</code> and discard the left half.`,
+        apply(s) { s.lo = mid + 1; s.hi = hi; s.mid = mid; }
+      });
+      lo = mid + 1;
+    } else {
+      steps.push({
+        line: 4,
+        text: `<code>${arr[mid]} &gt; ${target}</code> — target is to the left. Move <code>hi</code> to <code>${mid - 1}</code> and discard the right half.`,
+        apply(s) { s.lo = lo; s.hi = mid - 1; s.mid = mid; }
+      });
+      hi = mid - 1;
+    }
+  }
+  steps.push({
+    line: 5, kind: 'warn',
+    text: `Now <code>lo &gt; hi</code>. The search range is empty — <code>${target}</code> is not in the array.`,
+    apply(s) { s.done = true; s.found = false; s.mid = -1; }
+  });
+  return steps;
+}
+
+function render(state) {
+  const stage = document.getElementById('stage');
+  const arr = state.arr;
+  const cells = arr.map((v, i) => {
+    let cls = 'cell';
+    const inRange = state.lo <= i && i <= state.hi;
+    if (state.done && !state.found) cls += ' discard';
+    else if (!inRange && state.lo !== undefined) cls += ' discard';
+    if (i === state.mid && !state.done) cls += ' probe';
+    if (state.found && i === state.mid) cls += ' match';
+    return `<div class="${cls}"><span class="idx">${i}</span><div class="v">${v}</div></div>`;
+  }).join('');
+  const ptrs = [];
+  if (state.lo >= 0) ptrs.push(`<span class="ptr lo">lo=${state.lo}</span>`);
+  if (state.mid >= 0) ptrs.push(`<span class="ptr mid">mid=${state.mid}</span>`);
+  if (state.hi >= 0) ptrs.push(`<span class="ptr hi">hi=${state.hi}</span>`);
+  ptrs.push(`<span class="ptr target">target=${state.target}</span>`);
+  stage.innerHTML = `<div class="ptr-row">${ptrs.join('')}</div><div class="array-row">${cells}</div>`;
+}
+
+const programs = {
+  found: {
+    file: 'binary_search.py', label: 'target found',
+    ready: 'Search for <code>13</code> in a sorted array. Watch the range shrink.',
+    lines: [
+      'lo, hi = 0, len(arr) - 1',
+      'mid = (lo + hi) // 2',
+      'if arr[mid] == target: return mid',
+      'if arr[mid] < target: lo = mid + 1',
+      'else: hi = mid - 1',
+      '# lo > hi → not found',
+    ],
+    steps: buildSteps(DATA.found.arr, DATA.found.target),
+  },
+  missing: {
+    file: 'binary_search.py', label: 'target missing',
+    ready: 'Search for <code>9</code> — it is not in the array. See lo and hi cross.',
+    lines: [
+      'lo, hi = 0, len(arr) - 1',
+      'mid = (lo + hi) // 2',
+      'if arr[mid] == target: return mid',
+      'if arr[mid] < target: lo = mid + 1',
+      'else: hi = mid - 1',
+      '# lo > hi → not found',
+    ],
+    steps: buildSteps(DATA.missing.arr, DATA.missing.target),
+  },
+};
+
+CompSimu.createPlayer({
+  programs,
+  initialMode: 'found',
+  initialState: (mode) => {
+    const d = DATA[mode || 'found'];
+    return { arr: [...d.arr], target: d.target, lo: 0, hi: d.arr.length - 1, mid: -1, found: false, done: false };
+  },
+  render,
+});
+
+</script>
+</body>
+</html>
