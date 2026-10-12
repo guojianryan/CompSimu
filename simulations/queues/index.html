@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Queues — CompSimu</title>
+<meta name="description" content="Enqueue and dequeue values and see first-in, first-out behaviour like a waiting line." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Queues</span>
+    </nav>
+    <h1 class="h1">Queues (FIFO)</h1>
+    <p class="subtitle" style="max-width:720px">A queue adds at the back and removes from the front — just like a line at a café. First in, first out.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Data structures</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">FIFO</span>
+      <span class="badge badge-soft">~5 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">First in, first out</h2>
+        <p>Enqueue adds to the back of the line. Dequeue removes from the front. Nobody cuts ahead — the oldest waiting value leaves first.</p>
+        <p>Queues show up in printers, task schedulers, breadth-first search, and message buffers.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Compare with a stack: queues are FIFO; stacks are LIFO.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Operations</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>queue_demo.py</span><span>Python</span></div>
+<pre><span class="tok-op">from</span> collections <span class="tok-op">import</span> deque
+q = deque()
+q.append(<span class="tok-num">3</span>)    <span class="tok-cm"># enqueue</span>
+q.append(<span class="tok-num">8</span>)
+q.append(<span class="tok-num">1</span>)
+q.popleft()       <span class="tok-cm"># → 3</span>
+q.append(<span class="tok-num">5</span>)
+q.popleft()       <span class="tok-cm"># → 8</span></pre>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">Python’s <code>deque</code> makes front removals efficient.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">Left is the front (next out). Right is the back (new arrivals).</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="demo" role="tab">Enqueue & dequeue</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">demo.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Queue</span><span id="stageMode">demo</span></div>
+            <div class="stage viz-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">Queue mental model</h2>
+        <p class="subtitle">Two ends, one purpose: fair ordering.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">FIFO</span>
+          <h3 class="h5">First in, first out</h3>
+          <p class="muted" style="margin:0;font-size:14px">The earliest enqueued value is always the next to dequeue.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">Ends</span>
+          <h3 class="h5">Front vs back</h3>
+          <p class="muted" style="margin:0;font-size:14px">Remove from the front, add at the back — never the reverse for a basic queue.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-soft" style="align-self:flex-start">Uses</span>
+          <h3 class="h5">Scheduling & BFS</h3>
+          <p class="muted" style="margin:0;font-size:14px">Any “wait your turn” problem is a queue in disguise.</p>
+        </div>
+      </div>
+      <div class="card-feature next-card" style="margin-top:40px">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Browse the library</h3>
+          <p class="muted" style="margin:6px 0 0">Try stacks next, or jump back to search and sorting.</p>
+        </div>
+        <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Simulations</h4>
+        <ul>
+          <li><a href="../python-swap/index.html">Swapping two variables</a></li>
+          <li><a href="../linear-search/index.html">Linear search</a></li>
+          <li><a href="../binary-search/index.html">Binary search</a></li>
+          <li><a href="../bubble-sort/index.html">Bubble sort</a></li>
+          <li><a href="../selection-sort/index.html">Selection sort</a></li>
+          <li><a href="../stacks/index.html">Stacks</a></li>
+          <li><a href="../queues/index.html">Queues</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+
+const OPS = [
+  { op: 'enq', v: 3, line: 2, text: 'Enqueue <code>3</code> at the back. It is also the front — the only item in line.' },
+  { op: 'enq', v: 8, line: 3, text: 'Enqueue <code>8</code> at the back. Front is still 3; 8 waits behind it.' },
+  { op: 'enq', v: 1, line: 4, text: 'Enqueue <code>1</code>. Line is 3 → 8 → 1 (front → back).' },
+  { op: 'deq', v: 3, line: 5, kind: 'good', text: 'Dequeue from the front. Out comes <code>3</code> — first in, first out. New front is 8.' },
+  { op: 'enq', v: 5, line: 6, text: 'Enqueue <code>5</code> at the back. Line is now 8 → 1 → 5.' },
+  { op: 'deq', v: 8, line: 7, kind: 'good', text: 'Dequeue again — <code>8</code> leaves. Remaining front→back: 1 → 5.' },
+];
+
+function buildSteps() {
+  return [
+    {
+      line: 1, badge: 'Setup',
+      text: 'Start with an empty queue. Enqueues join the back; dequeues leave from the front.',
+      apply(s) { s.items = []; s.highlight = null; }
+    },
+    ...OPS.map((o) => ({
+      line: o.line, kind: o.kind, text: o.text,
+      apply(s) {
+        if (o.op === 'enq') { s.items.push(o.v); s.highlight = o.v; }
+        else { s.items.shift(); s.highlight = s.items[0] ?? null; }
+      }
+    })),
+  ];
+}
+
+function render(state) {
+  const stage = document.getElementById('stage');
+  if (!state.items.length) {
+    stage.innerHTML = '<div class="stage-empty">Queue is empty — press <b>Step</b> to enqueue the first value.</div>';
+    return;
+  }
+  const slots = state.items.map((v, i) => {
+    let cls = 'slot';
+    if (i === 0) cls += ' front';
+    return `<div class="${cls}">${v}</div>`;
+  }).join('');
+  stage.innerHTML = `
+    <div class="ds-labels"><span>front (out)</span><span>back (in)</span></div>
+    <div class="queue-row">${slots}</div>
+    <div class="ds-meta">size: <b>${state.items.length}</b> · front: <b>${state.items[0]}</b> · back: <b>${state.items[state.items.length - 1]}</b></div>`;
+}
+
+CompSimu.createPlayer({
+  programs: {
+    demo: {
+      file: 'queue_demo.py', label: 'enqueue & dequeue',
+      ready: 'An empty queue. Press <b>Step</b> to enqueue 3.',
+      lines: [
+        'from collections import deque',
+        'q = deque()',
+        'q.append(3)     # enqueue',
+        'q.append(8)',
+        'q.append(1)',
+        'q.popleft()     # → 3',
+        'q.append(5)',
+        'q.popleft()     # → 8',
+      ],
+      steps: buildSteps(),
+    },
+  },
+  initialMode: 'demo',
+  initialState: () => ({ items: [], highlight: null }),
+  render,
+});
+
+</script>
+</body>
+</html>

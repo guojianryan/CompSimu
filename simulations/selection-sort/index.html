@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Selection sort — CompSimu</title>
+<meta name="description" content="Watch selection sort find the minimum of the unsorted region and swap it into place." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Selection sort</span>
+    </nav>
+    <h1 class="h1">Selection sort</h1>
+    <p class="subtitle" style="max-width:720px">Each pass selects the smallest remaining value and swaps it into the next position on the left. The sorted prefix grows one cell at a time.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Algorithms</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">Sorting</span>
+      <span class="badge badge-soft">~7 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Select the next minimum</h2>
+        <p>Selection sort divides the array into a sorted prefix and an unsorted suffix. It scans the suffix for the minimum, then swaps that minimum into the boundary position.</p>
+        <p>Unlike bubble sort, it does at most one swap per pass — but it still examines every unsorted element.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Compare with bubble sort: same <code>O(n²)</code> comparisons, fewer swaps.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Find-min then swap</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>selection_sort.py</span><span>Python</span></div>
+<pre><span class="tok-op">for</span> i <span class="tok-op">in</span> <span class="tok-op">range</span>(n - <span class="tok-num">1</span>):
+    min_i = i
+    <span class="tok-op">for</span> j <span class="tok-op">in</span> <span class="tok-op">range</span>(i + <span class="tok-num">1</span>, n):
+        <span class="tok-op">if</span> arr[j] &lt; arr[min_i]: min_i = j
+    arr[i], arr[min_i] = arr[min_i], arr[i]</pre>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">Start: <code>[5, 2, 8, 1, 4]</code></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">Green cells are sorted. The mint outline marks the current minimum candidate.</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="demo" role="tab">Full sort</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">demo.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Array</span><span id="stageMode">demo</span></div>
+            <div class="stage viz-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">Selection sort essentials</h2>
+        <p class="subtitle">Grow a sorted prefix by repeatedly placing the next minimum.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">Prefix</span>
+          <h3 class="h5">Sorted region grows left→right</h3>
+          <p class="muted" style="margin:0;font-size:14px">After pass i, indices 0…i are in final order.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">1 swap</span>
+          <h3 class="h5">At most one swap per pass</h3>
+          <p class="muted" style="margin:0;font-size:14px">You may scan many cells, but you only swap the min into place once.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-error" style="align-self:flex-start">O(n²)</span>
+          <h3 class="h5">Still quadratic</h3>
+          <p class="muted" style="margin:0;font-size:14px">Finding the min each time means nested loops — simple, not fast.</p>
+        </div>
+      </div>
+      <div class="card-feature next-card" style="margin-top:40px">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Stacks</h3>
+          <p class="muted" style="margin:6px 0 0">See last-in, first-out behaviour with push and pop.</p>
+        </div>
+        <a class="btn btn-primary" href="../stacks/index.html">Open stacks</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Simulations</h4>
+        <ul>
+          <li><a href="../python-swap/index.html">Swapping two variables</a></li>
+          <li><a href="../linear-search/index.html">Linear search</a></li>
+          <li><a href="../binary-search/index.html">Binary search</a></li>
+          <li><a href="../bubble-sort/index.html">Bubble sort</a></li>
+          <li><a href="../selection-sort/index.html">Selection sort</a></li>
+          <li><a href="../stacks/index.html">Stacks</a></li>
+          <li><a href="../queues/index.html">Queues</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+
+const START = [5, 2, 8, 1, 4];
+
+function buildSteps(arr0) {
+  const arr = [...arr0];
+  const n = arr.length;
+  const steps = [];
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: `Start with <code>[${arr.join(', ')}]</code>. Each pass will place the next minimum on the left.`,
+    apply(s) { s.arr = [...arr0]; s.i = -1; s.j = -1; s.min = -1; s.sortedTo = -1; s.swapping = false; }
+  });
+  for (let i = 0; i < n - 1; i++) {
+    let min = i;
+    steps.push({
+      line: 0,
+      text: `Pass for index <code>${i}</code>. Assume <code>min_i = ${i}</code> (value <code>${arr[i]}</code>).` ,
+      apply(s) { s.i = i; s.min = i; s.j = -1; s.swapping = false; }
+    });
+    for (let j = i + 1; j < n; j++) {
+      steps.push({
+        line: 2,
+        text: `Check <code>arr[${j}]=${arr[j]}</code> against current min <code>arr[${min}]=${arr[min]}</code>.`,
+        apply(s) { s.j = j; s.min = min; s.swapping = false; }
+      });
+      if (arr[j] < arr[min]) {
+        steps.push({
+          line: 3,
+          text: `New minimum! Update <code>min_i</code> to <code>${j}</code>.`,
+          apply(s) { s.j = j; s.min = j; }
+        });
+        min = j;
+      }
+    }
+    if (min !== i) {
+      steps.push({
+        line: 4,
+        text: `Swap <code>arr[${i}]=${arr[i]}</code> with minimum <code>arr[${min}]=${arr[min]}</code>.`,
+        apply(s) {
+          const t = s.arr[i]; s.arr[i] = s.arr[min]; s.arr[min] = t;
+          s.i = i; s.min = min; s.j = -1; s.swapping = true;
+        }
+      });
+      const t = arr[i]; arr[i] = arr[min]; arr[min] = t;
+    } else {
+      steps.push({
+        line: 4,
+        text: `Minimum is already at index <code>${i}</code> — no swap needed.`,
+        apply(s) { s.swapping = false; s.j = -1; }
+      });
+    }
+    steps.push({
+      line: 0, kind: 'good',
+      text: `Index <code>${i}</code> is now sorted with value <code>${arr[i]}</code>.`,
+      apply(s) { s.sortedTo = i; s.j = -1; s.min = -1; s.swapping = false; }
+    });
+  }
+  steps.push({
+    line: 0, kind: 'good', badge: 'Done',
+    text: `Sorted: <code>[${arr.join(', ')}]</code>. The last element falls into place automatically.`,
+    apply(s) { s.sortedTo = n - 1; s.min = -1; s.j = -1; }
+  });
+  return steps;
+}
+
+function render(state) {
+  const stage = document.getElementById('stage');
+  const cells = state.arr.map((v, i) => {
+    let cls = 'cell';
+    if (i <= state.sortedTo) cls += ' sorted';
+    if (i === state.min) cls += ' min';
+    if (i === state.j) cls += ' probe';
+    if (state.swapping && (i === state.i || i === state.min)) cls += i === state.i ? ' swap-a' : ' swap-b';
+    return `<div class="${cls}"><span class="idx">${i}</span><div class="v">${v}</div></div>`;
+  }).join('');
+  stage.innerHTML = `<div class="array-row">${cells}</div><div class="ds-meta">mint = current min · green = sorted prefix</div>`;
+}
+
+CompSimu.createPlayer({
+  programs: {
+    demo: {
+      file: 'selection_sort.py', label: 'selection sort',
+      ready: 'Press <b>Step</b> to begin selecting the minimum for index 0.',
+      lines: [
+        'for i in range(n - 1):',
+        '    min_i = i',
+        '    for j in range(i + 1, n):',
+        '        if arr[j] < arr[min_i]: min_i = j',
+        '    swap arr[i], arr[min_i]',
+      ],
+      steps: buildSteps(START),
+    },
+  },
+  initialMode: 'demo',
+  initialState: () => ({ arr: [...START], i: -1, j: -1, min: -1, sortedTo: -1, swapping: false }),
+  render,
+});
+
+</script>
+</body>
+</html>
