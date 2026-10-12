@@ -159,5 +159,19 @@
     return { setMode, reset, state: () => state };
   }
 
-  global.CompSimu = { createPlayer, highlightPython };
+  /** Build labeled variable boxes: [{ name, value, flash? }] */
+  function renderVars(vars, title) {
+    const boxes = (vars || []).map((v) => {
+      const empty = v.value === undefined || v.value === null || v.value === '';
+      const shown = empty ? '—' : v.value;
+      return `<div class="var sm" data-name="${String(v.name).replace(/"/g, '')}">
+        <span class="label">${v.name}</span>
+        <div class="val${empty ? ' empty' : ''}${v.flash ? ' flash' : ''}">${shown}</div>
+      </div>`;
+    }).join('');
+    const heading = title === false ? '' : `<div class="vars-label">${title || 'Variables'}</div>`;
+    return `${heading}<div class="vars vars-track">${boxes}</div>`;
+  }
+
+  global.CompSimu = { createPlayer, highlightPython, renderVars };
 })(window);

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Counting occurrences — CompSimu</title>
+<meta name="description" content="Step through an array and watch a counter increase whenever the target value appears." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Counting occurrences</span>
+    </nav>
+    <h1 class="h1">Counting occurrences with a for loop</h1>
+    <p class="subtitle" style="max-width:720px">Walk the list once. Each time you see the target value, add one to <code>count</code>. The counter box shows every hit.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Python</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">Loops · Counters</span>
+      <span class="badge badge-soft">~5 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Count matches as you go</h2>
+        <p>Like summing, you keep an accumulator — but this time it stores <em>how many times</em> something appears, not a running sum of values.</p>
+        <p>Initialise <code>count = 0</code>. For each index, if <code>arr[i]</code> equals the target, increase <code>count</code> by one.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Compare with linear search: search stops at the first hit; counting visits the whole list.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Counter loop</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>count_occurrences.py</span><span>Python</span></div>
+<pre>count = <span class="tok-num">0</span>
+<span class="tok-op">for</span> i <span class="tok-op">in</span> range(len(arr)):
+    <span class="tok-op">if</span> arr[i] == target:
+        count = count + <span class="tok-num">1</span></pre>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">Array: <code>[3, 5, 3, 8, 3, 1]</code> · Target: <code>3</code> · Expected: <code>3</code></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">Boxes track <code>i</code>, <code>target</code>, and <code>count</code>. Green cells are matches already counted.</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="hits" role="tab">Has matches</button>
+            <button class="pill-tab" data-mode="none" role="tab">No matches</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">demo.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Array + variables</span><span id="stageMode">demo</span></div>
+            <div class="stage viz-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">Counting vs searching</h2>
+        <p class="subtitle">Same scan, different question.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">Counter</span>
+          <h3 class="h5">Start at zero</h3>
+          <p class="muted" style="margin:0;font-size:14px">Only increase <code>count</code> when the current element matches the target.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">Full scan</span>
+          <h3 class="h5">Visit every index</h3>
+          <p class="muted" style="margin:0;font-size:14px">Unlike search, you keep going after a match so you do not miss later ones.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-soft" style="align-self:flex-start">Zero OK</span>
+          <h3 class="h5">No matches → 0</h3>
+          <p class="muted" style="margin:0;font-size:14px">If nothing equals the target, <code>count</code> stays <code>0</code> — that is a valid answer.</p>
+        </div>
+      </div>
+      <div class="card-feature next-card" style="margin-top:40px">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Finding max & min</h3>
+          <p class="muted" style="margin:6px 0 0">Track the biggest and smallest values seen so far while scanning the list.</p>
+        </div>
+        <a class="btn btn-primary" href="../max-min/index.html">Open max & min</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+                <h4>Simulations</h4>
+        <ul>
+          <li><a href="../python-swap/index.html">Swapping two variables</a></li>
+          <li><a href="../array-sum/index.html">Totalling an array</a></li>
+          <li><a href="../count-occurrences/index.html">Counting occurrences</a></li>
+          <li><a href="../max-min/index.html">Finding max &amp; min</a></li>
+          <li><a href="../linear-search/index.html">Linear search</a></li>
+          <li><a href="../binary-search/index.html">Binary search</a></li>
+          <li><a href="../bubble-sort/index.html">Bubble sort</a></li>
+          <li><a href="../selection-sort/index.html">Selection sort</a></li>
+          <li><a href="../stacks/index.html">Stacks</a></li>
+          <li><a href="../queues/index.html">Queues</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+
+const DATA = {
+  hits: { arr: [3, 5, 3, 8, 3, 1], target: 3 },
+  none: { arr: [3, 5, 3, 8, 3, 1], target: 9 },
+};
+
+function buildSteps(arr, target) {
+  const steps = [];
+  let count = 0;
+  const matched = [];
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: `Create <code>count = 0</code>. Target value is <code>${target}</code>.`,
+    apply(s) { s.count = 0; s.i = -1; s.probe = -1; s.matched = []; s.done = false; s.flash = 'count'; }
+  });
+  for (let i = 0; i < arr.length; i++) {
+    const hit = arr[i] === target;
+    steps.push({
+      line: 1,
+      text: `Index <code>i = ${i}</code>. Compare <code>arr[${i}] = ${arr[i]}</code> with target <code>${target}</code>.`,
+      apply(s) { s.i = i; s.probe = i; s.flash = 'i'; }
+    });
+    steps.push({
+      line: 2,
+      text: hit
+        ? `Match! Increase the counter.`
+        : `Not equal — leave <code>count</code> unchanged.`,
+      kind: hit ? 'good' : undefined,
+      apply(s) { s.i = i; s.probe = i; s.flash = hit ? 'count' : null; }
+    });
+    if (hit) {
+      count += 1;
+      matched.push(i);
+      steps.push({
+        line: 3,
+        text: `<code>count = ${count}</code> after finding another <code>${target}</code>.`,
+        kind: 'good',
+        apply(s) { s.count = count; s.matched = [...matched]; s.i = i; s.probe = i; s.flash = 'count'; }
+      });
+    }
+  }
+  steps.push({
+    line: 3, kind: count ? 'good' : 'warn', badge: 'Done',
+    text: count
+      ? `Finished. <code>${target}</code> appears <code>${count}</code> time${count === 1 ? '' : 's'}.`
+      : `Finished. <code>${target}</code> never appeared — <code>count</code> is still <code>0</code>.`,
+    apply(s) { s.done = true; s.probe = -1; s.count = count; s.matched = [...matched]; s.flash = 'count'; }
+  });
+  return steps;
+}
+
+function render(state) {
+  const stage = document.getElementById('stage');
+  const cells = state.arr.map((v, i) => {
+    let cls = 'cell';
+    if (state.probe === i) cls += state.matched.includes(i) ? ' match' : ' probe';
+    else if (state.matched.includes(i)) cls += ' match';
+    else if (state.i >= 0 && i < state.i) cls += ' discard';
+    if (state.done && !state.matched.includes(i)) cls += ' discard';
+    return `<div class="${cls}"><span class="idx">${i}</span><div class="v">${v}</div></div>`;
+  }).join('');
+  const vars = CompSimu.renderVars([
+    { name: 'i', value: state.i < 0 ? undefined : state.i, flash: state.flash === 'i' },
+    { name: 'target', value: state.target },
+    { name: 'count', value: state.count, flash: state.flash === 'count' },
+  ]);
+  stage.innerHTML = `<div class="array-row">${cells}</div>${vars}`;
+}
+
+const programs = {
+  hits: {
+    file: 'count_occurrences.py', label: 'has matches',
+    ready: 'Count how many times <code>3</code> appears. Watch the <code>count</code> box.',
+    lines: [
+      'count = 0',
+      'for i in range(len(arr)):',
+      '    if arr[i] == target:',
+      '        count = count + 1',
+    ],
+    steps: buildSteps(DATA.hits.arr, DATA.hits.target),
+  },
+  none: {
+    file: 'count_occurrences.py', label: 'no matches',
+    ready: 'Same array, target <code>9</code> — <code>count</code> should stay at 0.',
+    lines: [
+      'count = 0',
+      'for i in range(len(arr)):',
+      '    if arr[i] == target:',
+      '        count = count + 1',
+    ],
+    steps: buildSteps(DATA.none.arr, DATA.none.target),
+  },
+};
+
+CompSimu.createPlayer({
+  programs,
+  initialMode: 'hits',
+  initialState: (mode) => {
+    const d = DATA[mode || 'hits'];
+    return { arr: [...d.arr], target: d.target, i: -1, probe: -1, count: undefined, matched: [], done: false, flash: null };
+  },
+  render,
+});
+
+</script>
+</body>
+</html>

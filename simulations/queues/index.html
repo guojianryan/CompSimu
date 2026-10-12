@@ -98,7 +98,7 @@ q.popleft()       <span class="tok-cm"># → 8</span></pre>
             <div class="code-lines" id="code"></div>
           </div>
           <div class="stage-panel">
-            <div class="stage-head"><span>Queue</span><span id="stageMode">demo</span></div>
+            <div class="stage-head"><span>Queue + variables</span><span id="stageMode">demo</span></div>
             <div class="stage viz-stage" id="stage"></div>
           </div>
         </div>
@@ -168,9 +168,12 @@ q.popleft()       <span class="tok-cm"># → 8</span></pre>
         <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
       </div>
       <div>
-        <h4>Simulations</h4>
+                <h4>Simulations</h4>
         <ul>
           <li><a href="../python-swap/index.html">Swapping two variables</a></li>
+          <li><a href="../array-sum/index.html">Totalling an array</a></li>
+          <li><a href="../count-occurrences/index.html">Counting occurrences</a></li>
+          <li><a href="../max-min/index.html">Finding max &amp; min</a></li>
           <li><a href="../linear-search/index.html">Linear search</a></li>
           <li><a href="../binary-search/index.html">Binary search</a></li>
           <li><a href="../bubble-sort/index.html">Bubble sort</a></li>
@@ -232,8 +235,13 @@ function buildSteps() {
 
 function render(state) {
   const stage = document.getElementById('stage');
+  const vars = CompSimu.renderVars([
+    { name: 'size', value: state.items.length },
+    { name: 'front', value: state.items.length ? state.items[0] : undefined },
+    { name: 'x', value: state.highlight != null ? state.highlight : undefined },
+  ]);
   if (!state.items.length) {
-    stage.innerHTML = '<div class="stage-empty">Queue is empty — press <b>Step</b> to enqueue the first value.</div>';
+    stage.innerHTML = `<div class="stage-empty">Queue is empty — press <b>Step</b> to enqueue the first value.</div>${vars}`;
     return;
   }
   const slots = state.items.map((v, i) => {
@@ -244,7 +252,7 @@ function render(state) {
   stage.innerHTML = `
     <div class="ds-labels"><span>front (out)</span><span>back (in)</span></div>
     <div class="queue-row">${slots}</div>
-    <div class="ds-meta">size: <b>${state.items.length}</b> · front: <b>${state.items[0]}</b> · back: <b>${state.items[state.items.length - 1]}</b></div>`;
+    ${vars}`;
 }
 
 CompSimu.createPlayer({
