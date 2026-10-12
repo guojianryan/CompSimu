@@ -50,25 +50,206 @@
 
   .sim-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
   .sim-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .sim-card { display: flex; flex-direction: column; padding: 0; overflow: hidden; text-decoration: none; transition: border-color .15s, box-shadow .15s, transform .15s; }
-  a.sim-card:hover { border-color: var(--stone); box-shadow: var(--shadow-mockup); transform: translateY(-2px); }
-  .sim-thumb { height: 168px; background: var(--surface); border-bottom: 1px solid var(--hairline); display: grid; place-items: center; position: relative; }
+  .sim-card { display: flex; flex-direction: column; padding: 0; overflow: hidden; text-decoration: none; transition: border-color .2s, box-shadow .2s, transform .2s; }
+  a.sim-card:hover { border-color: var(--stone); box-shadow: var(--shadow-mockup); transform: translateY(-3px); }
+  a.sim-card:hover .sim-thumb .thumb-scene { transform: scale(1.03); }
+  .sim-thumb {
+    height: 176px; border-bottom: 1px solid transparent; display: grid; place-items: center;
+    position: relative; overflow: hidden; isolation: isolate;
+  }
+  .sim-thumb::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .55;
+    background-image: radial-gradient(rgba(255,255,255,.55) 1px, transparent 1px);
+    background-size: 14px 14px;
+  }
+  .sim-thumb .thumb-scene {
+    position: relative; z-index: 1; width: 100%; height: 100%;
+    display: grid; place-items: center; transition: transform .35s cubic-bezier(.2,.8,.2,1);
+  }
   .sim-body { padding: 24px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
   .sim-body p { margin: 0; color: var(--steel); font-size: 14px; }
   .sim-meta { display: flex; gap: 8px; flex-wrap: wrap; }
   .sim-foot { margin-top: auto; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--steel); }
   .sim-card.featured { border: 2px solid var(--brand-green); box-shadow: rgba(0,212,164,.08) 0 8px 24px; }
   .sim-card.soon { background: var(--surface-soft); }
-  .sim-card.soon .sim-thumb { background: repeating-linear-gradient(135deg, var(--surface), var(--surface) 10px, var(--surface-soft) 10px, var(--surface-soft) 20px); }
+  .sim-card.soon .sim-thumb { filter: saturate(.75); }
   .sim-card.soon .h5 { color: var(--slate); }
   .sim-card.suggest { border-style: dashed; align-items: center; justify-content: center; text-align: center; padding: 32px; gap: 12px; }
   .plus { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--hairline); display: grid; place-items: center; font-size: 22px; color: var(--steel); background: var(--canvas); }
-  .thumb-swap { display: flex; gap: 10px; align-items: center; }
-  .thumb-swap .mbox { width: 72px; padding: 6px; } .thumb-swap .mbox .v { font-size: 22px; padding: 2px 0; }
-  .thumb-arrow { font: 500 20px var(--mono); color: var(--steel); }
-  .thumb-bars { display: flex; align-items: flex-end; gap: 8px; height: 72px; }
-  .thumb-bars i { display: block; width: 16px; border-radius: 3px; background: var(--hairline); border: 1px solid #d6d6d6; }
-  .thumb-glyph { font: 500 15px var(--mono); color: var(--muted); letter-spacing: 2px; }
+
+  /* Per-card atmospheric tints (Mintlify dual-mode + Notion tinted cards) */
+  .sim-thumb.t-swap { background: linear-gradient(160deg, #dce8f8 0%, #eef4fb 55%, #f7fafc 100%); }
+  .sim-thumb.t-sum { background: linear-gradient(160deg, #d4f3e8 0%, #eaf8f2 55%, #f5fbf8 100%); }
+  .sim-thumb.t-count { background: linear-gradient(160deg, #d9e8fb 0%, #edf3fb 55%, #f7f9fc 100%); }
+  .sim-thumb.t-maxmin { background: linear-gradient(160deg, #ffe4d6 0%, #fff1ea 55%, #fff8f4 100%); }
+  .sim-thumb.t-linear { background: linear-gradient(160deg, #dce7f5 0%, #eef3fa 55%, #f7f9fc 100%); }
+  .sim-thumb.t-binary { background: linear-gradient(160deg, #d7f0ea 0%, #eaf7f3 50%, #dce8f6 100%); }
+  .sim-thumb.t-bubble { background: linear-gradient(160deg, #e0e7f4 0%, #eef2f9 55%, #f7f9fc 100%); }
+  .sim-thumb.t-select { background: linear-gradient(160deg, #d6f2e6 0%, #ebf8f1 55%, #f5fbf8 100%); }
+  .sim-thumb.t-stack { background: linear-gradient(160deg, #ffe8d4 0%, #fff3e8 55%, #fffaf4 100%); }
+  .sim-thumb.t-queue { background: linear-gradient(160deg, #dcecfa 0%, #eef5fb 55%, #f7fafc 100%); }
+  .sim-thumb.t-ir { background: linear-gradient(160deg, #e7eef7 0%, #dfe7f1 50%, #cfd8e4 100%); }
+  .sim-thumb.t-recur { background: linear-gradient(160deg, #dce8e4 0%, #eaf2ef 55%, #f5f9f7 100%); }
+  .sim-thumb.t-auto { background: linear-gradient(160deg, #e4ece8 0%, #eef4f1 55%, #f6f9f7 100%); }
+  .sim-thumb.t-bool { background: linear-gradient(160deg, #f0e6d8 0%, #f7f0e8 55%, #fbf8f3 100%); }
+
+  .thumb-swap { display: flex; gap: 12px; align-items: center; }
+  .thumb-swap .mbox { width: 68px; padding: 6px; animation: thumb-float 3.2s ease-in-out infinite; }
+  .thumb-swap .mbox.b { animation-delay: .4s; }
+  .thumb-swap .mbox .v { font-size: 20px; padding: 2px 0; }
+  .thumb-arrow {
+    font: 600 18px var(--mono); color: var(--brand-tag);
+    animation: thumb-pulse 2.4s ease-in-out infinite;
+  }
+  .thumb-chip-row { display: flex; gap: 6px; align-items: flex-end; }
+  .thumb-chip {
+    min-width: 28px; height: 34px; padding: 0 7px; border-radius: 8px;
+    background: rgba(255,255,255,.85); border: 1px solid rgba(0,0,0,.08);
+    display: grid; place-items: center; font: 700 13px/1 var(--mono); color: var(--ink);
+    box-shadow: 0 4px 10px rgba(0,0,0,.04);
+  }
+  .thumb-chip.on { background: rgba(0,212,164,.18); border-color: rgba(0,180,138,.45); color: var(--brand-green-deep); transform: translateY(-4px); }
+  .thumb-chip.probe { background: rgba(55,114,207,.16); border-color: rgba(55,114,207,.4); color: var(--brand-tag); box-shadow: 0 0 0 3px rgba(55,114,207,.12); }
+  .thumb-chip.dim { opacity: .38; }
+  .thumb-chip.hit { background: rgba(0,212,164,.22); border-color: var(--brand-green-deep); }
+  .thumb-total {
+    margin-left: 8px; min-width: 54px; padding: 8px 10px; border-radius: 12px; text-align: center;
+    background: #fff; border: 1px solid rgba(0,180,138,.3); box-shadow: var(--shadow-soft);
+  }
+  .thumb-total b { display: block; font: 700 10px/1 var(--sans); letter-spacing: .4px; text-transform: uppercase; color: var(--brand-green-deep); }
+  .thumb-total span { font: 700 20px/1.2 var(--mono); color: var(--ink); }
+  .thumb-count {
+    margin-left: 8px; width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center;
+    background: #fff; border: 1px solid rgba(55,114,207,.28); font: 700 22px/1 var(--mono); color: var(--brand-tag);
+    box-shadow: var(--shadow-soft); animation: thumb-pulse 2.2s ease-in-out infinite;
+  }
+  .thumb-pair { display: flex; gap: 10px; align-items: stretch; }
+  .thumb-stat {
+    width: 70px; padding: 10px 8px; border-radius: 12px; background: #fff; text-align: center;
+    border: 1px solid rgba(0,0,0,.06); box-shadow: var(--shadow-soft);
+  }
+  .thumb-stat b { display: block; font: 700 10px/1 var(--sans); letter-spacing: .4px; text-transform: uppercase; margin-bottom: 6px; }
+  .thumb-stat span { font: 700 22px/1 var(--mono); }
+  .thumb-stat.max { border-color: rgba(245,90,60,.35); } .thumb-stat.max b { color: var(--orange); }
+  .thumb-stat.min { border-color: rgba(55,114,207,.35); } .thumb-stat.min b { color: var(--brand-tag); }
+
+  .thumb-range {
+    display: flex; gap: 5px; align-items: center; padding: 10px 12px; border-radius: 14px;
+    background: rgba(255,255,255,.55); border: 1px solid rgba(55,114,207,.18);
+  }
+  .thumb-range .cell {
+    width: 26px; height: 32px; border-radius: 6px; display: grid; place-items: center;
+    font: 700 11px/1 var(--mono); background: #fff; border: 1px solid rgba(0,0,0,.08); color: var(--ink);
+  }
+  .thumb-range .cell.in { background: rgba(55,114,207,.12); border-color: rgba(55,114,207,.35); color: var(--brand-tag); }
+  .thumb-range .cell.mid {
+    background: rgba(0,212,164,.2); border-color: var(--brand-green-deep); color: var(--brand-green-deep);
+    transform: translateY(-3px); box-shadow: 0 0 0 3px rgba(0,212,164,.15);
+  }
+  .thumb-range .cell.out { opacity: .3; }
+
+  .thumb-bars { display: flex; align-items: flex-end; gap: 7px; height: 78px; padding: 8px 12px 0; }
+  .thumb-bars i {
+    display: block; width: 15px; border-radius: 4px 4px 2px 2px;
+    background: rgba(55,114,207,.35); border: 1px solid rgba(55,114,207,.45);
+    transform-origin: bottom; animation: thumb-bar-rise .8s cubic-bezier(.2,1.1,.3,1) both;
+  }
+  .thumb-bars i:nth-child(1) { animation-delay: .02s; } .thumb-bars i:nth-child(2) { animation-delay: .08s; }
+  .thumb-bars i:nth-child(3) { animation-delay: .14s; } .thumb-bars i:nth-child(4) { animation-delay: .2s; }
+  .thumb-bars i:nth-child(5) { animation-delay: .26s; }
+  .thumb-bars.bubble i.swap { background: rgba(245,90,60,.55); border-color: var(--orange); }
+  .thumb-bars.bubble i.done { background: rgba(0,212,164,.5); border-color: var(--brand-green-deep); }
+  .thumb-bars.select i.min { background: rgba(0,212,164,.55); border-color: var(--brand-green-deep); box-shadow: 0 0 0 3px rgba(0,212,164,.15); }
+  .thumb-bars.select i.sorted { background: rgba(0,180,138,.35); border-color: rgba(0,180,138,.5); }
+
+  .thumb-stack { display: flex; flex-direction: column-reverse; gap: 4px; width: 88px; }
+  .thumb-stack span {
+    display: block; text-align: center; padding: 7px 0; border-radius: 8px;
+    font: 700 13px/1 var(--mono); background: #fff; border: 1px solid rgba(245,90,60,.25); color: var(--ink);
+    box-shadow: 0 3px 8px rgba(0,0,0,.04);
+  }
+  .thumb-stack span.top { background: rgba(245,90,60,.14); border-color: var(--orange); color: var(--orange); transform: translateY(-2px); }
+  .thumb-queue { display: flex; gap: 5px; align-items: center; }
+  .thumb-queue span {
+    width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
+    font: 700 12px/1 var(--mono); background: #fff; border: 1px solid rgba(55,114,207,.22);
+  }
+  .thumb-queue span.front { background: rgba(0,212,164,.16); border-color: var(--brand-green-deep); color: var(--brand-green-deep); }
+  .thumb-queue .arrow { color: var(--brand-tag); font: 700 14px var(--mono); }
+
+  .thumb-ir {
+    width: min(220px, 86%); height: 96px; border-radius: 12px; position: relative; overflow: hidden;
+    background: linear-gradient(180deg, #e8eef6 0%, #d5deea 58%, #c4cdd9 58%, #b8c2cf 100%);
+    border: 1px solid rgba(0,0,0,.06); box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+  }
+  .thumb-ir .person {
+    position: absolute; left: 28%; bottom: 22px; width: 14px; height: 28px; border-radius: 3px;
+    background: #2a2e34; animation: thumb-walk 3.6s ease-in-out infinite;
+  }
+  .thumb-ir .person::before {
+    content: ""; position: absolute; top: -8px; left: 2px; width: 10px; height: 10px; border-radius: 50%; background: #3a3f46;
+  }
+  .thumb-ir .door {
+    position: absolute; right: 14px; bottom: 22px; width: 28px; height: 42px; border: 2px solid #4a5563;
+    border-bottom: 0; border-radius: 4px 4px 0 0; background: rgba(255,255,255,.35);
+  }
+  .thumb-ir .beam {
+    position: absolute; right: 28px; top: 28px; width: 70px; height: 22px;
+    background: linear-gradient(90deg, transparent, rgba(245,90,60,.22));
+    clip-path: polygon(0 50%, 100% 0, 100% 100%);
+    animation: thumb-pulse 2s ease-in-out infinite;
+  }
+  .thumb-ir .chip {
+    position: absolute; right: 10px; top: 8px; font: 700 8px/1 var(--mono); letter-spacing: .3px;
+    color: var(--brand-tag); background: #fff; padding: 3px 5px; border-radius: 4px; border: 1px solid rgba(55,114,207,.2);
+  }
+
+  .thumb-frames { display: flex; flex-direction: column; gap: 5px; width: 120px; }
+  .thumb-frames span {
+    display: block; padding: 6px 10px; border-radius: 8px; font: 600 11px/1 var(--mono);
+    background: rgba(255,255,255,.9); border: 1px solid rgba(0,120,100,.18); color: var(--slate);
+  }
+  .thumb-frames span:nth-child(1) { margin-left: 0; } .thumb-frames span:nth-child(2) { margin-left: 12px; opacity: .85; }
+  .thumb-frames span:nth-child(3) { margin-left: 24px; opacity: .7; }
+
+  .thumb-states { display: flex; gap: 14px; align-items: center; }
+  .thumb-states .st {
+    width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center;
+    font: 700 12px/1 var(--mono); background: #fff; border: 2px solid rgba(0,0,0,.1); color: var(--ink);
+  }
+  .thumb-states .st.accept { border-color: var(--brand-green-deep); background: rgba(0,212,164,.12); color: var(--brand-green-deep); }
+  .thumb-states .wire { width: 22px; height: 2px; background: var(--stone); position: relative; }
+  .thumb-states .wire::after {
+    content: ""; position: absolute; right: -1px; top: -3px;
+    border: 4px solid transparent; border-left-color: var(--stone);
+  }
+
+  .thumb-gates { display: flex; gap: 10px; align-items: center; }
+  .thumb-gate {
+    width: 52px; height: 36px; border-radius: 8px; display: grid; place-items: center;
+    font: 700 11px/1 var(--mono); background: #fff; border: 1px solid rgba(0,0,0,.1); color: var(--ink);
+    box-shadow: var(--shadow-soft);
+  }
+  .thumb-gate.and { border-color: rgba(0,180,138,.4); color: var(--brand-green-deep); }
+  .thumb-gate.or { border-color: rgba(55,114,207,.4); color: var(--brand-tag); }
+  .thumb-gate.not { border-color: rgba(245,90,60,.4); color: var(--orange); }
+
+  @keyframes thumb-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  @keyframes thumb-pulse {
+    0%, 100% { opacity: .75; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.06); }
+  }
+  @keyframes thumb-bar-rise {
+    from { transform: scaleY(.35); opacity: .4; }
+    to { transform: scaleY(1); opacity: 1; }
+  }
+  @keyframes thumb-walk {
+    0%, 100% { left: 22%; }
+    50% { left: 48%; }
+  }
 
   .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .feature { display: flex; flex-direction: column; gap: 12px; }
@@ -169,11 +350,13 @@
 
       <div class="sim-grid" id="simGrid">
         <a class="card sim-card featured" href="simulations/python-swap/index.html" data-cat="python">
-          <div class="sim-thumb">
-            <div class="thumb-swap">
-              <div class="mbox a"><span class="n">a</span><div class="v">10</div></div>
-              <span class="thumb-arrow">⇄</span>
-              <div class="mbox b"><span class="n">b</span><div class="v">5</div></div>
+          <div class="sim-thumb t-swap">
+            <div class="thumb-scene">
+              <div class="thumb-swap">
+                <div class="mbox a"><span class="n">a</span><div class="v">10</div></div>
+                <span class="thumb-arrow">⇄</span>
+                <div class="mbox b"><span class="n">b</span><div class="v">5</div></div>
+              </div>
             </div>
           </div>
           <div class="sim-body">
@@ -185,7 +368,14 @@
         </a>
 
         <a class="card sim-card" href="simulations/array-sum/index.html" data-cat="python">
-          <div class="sim-thumb"><span class="thumb-glyph">total ▸ 0 → 22</span></div>
+          <div class="sim-thumb t-sum">
+            <div class="thumb-scene">
+              <div class="thumb-chip-row">
+                <span class="thumb-chip">3</span><span class="thumb-chip on">8</span><span class="thumb-chip">1</span><span class="thumb-chip">7</span>
+                <div class="thumb-total"><b>total</b><span>11</span></div>
+              </div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Programming</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Totalling an array</h3>
@@ -195,7 +385,14 @@
         </a>
 
         <a class="card sim-card" href="simulations/count-occurrences/index.html" data-cat="python">
-          <div class="sim-thumb"><span class="thumb-glyph">count ▸ 0 → 3</span></div>
+          <div class="sim-thumb t-count">
+            <div class="thumb-scene">
+              <div class="thumb-chip-row">
+                <span class="thumb-chip hit">3</span><span class="thumb-chip">8</span><span class="thumb-chip hit">3</span><span class="thumb-chip">1</span><span class="thumb-chip hit">3</span>
+                <div class="thumb-count">3</div>
+              </div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Programming</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Counting occurrences</h3>
@@ -205,7 +402,14 @@
         </a>
 
         <a class="card sim-card" href="simulations/max-min/index.html" data-cat="python">
-          <div class="sim-thumb"><span class="thumb-glyph">max · min</span></div>
+          <div class="sim-thumb t-maxmin">
+            <div class="thumb-scene">
+              <div class="thumb-pair">
+                <div class="thumb-stat max"><b>max</b><span>9</span></div>
+                <div class="thumb-stat min"><b>min</b><span>2</span></div>
+              </div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Programming</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Finding max &amp; min</h3>
@@ -215,7 +419,13 @@
         </a>
 
         <a class="card sim-card" href="simulations/linear-search/index.html" data-cat="algorithms">
-          <div class="sim-thumb"><span class="thumb-glyph">[ 3 · 8 · 1 · 7 · 4 ]</span></div>
+          <div class="sim-thumb t-linear">
+            <div class="thumb-scene">
+              <div class="thumb-chip-row">
+                <span class="thumb-chip dim">3</span><span class="thumb-chip dim">8</span><span class="thumb-chip dim">1</span><span class="thumb-chip probe">7</span><span class="thumb-chip">4</span>
+              </div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Algorithms</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Linear search</h3>
@@ -225,7 +435,13 @@
         </a>
 
         <a class="card sim-card" href="simulations/binary-search/index.html" data-cat="algorithms">
-          <div class="sim-thumb"><span class="thumb-glyph">[ 2 · 5 · 8 · 13 · 21 ]</span></div>
+          <div class="sim-thumb t-binary">
+            <div class="thumb-scene">
+              <div class="thumb-range">
+                <span class="cell out">2</span><span class="cell out">5</span><span class="cell in">8</span><span class="cell mid">13</span><span class="cell in">21</span><span class="cell out">34</span>
+              </div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Algorithms</span><span class="badge badge-soft">Beginner+</span></div>
             <h3 class="h5">Binary search</h3>
@@ -235,7 +451,11 @@
         </a>
 
         <a class="card sim-card" href="simulations/bubble-sort/index.html" data-cat="algorithms">
-          <div class="sim-thumb"><div class="thumb-bars"><i style="height:50%"></i><i style="height:20%"></i><i style="height:80%"></i><i style="height:10%"></i><i style="height:40%"></i></div></div>
+          <div class="sim-thumb t-bubble">
+            <div class="thumb-scene">
+              <div class="thumb-bars bubble"><i style="height:50%"></i><i class="swap" style="height:70%"></i><i class="swap" style="height:35%"></i><i style="height:55%"></i><i class="done" style="height:90%"></i></div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Algorithms</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Bubble sort</h3>
@@ -245,7 +465,11 @@
         </a>
 
         <a class="card sim-card" href="simulations/selection-sort/index.html" data-cat="algorithms">
-          <div class="sim-thumb"><div class="thumb-bars"><i style="height:50%;background:rgba(0,212,164,.45);border-color:#00b48a"></i><i style="height:20%"></i><i style="height:80%"></i><i style="height:10%"></i><i style="height:40%"></i></div></div>
+          <div class="sim-thumb t-select">
+            <div class="thumb-scene">
+              <div class="thumb-bars select"><i class="sorted" style="height:30%"></i><i class="min" style="height:20%"></i><i style="height:80%"></i><i style="height:45%"></i><i style="height:60%"></i></div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Algorithms</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Selection sort</h3>
@@ -255,7 +479,11 @@
         </a>
 
         <a class="card sim-card" href="simulations/stacks/index.html" data-cat="data">
-          <div class="sim-thumb"><span class="thumb-glyph">push ▸ [ 3 · 8 · 1 ]</span></div>
+          <div class="sim-thumb t-stack">
+            <div class="thumb-scene">
+              <div class="thumb-stack"><span>3</span><span>8</span><span class="top">1</span></div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Data structures</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Stacks</h3>
@@ -265,7 +493,11 @@
         </a>
 
         <a class="card sim-card" href="simulations/queues/index.html" data-cat="data">
-          <div class="sim-thumb"><span class="thumb-glyph">front → [ 3 · 8 · 1 ]</span></div>
+          <div class="sim-thumb t-queue">
+            <div class="thumb-scene">
+              <div class="thumb-queue"><span class="front">3</span><span>8</span><span>1</span><span class="arrow">→</span></div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Data structures</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Queues</h3>
@@ -275,7 +507,11 @@
         </a>
 
         <div class="card sim-card soon" data-cat="python">
-          <div class="sim-thumb"><span class="thumb-glyph">f(3) → f(2) → f(1)</span></div>
+          <div class="sim-thumb t-recur">
+            <div class="thumb-scene">
+              <div class="thumb-frames"><span>f(3)</span><span>f(2)</span><span>f(1)</span></div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-soft">Coming soon</span><span class="badge badge-soft">Programming</span></div>
             <h3 class="h5">Recursion &amp; the call stack</h3>
@@ -284,7 +520,11 @@
         </div>
 
         <a class="card sim-card" href="simulations/ir-door-sensor/index.html" data-cat="theory">
-          <div class="sim-thumb"><span class="thumb-glyph">IR ▸ MCU ▸ door</span></div>
+          <div class="sim-thumb t-ir">
+            <div class="thumb-scene">
+              <div class="thumb-ir"><div class="chip">MCU</div><div class="beam"></div><div class="person"></div><div class="door"></div></div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Theory</span><span class="badge badge-soft">Beginner</span></div>
             <h3 class="h5">Infrared door sensor</h3>
@@ -294,7 +534,11 @@
         </a>
 
         <div class="card sim-card soon" data-cat="theory">
-          <div class="sim-thumb"><span class="thumb-glyph">δ(q, a) → q′</span></div>
+          <div class="sim-thumb t-auto">
+            <div class="thumb-scene">
+              <div class="thumb-states"><div class="st">q0</div><div class="wire"></div><div class="st accept">q1</div></div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-soft">Coming soon</span><span class="badge badge-soft">Theory</span></div>
             <h3 class="h5">Finite automata</h3>
@@ -303,7 +547,11 @@
         </div>
 
         <div class="card sim-card soon" data-cat="theory">
-          <div class="sim-thumb"><span class="thumb-glyph">A ∧ B → C</span></div>
+          <div class="sim-thumb t-bool">
+            <div class="thumb-scene">
+              <div class="thumb-gates"><div class="thumb-gate and">AND</div><div class="thumb-gate or">OR</div><div class="thumb-gate not">NOT</div></div>
+            </div>
+          </div>
           <div class="sim-body">
             <div class="sim-meta"><span class="badge badge-soft">Coming soon</span><span class="badge badge-soft">Theory</span></div>
             <h3 class="h5">Boolean logic</h3>
