@@ -23,6 +23,8 @@ simulations/bubble-sort/index.html      Bubble sort
 simulations/selection-sort/index.html   Selection sort
 simulations/stacks/index.html           Stacks (LIFO)
 simulations/queues/index.html           Queues (FIFO)
+simulations/ir-door-sensor/index.html   Infrared door sensor (sense → decide → act)
+simulations/fetch-execute-cycle/index.html Fetch–execute cycle (CPU registers + RAM)
 ```
 
 Every interactive stage shows **labeled variable boxes** so students can see how `i`, accumulators, pointers, and results change step by step.
