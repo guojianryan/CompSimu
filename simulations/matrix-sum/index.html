@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Totalling a 2D array — CompSimu</title>
+<meta name="description" content="Add up values in a whole 2D array, one row, or one column with nested loops." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Totalling a 2D array</span>
+    </nav>
+    <h1 class="h1">Totalling a 2D array</h1>
+    <p class="subtitle" style="max-width:720px">Keep a running <code>total</code> while you visit cells — across the whole grid, one row, or one column.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Programming</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">2D arrays · Accumulators</span>
+      <span class="badge badge-soft">~6 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Same accumulator, new shape</h2>
+        <p>Just like a 1D sum: start at <code>0</code>, then add each visited value. The only change is <em>which</em> cells you visit — all, one row, or one column.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Watch the <code>total</code> box jump after every add — that is the accumulator updating.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Accumulate</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>matrix_sum.py</span><span>Python</span></div>
+<pre>total = <span class="tok-num">0</span>
+<span class="tok-op">for</span> r <span class="tok-op">in</span> range(rows):
+    <span class="tok-op">for</span> c <span class="tok-op">in</span> range(cols):
+        total = total + grid[r][c]</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">Blue cell is being added. Green cells already contributed to <code>total</code>.</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="all" role="tab">Entire matrix</button>
+            <button class="pill-tab" data-mode="row" role="tab">One row</button>
+            <button class="pill-tab" data-mode="col" role="tab">One column</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">demo.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Matrix + variables</span><span id="stageMode">demo</span></div>
+            <div class="stage viz-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">2D totalling essentials</h2>
+        <p class="subtitle">Init → visit → add → result.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">Init</span>
+          <h3 class="h5">Start total at 0</h3>
+          <p class="muted" style="margin:0;font-size:14px">Works for whole matrix, row, or column — same starting point.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">Visit</span>
+          <h3 class="h5">Choose the region</h3>
+          <p class="muted" style="margin:0;font-size:14px">Nested loops for all cells; one loop when a row or column is fixed.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-soft" style="align-self:flex-start">Add</span>
+          <h3 class="h5">total = total + value</h3>
+          <p class="muted" style="margin:0;font-size:14px">Each visit grows the accumulator by the current cell.</p>
+        </div>
+      </div>
+      <div class="card-feature next-card" style="margin-top:40px">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Counting in a 2D array</h3>
+          <p class="muted" style="margin:6px 0 0">Same visit patterns — count matches instead of summing.</p>
+        </div>
+        <a class="btn btn-primary" href="../matrix-count/index.html">Open matrix count</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+const GRID = [[3, 8, 2],[5, 1, 7],[4, 9, 6]];
+const ROWS = GRID.length, COLS = GRID[0].length;
+const FOCUS_ROW = 1, FOCUS_COL = 2;
+
+function cellsFor(mode) {
+  if (mode === 'row') return GRID[FOCUS_ROW].map((v, c) => ({ r: FOCUS_ROW, c, v }));
+  if (mode === 'col') return GRID.map((row, r) => ({ r, c: FOCUS_COL, v: row[FOCUS_COL] }));
+  const out = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) out.push({ r, c, v: GRID[r][c] });
+  return out;
+}
+
+function buildSteps(mode) {
+  const cells = cellsFor(mode);
+  const steps = [];
+  let total = 0;
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: mode === 'all'
+      ? 'Create <code>total = 0</code>. Nested loops will add every cell.'
+      : mode === 'row'
+        ? `Create <code>total = 0</code>. Sum only row <code>${FOCUS_ROW}</code>.`
+        : `Create <code>total = 0</code>. Sum only column <code>${FOCUS_COL}</code>.`,
+    apply(s) {
+      s.total = 0; s.r = mode === 'row' ? FOCUS_ROW : -1; s.c = mode === 'col' ? FOCUS_COL : -1;
+      s.probeR = -1; s.probeC = -1; s.visited = []; s.done = false; s.flash = 'total';
+    }
+  });
+  cells.forEach((cell, i) => {
+    const { r, c, v } = cell;
+    const prev = total;
+    total += v;
+    const next = total;
+    const visitedBefore = cells.slice(0, i).map((x) => `${x.r},${x.c}`);
+    const visitedNow = cells.slice(0, i + 1).map((x) => `${x.r},${x.c}`);
+    const lineProbe = mode === 'all' ? 2 : 2;
+    const lineAdd = mode === 'all' ? 3 : 3;
+    steps.push({
+      line: lineProbe,
+      text: `At <code>grid[${r}][${c}] = ${v}</code>. Current total is <code>${prev}</code>.`,
+      apply(s) {
+        s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.total = prev;
+        s.visited = visitedBefore.slice(); s.flash = mode === 'col' ? 'r' : 'c';
+      }
+    });
+    steps.push({
+      line: lineAdd,
+      text: `Add it: <code>total = ${prev} + ${v} = ${next}</code>.`,
+      apply(s) {
+        s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.total = next;
+        s.visited = visitedNow.slice(); s.flash = 'total';
+      }
+    });
+  });
+  const finalTotal = total;
+  steps.push({
+    line: mode === 'all' ? 3 : 3, kind: 'good', badge: 'Done',
+    text: `Finished. The sum is <code>${finalTotal}</code>.`,
+    apply(s) {
+      s.done = true; s.total = finalTotal; s.probeR = -1; s.probeC = -1;
+      s.visited = cells.map((x) => `${x.r},${x.c}`); s.flash = 'total';
+    }
+  });
+  return steps;
+}
+
+function renderMatrix(state, mode) {
+  const headers = [`<div class="matrix-corner"></div>`]
+    .concat(Array.from({ length: COLS }, (_, c) =>
+      `<div class="matrix-colh${state.c === c || (mode === 'col' && FOCUS_COL === c) ? ' active' : ''}">${c}</div>`)).join('');
+  let body = '';
+  for (let r = 0; r < ROWS; r++) {
+    body += `<div class="matrix-rowh${state.r === r || (mode === 'row' && FOCUS_ROW === r) ? ' active' : ''}">${r}</div>`;
+    for (let c = 0; c < COLS; c++) {
+      const key = `${r},${c}`;
+      let cls = 'cell';
+      const inFocus = mode === 'all' || (mode === 'row' && r === FOCUS_ROW) || (mode === 'col' && c === FOCUS_COL);
+      if (!inFocus) cls += ' discard';
+      else if (state.probeR === r && state.probeC === c) cls += ' probe';
+      else if (state.visited.includes(key)) cls += ' visited';
+      else if (mode === 'row' && r === FOCUS_ROW) cls += ' row-band';
+      else if (mode === 'col' && c === FOCUS_COL) cls += ' col-band';
+      body += `<div class="${cls}"><span class="idx">${r},${c}</span><div class="v">${GRID[r][c]}</div></div>`;
+    }
+  }
+  const caption = mode === 'all' ? 'Summing entire matrix' : mode === 'row' ? `Summing row <strong>${FOCUS_ROW}</strong>` : `Summing column <strong>${FOCUS_COL}</strong>`;
+  return `<div class="matrix-wrap"><div class="matrix-caption">${caption}</div><div class="matrix-grid" style="--cols:${COLS}">${headers}${body}</div></div>`;
+}
+
+function render(state, ctx) {
+  const mode = ctx.mode;
+  const vars = CompSimu.renderVars([
+    { name: 'r', value: state.r < 0 ? undefined : state.r, flash: state.flash === 'r' },
+    { name: 'c', value: state.c < 0 ? undefined : state.c, flash: state.flash === 'c' },
+    { name: 'total', value: state.total, flash: state.flash === 'total' },
+  ]);
+  document.getElementById('stage').innerHTML = renderMatrix(state, mode) + vars;
+}
+
+const programs = {
+  all: {
+    file: 'matrix_sum.py', label: 'entire matrix',
+    ready: 'Sum every cell. Watch <code>total</code> grow.',
+    lines: [
+      'total = 0',
+      'for r in range(len(grid)):',
+      '    for c in range(len(grid[0])):',
+      '        total = total + grid[r][c]',
+    ],
+    steps: buildSteps('all'),
+  },
+  row: {
+    file: 'matrix_sum_row.py', label: 'one row',
+    ready: `Sum row <code>${FOCUS_ROW}</code> only.`,
+    lines: [
+      'total = 0',
+      `r = ${FOCUS_ROW}`,
+      'for c in range(len(grid[r])):',
+      '    total = total + grid[r][c]',
+    ],
+    steps: buildSteps('row'),
+  },
+  col: {
+    file: 'matrix_sum_col.py', label: 'one column',
+    ready: `Sum column <code>${FOCUS_COL}</code> only.`,
+    lines: [
+      'total = 0',
+      `c = ${FOCUS_COL}`,
+      'for r in range(len(grid)):',
+      '    total = total + grid[r][c]',
+    ],
+    steps: buildSteps('col'),
+  },
+};
+
+CompSimu.createPlayer({
+  programs,
+  initialMode: 'all',
+  initialState: () => ({
+    r: -1, c: -1, probeR: -1, probeC: -1, total: undefined, visited: [], done: false, flash: null,
+  }),
+  render,
+});
+</script>
+</body>
+</html>

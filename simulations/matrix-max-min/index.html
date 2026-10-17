@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Max & min in a 2D array — CompSimu</title>
+<meta name="description" content="Find the largest and smallest values in a whole 2D array, one row, or one column." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Max &amp; min in a 2D array</span>
+    </nav>
+    <h1 class="h1">Max &amp; min in a 2D array</h1>
+    <p class="subtitle" style="max-width:720px">Seed from the first cell you visit, then update <code>max_val</code> and <code>min_val</code> as you scan the region.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Programming</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">2D arrays · Comparisons</span>
+      <span class="badge badge-soft">~7 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Track the extremes</h2>
+        <p>Start both max and min from the first visited cell. For every later cell, ask: bigger than max? smaller than min?</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Green highlight marks the current max; mint marks the current min.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Seed then scan</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>matrix_max_min.py</span><span>Python</span></div>
+<pre>max_val = grid[<span class="tok-num">0</span>][<span class="tok-num">0</span>]
+min_val = grid[<span class="tok-num">0</span>][<span class="tok-num">0</span>]
+<span class="tok-op">for</span> r <span class="tok-op">in</span> range(rows):
+    <span class="tok-op">for</span> c <span class="tok-op">in</span> range(cols):
+        <span class="tok-op">if</span> grid[r][c] &gt; max_val: max_val = grid[r][c]
+        <span class="tok-op">if</span> grid[r][c] &lt; min_val: min_val = grid[r][c]</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">Compare each cell against the running max and min.</p>
+      </div>
+<div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="all" role="tab">Entire matrix</button>
+            <button class="pill-tab" data-mode="row" role="tab">One row</button>
+            <button class="pill-tab" data-mode="col" role="tab">One column</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">demo.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Matrix + variables</span><span id="stageMode">demo</span></div>
+            <div class="stage viz-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">2D max &amp; min essentials</h2>
+        <p class="subtitle">Seed, compare, update.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">Seed</span>
+          <h3 class="h5">First cell sets both</h3>
+          <p class="muted" style="margin:0;font-size:14px">For a row or column, seed from the first cell in that region.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">Compare</span>
+          <h3 class="h5">Two questions per cell</h3>
+          <p class="muted" style="margin:0;font-size:14px">Greater than max? Less than min? Update only when true.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-soft" style="align-self:flex-start">Region</span>
+          <h3 class="h5">Scope the scan</h3>
+          <p class="muted" style="margin:0;font-size:14px">Whole matrix, one row, or one column — same comparisons.</p>
+        </div>
+      </div>
+      <div class="card-feature next-card" style="margin-top:40px">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Printing a 2D array</h3>
+          <p class="muted" style="margin:6px 0 0">Go back to the visit patterns that power all of these ops.</p>
+        </div>
+        <a class="btn btn-primary" href="../matrix-print/index.html">Open matrix print</a>
+      </div>
+    </div>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+const GRID = [[3, 8, 2],[5, 1, 7],[4, 9, 6]];
+const ROWS = GRID.length, COLS = GRID[0].length;
+const FOCUS_ROW = 1, FOCUS_COL = 2;
+
+function cellsFor(mode) {
+  if (mode === 'row') return GRID[FOCUS_ROW].map((v, c) => ({ r: FOCUS_ROW, c, v }));
+  if (mode === 'col') return GRID.map((row, r) => ({ r, c: FOCUS_COL, v: row[FOCUS_COL] }));
+  const out = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) out.push({ r, c, v: GRID[r][c] });
+  return out;
+}
+
+function buildSteps(mode) {
+  const cells = cellsFor(mode);
+  const steps = [];
+  const first = cells[0];
+  let maxVal = first.v;
+  let minVal = first.v;
+  // all: seed 0,1 · for r 2 · for c 3 · cmp/set 4-7
+  // row/col: seed 0,1 · for 2 · cmp/set 3-6
+  const L = mode === 'all'
+    ? { seedMax: 0, seedMin: 1, probe: 3, cmpMax: 4, setMax: 5, cmpMin: 6, setMin: 7, done: 7 }
+    : { seedMax: 0, seedMin: 1, probe: 2, cmpMax: 3, setMax: 4, cmpMin: 5, setMin: 6, done: 6 };
+  steps.push({
+    line: L.seedMax, badge: 'Setup',
+    text: `Seed <code>max_val = grid[${first.r}][${first.c}] = ${first.v}</code>.`,
+    apply(s) {
+      s.max = first.v; s.min = undefined; s.r = first.r; s.c = first.c;
+      s.probeR = first.r; s.probeC = first.c; s.visited = [`${first.r},${first.c}`];
+      s.done = false; s.flash = 'max_val';
+    }
+  });
+  steps.push({
+    line: L.seedMin,
+    text: `Seed <code>min_val = ${first.v}</code> from the same first cell.`,
+    apply(s) {
+      s.max = first.v; s.min = first.v; s.r = first.r; s.c = first.c;
+      s.probeR = first.r; s.probeC = first.c; s.visited = [`${first.r},${first.c}`];
+      s.flash = 'min_val';
+    }
+  });
+  for (let i = 1; i < cells.length; i++) {
+    const { r, c, v } = cells[i];
+    const maxBefore = maxVal;
+    const minBefore = minVal;
+    const visitedNow = cells.slice(0, i + 1).map((x) => `${x.r},${x.c}`);
+    steps.push({
+      line: L.probe,
+      text: `Visit <code>grid[${r}][${c}] = ${v}</code>.`,
+      apply(s) {
+        s.r = r; s.c = c; s.probeR = r; s.probeC = c;
+        s.max = maxBefore; s.min = minBefore; s.visited = visitedNow.slice(); s.flash = 'c';
+      }
+    });
+    steps.push({
+      line: L.cmpMax,
+      text: `Is <code>${v} &gt; max_val (${maxBefore})</code>? ${v > maxBefore ? 'Yes.' : 'No.'}`,
+      apply(s) { s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxBefore; s.min = minBefore; s.visited = visitedNow.slice(); s.flash = null; }
+    });
+    if (v > maxBefore) {
+      maxVal = v;
+      const nextMax = maxVal;
+      steps.push({
+        line: L.setMax, kind: 'good',
+        text: `New maximum! <code>max_val = ${nextMax}</code>.`,
+        apply(s) { s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = nextMax; s.min = minBefore; s.visited = visitedNow.slice(); s.flash = 'max_val'; }
+      });
+    }
+    steps.push({
+      line: L.cmpMin,
+      text: `Is <code>${v} &lt; min_val (${minBefore})</code>? ${v < minBefore ? 'Yes.' : 'No.'}`,
+      apply(s) { s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxVal; s.min = minBefore; s.visited = visitedNow.slice(); s.flash = null; }
+    });
+    if (v < minBefore) {
+      minVal = v;
+      const nextMin = minVal;
+      steps.push({
+        line: L.setMin, kind: 'good',
+        text: `New minimum! <code>min_val = ${nextMin}</code>.`,
+        apply(s) { s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxVal; s.min = nextMin; s.visited = visitedNow.slice(); s.flash = 'min_val'; }
+      });
+    }
+  }
+  const finalMax = maxVal, finalMin = minVal;
+  steps.push({
+    line: L.done, kind: 'good', badge: 'Done',
+    text: `Scan complete. Max is <code>${finalMax}</code>, min is <code>${finalMin}</code>.`,
+    apply(s) {
+      s.done = true; s.max = finalMax; s.min = finalMin; s.probeR = -1; s.probeC = -1;
+      s.visited = cells.map((x) => `${x.r},${x.c}`); s.flash = null;
+    }
+  });
+  return steps;
+}
+
+function renderMatrix(state, mode) {
+  const headers = [`<div class="matrix-corner"></div>`]
+    .concat(Array.from({ length: COLS }, (_, c) =>
+      `<div class="matrix-colh${state.c === c || (mode === 'col' && FOCUS_COL === c) ? ' active' : ''}">${c}</div>`)).join('');
+  let body = '';
+  for (let r = 0; r < ROWS; r++) {
+    body += `<div class="matrix-rowh${state.r === r || (mode === 'row' && FOCUS_ROW === r) ? ' active' : ''}">${r}</div>`;
+    for (let c = 0; c < COLS; c++) {
+      const key = `${r},${c}`;
+      const v = GRID[r][c];
+      let cls = 'cell';
+      const inFocus = mode === 'all' || (mode === 'row' && r === FOCUS_ROW) || (mode === 'col' && c === FOCUS_COL);
+      const seen = state.visited.includes(key);
+      if (!inFocus) cls += ' discard';
+      else {
+        if (state.probeR === r && state.probeC === c) cls += ' probe';
+        else if (seen) cls += ' visited';
+        else if (mode === 'row') cls += ' row-band';
+        else if (mode === 'col') cls += ' col-band';
+        if (seen && state.max !== undefined && v === state.max) cls += ' match';
+        if (seen && state.min !== undefined && v === state.min) cls += ' min';
+      }
+      body += `<div class="${cls}"><span class="idx">${r},${c}</span><div class="v">${v}</div></div>`;
+    }
+  }
+  const caption = mode === 'all' ? 'Scanning entire matrix' : mode === 'row' ? `Scanning row <strong>${FOCUS_ROW}</strong>` : `Scanning column <strong>${FOCUS_COL}</strong>`;
+  return `<div class="matrix-wrap"><div class="matrix-caption">${caption}</div><div class="matrix-grid" style="--cols:${COLS}">${headers}${body}</div></div>`;
+}
+
+function render(state, ctx) {
+  const mode = ctx.mode;
+  const vars = CompSimu.renderVars([
+    { name: 'r', value: state.r < 0 ? undefined : state.r, flash: state.flash === 'r' },
+    { name: 'c', value: state.c < 0 ? undefined : state.c, flash: state.flash === 'c' },
+    { name: 'max_val', value: state.max, flash: state.flash === 'max_val' },
+    { name: 'min_val', value: state.min, flash: state.flash === 'min_val' },
+  ]);
+  document.getElementById('stage').innerHTML = renderMatrix(state, mode) + vars;
+}
+
+const programs = {
+  all: {
+    file: 'matrix_max_min.py', label: 'entire matrix',
+    ready: 'Seed from <code>grid[0][0]</code>, then scan the remaining cells in row-major order.',
+    lines: [
+      'max_val = grid[0][0]',
+      'min_val = grid[0][0]',
+      'for r in range(len(grid)):',
+      '    for c in range(len(grid[0])):',
+      '        if grid[r][c] > max_val:',
+      '            max_val = grid[r][c]',
+      '        if grid[r][c] < min_val:',
+      '            min_val = grid[r][c]',
+    ],
+    steps: buildSteps('all'),
+  },
+  row: {
+    file: 'matrix_max_min_row.py', label: 'one row',
+    ready: `Seed from the first cell of row <code>${FOCUS_ROW}</code>, then scan the rest of that row.`,
+    lines: [
+      `max_val = grid[${FOCUS_ROW}][0]`,
+      `min_val = grid[${FOCUS_ROW}][0]`,
+      `for c in range(1, len(grid[${FOCUS_ROW}])):`,
+      `    if grid[${FOCUS_ROW}][c] > max_val:`,
+      `        max_val = grid[${FOCUS_ROW}][c]`,
+      `    if grid[${FOCUS_ROW}][c] < min_val:`,
+      `        min_val = grid[${FOCUS_ROW}][c]`,
+    ],
+    steps: buildSteps('row'),
+  },
+  col: {
+    file: 'matrix_max_min_col.py', label: 'one column',
+    ready: `Seed from the first cell of column <code>${FOCUS_COL}</code>, then scan the rest of that column.`,
+    lines: [
+      `max_val = grid[0][${FOCUS_COL}]`,
+      `min_val = grid[0][${FOCUS_COL}]`,
+      'for r in range(1, len(grid)):',
+      `    if grid[r][${FOCUS_COL}] > max_val:`,
+      `        max_val = grid[r][${FOCUS_COL}]`,
+      `    if grid[r][${FOCUS_COL}] < min_val:`,
+      `        min_val = grid[r][${FOCUS_COL}]`,
+    ],
+    steps: buildSteps('col'),
+  },
+};
+
+CompSimu.createPlayer({
+  programs,
+  initialMode: 'all',
+  initialState: () => ({
+    r: -1, c: -1, probeR: -1, probeC: -1, max: undefined, min: undefined, visited: [], done: false, flash: null,
+  }),
+  render,
+});
+</script>
+</body>
+</html>
