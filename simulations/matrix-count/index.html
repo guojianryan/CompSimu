@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Counting in a 2D array — CompSimu</title>
-<meta name="description" content="Count how many times a target appears in a whole 2D array, one row, or one column." />
+<meta name="description" content="Count a target in a whole 2D array, or produce a count for every row and every column." />
 <link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="../../assets/css/site.css" />
 <link rel="stylesheet" href="../../assets/css/simulation.css" />
@@ -35,12 +35,12 @@
       <span style="color:var(--ink)">Counting in a 2D array</span>
     </nav>
     <h1 class="h1">Counting in a 2D array</h1>
-    <p class="subtitle" style="max-width:720px">Scan the grid for a target value. Count matches in the whole matrix, a single row, or a single column.</p>
+    <p class="subtitle" style="max-width:720px">Count a target across the whole grid, or build a list of counts — one per row, or one per column.</p>
     <div class="meta">
       <span class="badge badge-tag">Programming</span>
       <span class="badge badge-soft">Beginner</span>
       <span class="badge badge-soft">2D arrays · Counters</span>
-      <span class="badge badge-soft">~6 min</span>
+      <span class="badge badge-soft">~7 min</span>
     </div>
   </div>
 </header>
@@ -50,21 +50,23 @@
     <div class="container intro-grid">
       <div class="prose">
         <span class="eyebrow">The idea</span>
-        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Compare, then maybe add one</h2>
-        <p>Start <code>count</code> at 0. Visit each cell in the chosen region. If <code>grid[r][c] == target</code>, add 1.</p>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">One count — or a count for each line</h2>
+        <p>A single <code>count</code> can scan the whole matrix. To get every row count (or every column count), reset the counter for each line and append the result to a list.</p>
         <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Green cells are matches. Blue is the cell being checked right now.</span></div>
       </div>
       <div class="card" style="display:flex;flex-direction:column;gap:14px">
         <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Count matches</span></div>
         <div class="code-block">
-          <div class="code-block-header"><span>matrix_count.py</span><span>Python</span></div>
-<pre>count = <span class="tok-num">0</span>
+          <div class="code-block-header"><span>row_counts.py</span><span>Python</span></div>
+<pre>row_counts = []
 <span class="tok-op">for</span> r <span class="tok-op">in</span> range(rows):
+    count = <span class="tok-num">0</span>
     <span class="tok-op">for</span> c <span class="tok-op">in</span> range(cols):
         <span class="tok-op">if</span> grid[r][c] == target:
-            count = count + <span class="tok-num">1</span></pre>
+            count = count + <span class="tok-num">1</span>
+    row_counts.append(count)</pre>
         </div>
-        <p class="muted" style="margin:0;font-size:14px">Target: <code>2</code> appears three times in the demo grid.</p>
+        <p class="muted" style="margin:0;font-size:14px">Target: <code>2</code> · Demo grid has four matches overall.</p>
       </div>
     </div>
   </section>
@@ -74,14 +76,15 @@
       <div class="section-head" style="margin-bottom:24px">
         <span class="eyebrow">Interactive</span>
         <h2 class="h2">Run the simulation</h2>
-        <p class="subtitle">Watch <code>count</code> rise only on matches.</p>
+        <p class="subtitle">Watch <code>count</code> rise only on matches. The tray holds finished row or column counts.</p>
       </div>
-<div class="sim-shell">
+
+      <div class="sim-shell">
         <div class="sim-toolbar">
           <div class="pill-tabs" role="tablist">
             <button class="pill-tab active" data-mode="all" role="tab">Entire matrix</button>
-            <button class="pill-tab" data-mode="row" role="tab">One row</button>
-            <button class="pill-tab" data-mode="col" role="tab">One column</button>
+            <button class="pill-tab" data-mode="row" role="tab">Each row</button>
+            <button class="pill-tab" data-mode="col" role="tab">Each column</button>
           </div>
           <div class="progress-wrap">
             <span id="stepLabel">Step 0 / 0</span>
@@ -125,23 +128,23 @@
       <div class="section-head">
         <span class="eyebrow">Remember</span>
         <h2 class="h2">2D counting essentials</h2>
-        <p class="subtitle">Visit, compare, maybe increment.</p>
+        <p class="subtitle">Whole grid vs a list of line counts.</p>
       </div>
       <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
-          <span class="badge badge-tag" style="align-self:flex-start">Target</span>
-          <h3 class="h5">Know what you seek</h3>
-          <p class="muted" style="margin:0;font-size:14px"><code>target</code> stays fixed while the loops move.</p>
+          <span class="badge badge-tag" style="align-self:flex-start">All</span>
+          <h3 class="h5">One running count</h3>
+          <p class="muted" style="margin:0;font-size:14px">Nested loops visit every cell; a single <code>count</code> holds the total matches.</p>
         </div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
-          <span class="badge badge-ok" style="align-self:flex-start">If</span>
-          <h3 class="h5">Only matches count</h3>
-          <p class="muted" style="margin:0;font-size:14px">Non-matches leave <code>count</code> unchanged.</p>
+          <span class="badge badge-ok" style="align-self:flex-start">Rows</span>
+          <h3 class="h5">Reset per row, then append</h3>
+          <p class="muted" style="margin:0;font-size:14px"><code>row_counts</code> ends up with one entry for each row.</p>
         </div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
-          <span class="badge badge-soft" style="align-self:flex-start">Region</span>
-          <h3 class="h5">All, row, or column</h3>
-          <p class="muted" style="margin:0;font-size:14px">Same if-statement; different cells visited.</p>
+          <span class="badge badge-soft" style="align-self:flex-start">Columns</span>
+          <h3 class="h5">Same idea, swap axes</h3>
+          <p class="muted" style="margin:0;font-size:14px">Outer loop over columns; <code>col_counts</code> stores each column count.</p>
         </div>
       </div>
       <div class="card-feature next-card" style="margin-top:40px">
@@ -155,6 +158,7 @@
     </div>
   </section>
 </main>
+
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
@@ -184,24 +188,24 @@
   </div>
 </footer>
 
-
 <script src="../../assets/js/sim-player.js"></script>
 <script>
-const GRID = [[3, 8, 2],[5, 2, 7],[2, 4, 9]];
+const GRID = [[2, 8, 2],[5, 2, 7],[2, 4, 9]];
 const TARGET = 2;
 const ROWS = GRID.length, COLS = GRID[0].length;
-const FOCUS_ROW = 0, FOCUS_COL = 0;
 
-function cellsFor(mode) {
-  if (mode === 'row') return GRID[FOCUS_ROW].map((v, c) => ({ r: FOCUS_ROW, c, v }));
-  if (mode === 'col') return GRID.map((row, r) => ({ r, c: FOCUS_COL, v: row[FOCUS_COL] }));
+function visitedUpToRow(rowExclusive) {
   const out = [];
-  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) out.push({ r, c, v: GRID[r][c] });
+  for (let r = 0; r < rowExclusive; r++) for (let c = 0; c < COLS; c++) out.push(`${r},${c}`);
+  return out;
+}
+function visitedUpToCol(colExclusive) {
+  const out = [];
+  for (let c = 0; c < colExclusive; c++) for (let r = 0; r < ROWS; r++) out.push(`${r},${c}`);
   return out;
 }
 
-function buildSteps(mode) {
-  const cells = cellsFor(mode);
+function buildStepsAll() {
   const steps = [];
   let count = 0;
   const matched = [];
@@ -209,71 +213,299 @@ function buildSteps(mode) {
     line: 0, badge: 'Setup',
     text: `Create <code>count = 0</code>. Target is <code>${TARGET}</code>.`,
     apply(s) {
-      s.count = 0; s.r = mode === 'row' ? FOCUS_ROW : -1; s.c = mode === 'col' ? FOCUS_COL : -1;
-      s.probeR = -1; s.probeC = -1; s.matched = []; s.visited = []; s.done = false; s.flash = 'count'; s.bump = null;
+      s.count = 0; s.r = -1; s.c = -1; s.probeR = -1; s.probeC = -1;
+      s.matched = []; s.visited = []; s.counts = []; s.activeBand = -1;
+      s.done = false; s.flash = 'count'; s.bump = null;
     }
   });
-  cells.forEach((cell, i) => {
-    const { r, c, v } = cell;
-    const hit = v === TARGET;
-    const countBefore = count;
-    const visitedNow = cells.slice(0, i + 1).map((x) => `${x.r},${x.c}`);
-    const matchedBefore = matched.slice();
-    steps.push({
-      line: mode === 'all' ? 2 : 2,
-      text: `Check <code>grid[${r}][${c}] = ${v}</code> against target <code>${TARGET}</code>.`,
-      apply(s) {
-        s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = countBefore;
-        s.visited = visitedNow.slice(); s.matched = matchedBefore.slice();
-        s.flash = 'c'; s.bump = null;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const v = GRID[r][c];
+      const hit = v === TARGET;
+      const countBefore = count;
+      const matchedBefore = matched.slice();
+      const visitedNow = [];
+      for (let rr = 0; rr < ROWS; rr++) for (let cc = 0; cc < COLS; cc++) {
+        if (rr < r || (rr === r && cc <= c)) visitedNow.push(`${rr},${cc}`);
       }
-    });
-    if (hit) {
-      count += 1;
-      matched.push(`${r},${c}`);
-      const next = count;
-      const matchedNow = matched.slice();
       steps.push({
-        line: mode === 'all' ? 3 : 3, kind: 'good',
-        text: `Match! <code>count = ${countBefore} + 1 = ${next}</code>.`,
-        apply(s) {
-          s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = next;
-          s.visited = visitedNow.slice(); s.matched = matchedNow.slice();
-          s.flash = 'count'; s.bump = '+1';
-        }
-      });
-      steps.push({
-        line: mode === 'all' ? 4 : 4, kind: 'good',
-        text: `<code>count</code> is now <code>${next}</code>. Keep scanning.`,
-        apply(s) {
-          s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = next;
-          s.visited = visitedNow.slice(); s.matched = matchedNow.slice();
-          s.flash = 'count'; s.bump = null;
-        }
-      });
-    } else {
-      steps.push({
-        line: mode === 'all' ? 3 : 3,
-        text: `Not equal — <code>count</code> stays <code>${countBefore}</code>.`,
+        line: 2,
+        text: `Check <code>grid[${r}][${c}] = ${v}</code> against target <code>${TARGET}</code>.`,
         apply(s) {
           s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = countBefore;
           s.visited = visitedNow.slice(); s.matched = matchedBefore.slice();
-          s.flash = null; s.bump = null;
+          s.counts = []; s.activeBand = -1; s.flash = 'c'; s.bump = null;
         }
       });
+      if (hit) {
+        count += 1;
+        matched.push(`${r},${c}`);
+        const next = count;
+        const matchedNow = matched.slice();
+        steps.push({
+          line: 3, kind: 'good',
+          text: `Match! <code>count = ${countBefore} + 1 = ${next}</code>.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = next;
+            s.visited = visitedNow.slice(); s.matched = matchedNow.slice();
+            s.counts = []; s.activeBand = -1; s.flash = 'count'; s.bump = '+1';
+          }
+        });
+        steps.push({
+          line: 4, kind: 'good',
+          text: `<code>count</code> is now <code>${next}</code>. Keep scanning.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = next;
+            s.visited = visitedNow.slice(); s.matched = matchedNow.slice();
+            s.counts = []; s.activeBand = -1; s.flash = 'count'; s.bump = null;
+          }
+        });
+      } else {
+        steps.push({
+          line: 3,
+          text: `Not equal — <code>count</code> stays <code>${countBefore}</code>.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = countBefore;
+            s.visited = visitedNow.slice(); s.matched = matchedBefore.slice();
+            s.counts = []; s.activeBand = -1; s.flash = null; s.bump = null;
+          }
+        });
+      }
     }
-  });
+  }
   const finalCount = count;
   const finalMatched = matched.slice();
   steps.push({
-    line: mode === 'all' ? 4 : 4, kind: finalCount ? 'good' : 'warn', badge: 'Done',
-    text: finalCount
-      ? `Finished. Target <code>${TARGET}</code> appears <code>${finalCount}</code> time${finalCount === 1 ? '' : 's'}.`
-      : `Finished. Target <code>${TARGET}</code> never appeared — count stayed 0.`,
+    line: 4, kind: finalCount ? 'good' : 'warn', badge: 'Done',
+    text: `Finished. Target <code>${TARGET}</code> appears <code>${finalCount}</code> time${finalCount === 1 ? '' : 's'}.`,
     apply(s) {
       s.done = true; s.count = finalCount; s.matched = finalMatched.slice();
       s.probeR = -1; s.probeC = -1; s.flash = 'count'; s.bump = null;
-      s.visited = cells.map((x) => `${x.r},${x.c}`);
+      s.visited = [];
+      for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) s.visited.push(`${r},${c}`);
+      s.counts = []; s.activeBand = -1;
+    }
+  });
+  return steps;
+}
+
+function buildStepsRows() {
+  const steps = [];
+  const rowCounts = [];
+  const matched = [];
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: `Create empty <code>row_counts</code>. Target is <code>${TARGET}</code>.`,
+    apply(s) {
+      s.count = undefined; s.r = -1; s.c = -1; s.probeR = -1; s.probeC = -1;
+      s.matched = []; s.visited = []; s.counts = []; s.activeBand = -1;
+      s.done = false; s.flash = 'row_counts'; s.bump = null;
+    }
+  });
+  for (let r = 0; r < ROWS; r++) {
+    let count = 0;
+    const countsBefore = rowCounts.slice();
+    const matchedBeforeRow = matched.slice();
+    steps.push({
+      line: 1,
+      text: `Start row <code>r = ${r}</code>.`,
+      apply(s) {
+        s.r = r; s.c = -1; s.probeR = -1; s.probeC = -1; s.count = undefined;
+        s.visited = visitedUpToRow(r); s.matched = matchedBeforeRow.slice();
+        s.counts = countsBefore.slice(); s.activeBand = r; s.flash = 'r'; s.bump = null;
+      }
+    });
+    steps.push({
+      line: 2,
+      text: `Reset <code>count = 0</code> for this row.`,
+      apply(s) {
+        s.r = r; s.c = -1; s.probeR = -1; s.probeC = -1; s.count = 0;
+        s.visited = visitedUpToRow(r); s.matched = matchedBeforeRow.slice();
+        s.counts = countsBefore.slice(); s.activeBand = r; s.flash = 'count'; s.bump = null;
+      }
+    });
+    for (let c = 0; c < COLS; c++) {
+      const v = GRID[r][c];
+      const hit = v === TARGET;
+      const countBefore = count;
+      const matchedBefore = matched.slice();
+      const visitedNow = visitedUpToRow(r).concat(Array.from({ length: c + 1 }, (_, i) => `${r},${i}`));
+      steps.push({
+        line: 3,
+        text: `Check <code>grid[${r}][${c}] = ${v}</code> against target <code>${TARGET}</code>.`,
+        apply(s) {
+          s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = countBefore;
+          s.visited = visitedNow.slice(); s.matched = matchedBefore.slice();
+          s.counts = countsBefore.slice(); s.activeBand = r; s.flash = 'c'; s.bump = null;
+        }
+      });
+      if (hit) {
+        count += 1;
+        matched.push(`${r},${c}`);
+        const next = count;
+        const matchedNow = matched.slice();
+        steps.push({
+          line: 4, kind: 'good',
+          text: `Match! <code>count = ${countBefore} + 1 = ${next}</code>.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = next;
+            s.visited = visitedNow.slice(); s.matched = matchedNow.slice();
+            s.counts = countsBefore.slice(); s.activeBand = r; s.flash = 'count'; s.bump = '+1';
+          }
+        });
+        steps.push({
+          line: 5, kind: 'good',
+          text: `<code>count</code> is now <code>${next}</code>. Keep scanning this row.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = next;
+            s.visited = visitedNow.slice(); s.matched = matchedNow.slice();
+            s.counts = countsBefore.slice(); s.activeBand = r; s.flash = 'count'; s.bump = null;
+          }
+        });
+      } else {
+        steps.push({
+          line: 4,
+          text: `Not equal — <code>count</code> stays <code>${countBefore}</code>.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = countBefore;
+            s.visited = visitedNow.slice(); s.matched = matchedBefore.slice();
+            s.counts = countsBefore.slice(); s.activeBand = r; s.flash = null; s.bump = null;
+          }
+        });
+      }
+    }
+    rowCounts.push(count);
+    const countsNow = rowCounts.slice();
+    const matchedNow = matched.slice();
+    steps.push({
+      line: 5, kind: 'good',
+      text: `Row <code>${r}</code> done. Append <code>${count}</code> → <code>row_counts = [${countsNow.join(', ')}]</code>.`,
+      apply(s) {
+        s.r = r; s.c = COLS - 1; s.probeR = -1; s.probeC = -1; s.count = count;
+        s.visited = visitedUpToRow(r + 1); s.matched = matchedNow.slice();
+        s.counts = countsNow.slice(); s.activeBand = r; s.flash = 'row_counts'; s.bump = null;
+      }
+    });
+  }
+  const finalCounts = rowCounts.slice();
+  steps.push({
+    line: 5, kind: 'good', badge: 'Done',
+    text: `Finished. Counts per row: <code>row_counts = [${finalCounts.join(', ')}]</code>.`,
+    apply(s) {
+      s.done = true; s.count = undefined; s.probeR = -1; s.probeC = -1;
+      s.visited = visitedUpToRow(ROWS); s.matched = matched.slice();
+      s.counts = finalCounts.slice(); s.activeBand = -1; s.flash = 'row_counts'; s.bump = null;
+    }
+  });
+  return steps;
+}
+
+function buildStepsCols() {
+  const steps = [];
+  const colCounts = [];
+  const matched = [];
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: `Create empty <code>col_counts</code>. Target is <code>${TARGET}</code>.`,
+    apply(s) {
+      s.count = undefined; s.r = -1; s.c = -1; s.probeR = -1; s.probeC = -1;
+      s.matched = []; s.visited = []; s.counts = []; s.activeBand = -1;
+      s.done = false; s.flash = 'col_counts'; s.bump = null;
+    }
+  });
+  for (let c = 0; c < COLS; c++) {
+    let count = 0;
+    const countsBefore = colCounts.slice();
+    const matchedBeforeCol = matched.slice();
+    steps.push({
+      line: 1,
+      text: `Start column <code>c = ${c}</code>.`,
+      apply(s) {
+        s.r = -1; s.c = c; s.probeR = -1; s.probeC = -1; s.count = undefined;
+        s.visited = visitedUpToCol(c); s.matched = matchedBeforeCol.slice();
+        s.counts = countsBefore.slice(); s.activeBand = c; s.flash = 'c'; s.bump = null;
+      }
+    });
+    steps.push({
+      line: 2,
+      text: `Reset <code>count = 0</code> for this column.`,
+      apply(s) {
+        s.r = -1; s.c = c; s.probeR = -1; s.probeC = -1; s.count = 0;
+        s.visited = visitedUpToCol(c); s.matched = matchedBeforeCol.slice();
+        s.counts = countsBefore.slice(); s.activeBand = c; s.flash = 'count'; s.bump = null;
+      }
+    });
+    for (let r = 0; r < ROWS; r++) {
+      const v = GRID[r][c];
+      const hit = v === TARGET;
+      const countBefore = count;
+      const matchedBefore = matched.slice();
+      const visitedNow = visitedUpToCol(c).concat(Array.from({ length: r + 1 }, (_, i) => `${i},${c}`));
+      steps.push({
+        line: 3,
+        text: `Check <code>grid[${r}][${c}] = ${v}</code> against target <code>${TARGET}</code>.`,
+        apply(s) {
+          s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = countBefore;
+          s.visited = visitedNow.slice(); s.matched = matchedBefore.slice();
+          s.counts = countsBefore.slice(); s.activeBand = c; s.flash = 'r'; s.bump = null;
+        }
+      });
+      if (hit) {
+        count += 1;
+        matched.push(`${r},${c}`);
+        const next = count;
+        const matchedNow = matched.slice();
+        steps.push({
+          line: 4, kind: 'good',
+          text: `Match! <code>count = ${countBefore} + 1 = ${next}</code>.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = next;
+            s.visited = visitedNow.slice(); s.matched = matchedNow.slice();
+            s.counts = countsBefore.slice(); s.activeBand = c; s.flash = 'count'; s.bump = '+1';
+          }
+        });
+        steps.push({
+          line: 5, kind: 'good',
+          text: `<code>count</code> is now <code>${next}</code>. Keep scanning this column.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = next;
+            s.visited = visitedNow.slice(); s.matched = matchedNow.slice();
+            s.counts = countsBefore.slice(); s.activeBand = c; s.flash = 'count'; s.bump = null;
+          }
+        });
+      } else {
+        steps.push({
+          line: 4,
+          text: `Not equal — <code>count</code> stays <code>${countBefore}</code>.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.count = countBefore;
+            s.visited = visitedNow.slice(); s.matched = matchedBefore.slice();
+            s.counts = countsBefore.slice(); s.activeBand = c; s.flash = null; s.bump = null;
+          }
+        });
+      }
+    }
+    colCounts.push(count);
+    const countsNow = colCounts.slice();
+    const matchedNow = matched.slice();
+    steps.push({
+      line: 5, kind: 'good',
+      text: `Column <code>${c}</code> done. Append <code>${count}</code> → <code>col_counts = [${countsNow.join(', ')}]</code>.`,
+      apply(s) {
+        s.r = ROWS - 1; s.c = c; s.probeR = -1; s.probeC = -1; s.count = count;
+        s.visited = visitedUpToCol(c + 1); s.matched = matchedNow.slice();
+        s.counts = countsNow.slice(); s.activeBand = c; s.flash = 'col_counts'; s.bump = null;
+      }
+    });
+  }
+  const finalCounts = colCounts.slice();
+  steps.push({
+    line: 5, kind: 'good', badge: 'Done',
+    text: `Finished. Counts per column: <code>col_counts = [${finalCounts.join(', ')}]</code>.`,
+    apply(s) {
+      s.done = true; s.count = undefined; s.probeR = -1; s.probeC = -1;
+      s.visited = visitedUpToCol(COLS); s.matched = matched.slice();
+      s.counts = finalCounts.slice(); s.activeBand = -1; s.flash = 'col_counts'; s.bump = null;
     }
   });
   return steps;
@@ -282,25 +514,36 @@ function buildSteps(mode) {
 function renderMatrix(state, mode) {
   const headers = [`<div class="matrix-corner"></div>`]
     .concat(Array.from({ length: COLS }, (_, c) =>
-      `<div class="matrix-colh${state.c === c || (mode === 'col' && FOCUS_COL === c) ? ' active' : ''}">${c}</div>`)).join('');
+      `<div class="matrix-colh${state.c === c || (mode === 'col' && state.activeBand === c) ? ' active' : ''}">${c}</div>`)).join('');
   let body = '';
   for (let r = 0; r < ROWS; r++) {
-    body += `<div class="matrix-rowh${state.r === r || (mode === 'row' && FOCUS_ROW === r) ? ' active' : ''}">${r}</div>`;
+    body += `<div class="matrix-rowh${state.r === r || (mode === 'row' && state.activeBand === r) ? ' active' : ''}">${r}</div>`;
     for (let c = 0; c < COLS; c++) {
       const key = `${r},${c}`;
       let cls = 'cell';
-      const inFocus = mode === 'all' || (mode === 'row' && r === FOCUS_ROW) || (mode === 'col' && c === FOCUS_COL);
-      if (!inFocus) cls += ' discard';
-      else if (state.probeR === r && state.probeC === c) cls += state.matched.includes(key) ? ' match' : ' probe';
+      if (mode === 'row' && state.activeBand >= 0 && r > state.activeBand && !state.done) cls += ' discard';
+      else if (mode === 'col' && state.activeBand >= 0 && c > state.activeBand && !state.done) cls += ' discard';
+      if (state.probeR === r && state.probeC === c) cls += state.matched.includes(key) ? ' match' : ' probe';
       else if (state.matched.includes(key)) cls += ' match';
       else if (state.visited.includes(key)) cls += ' discard';
-      else if (mode === 'row' && r === FOCUS_ROW) cls += ' row-band';
-      else if (mode === 'col' && c === FOCUS_COL) cls += ' col-band';
+      else if (mode === 'row' && state.activeBand === r) cls += ' row-band';
+      else if (mode === 'col' && state.activeBand === c) cls += ' col-band';
       body += `<div class="${cls}"><span class="idx">${r},${c}</span><div class="v">${GRID[r][c]}</div></div>`;
     }
   }
-  const caption = mode === 'all' ? `Counting target <strong>${TARGET}</strong> in entire matrix` : mode === 'row' ? `Counting in row <strong>${FOCUS_ROW}</strong>` : `Counting in column <strong>${FOCUS_COL}</strong>`;
-  return `<div class="matrix-wrap"><div class="matrix-caption">${caption}</div><div class="matrix-grid" style="--cols:${COLS}">${headers}${body}</div></div>`;
+  const caption = mode === 'all'
+    ? `Counting target <strong>${TARGET}</strong> in entire matrix`
+    : mode === 'row'
+      ? (state.activeBand >= 0 ? `Counting in row <strong>${state.activeBand}</strong>` : 'Counting in each row')
+      : (state.activeBand >= 0 ? `Counting in column <strong>${state.activeBand}</strong>` : 'Counting in each column');
+  let tray = '';
+  if (mode !== 'all') {
+    const label = mode === 'row' ? 'row_counts' : 'col_counts';
+    const chips = (state.counts || []).map((v, i, arr) =>
+      `<span class="out-chip${i === arr.length - 1 ? ' latest' : ''}">${v}</span>`).join('');
+    tray = `<div class="output-tray"><span class="out-label">${label}</span>${chips || '<span class="muted-cap">[ ]</span>'}</div>`;
+  }
+  return `<div class="matrix-wrap"><div class="matrix-caption">${caption}</div><div class="matrix-grid" style="--cols:${COLS}">${headers}${body}</div>${tray}</div>`;
 }
 
 function render(state, ctx) {
@@ -325,31 +568,35 @@ const programs = {
       '        if grid[r][c] == target:',
       '            count = count + 1',
     ],
-    steps: buildSteps('all'),
+    steps: buildStepsAll(),
   },
   row: {
-    file: 'matrix_count_row.py', label: 'one row',
-    ready: `Count target <code>${TARGET}</code> in row <code>${FOCUS_ROW}</code> only.`,
+    file: 'matrix_count_rows.py', label: 'each row',
+    ready: `Build <code>row_counts</code> — one count for every row.`,
     lines: [
-      'count = 0',
-      `r = ${FOCUS_ROW}`,
-      'for c in range(len(grid[r])):',
-      '    if grid[r][c] == target:',
-      '        count = count + 1',
+      'row_counts = []',
+      'for r in range(len(grid)):',
+      '    count = 0',
+      '    for c in range(len(grid[0])):',
+      '        if grid[r][c] == target:',
+      '            count = count + 1',
+      '    row_counts.append(count)',
     ],
-    steps: buildSteps('row'),
+    steps: buildStepsRows(),
   },
   col: {
-    file: 'matrix_count_col.py', label: 'one column',
-    ready: `Count target <code>${TARGET}</code> in column <code>${FOCUS_COL}</code> only.`,
+    file: 'matrix_count_cols.py', label: 'each column',
+    ready: `Build <code>col_counts</code> — one count for every column.`,
     lines: [
-      'count = 0',
-      `c = ${FOCUS_COL}`,
-      'for r in range(len(grid)):',
-      '    if grid[r][c] == target:',
-      '        count = count + 1',
+      'col_counts = []',
+      'for c in range(len(grid[0])):',
+      '    count = 0',
+      '    for r in range(len(grid)):',
+      '        if grid[r][c] == target:',
+      '            count = count + 1',
+      '    col_counts.append(count)',
     ],
-    steps: buildSteps('col'),
+    steps: buildStepsCols(),
   },
 };
 
@@ -357,7 +604,8 @@ CompSimu.createPlayer({
   programs,
   initialMode: 'all',
   initialState: () => ({
-    r: -1, c: -1, probeR: -1, probeC: -1, count: undefined, matched: [], visited: [], done: false, flash: null, bump: null,
+    r: -1, c: -1, probeR: -1, probeC: -1, count: undefined,
+    matched: [], visited: [], counts: [], activeBand: -1, done: false, flash: null, bump: null,
   }),
   render,
 });
