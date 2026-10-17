@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Max & min in a 2D array — CompSimu</title>
-<meta name="description" content="Find the largest and smallest values in a whole 2D array, one row, or one column." />
+<meta name="description" content="Find max and min in a whole 2D array, or for every row and every column." />
 <link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="../../assets/css/site.css" />
 <link rel="stylesheet" href="../../assets/css/simulation.css" />
@@ -35,12 +35,12 @@
       <span style="color:var(--ink)">Max &amp; min in a 2D array</span>
     </nav>
     <h1 class="h1">Max &amp; min in a 2D array</h1>
-    <p class="subtitle" style="max-width:720px">Seed from the first cell you visit, then update <code>max_val</code> and <code>min_val</code> as you scan the region.</p>
+    <p class="subtitle" style="max-width:720px">Find extremes across the whole grid, or build lists of max and min — one pair per row, or one pair per column.</p>
     <div class="meta">
       <span class="badge badge-tag">Programming</span>
       <span class="badge badge-soft">Beginner</span>
       <span class="badge badge-soft">2D arrays · Comparisons</span>
-      <span class="badge badge-soft">~7 min</span>
+      <span class="badge badge-soft">~8 min</span>
     </div>
   </div>
 </header>
@@ -50,20 +50,22 @@
     <div class="container intro-grid">
       <div class="prose">
         <span class="eyebrow">The idea</span>
-        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Track the extremes</h2>
-        <p>Start both max and min from the first visited cell. For every later cell, ask: bigger than max? smaller than min?</p>
-        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Green highlight marks the current max; mint marks the current min.</span></div>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">One pair — or a pair for each line</h2>
+        <p>Seed max and min from the first cell, then compare as you scan. For every row (or column), re-seed and append both results to lists.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Green marks the current max; mint marks the current min.</span></div>
       </div>
       <div class="card" style="display:flex;flex-direction:column;gap:14px">
         <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Seed then scan</span></div>
         <div class="code-block">
-          <div class="code-block-header"><span>matrix_max_min.py</span><span>Python</span></div>
-<pre>max_val = grid[<span class="tok-num">0</span>][<span class="tok-num">0</span>]
-min_val = grid[<span class="tok-num">0</span>][<span class="tok-num">0</span>]
+          <div class="code-block-header"><span>row_max_min.py</span><span>Python</span></div>
+<pre>row_maxs, row_mins = [], []
 <span class="tok-op">for</span> r <span class="tok-op">in</span> range(rows):
-    <span class="tok-op">for</span> c <span class="tok-op">in</span> range(cols):
+    max_val = min_val = grid[r][<span class="tok-num">0</span>]
+    <span class="tok-op">for</span> c <span class="tok-op">in</span> range(<span class="tok-num">1</span>, cols):
         <span class="tok-op">if</span> grid[r][c] &gt; max_val: max_val = grid[r][c]
-        <span class="tok-op">if</span> grid[r][c] &lt; min_val: min_val = grid[r][c]</pre>
+        <span class="tok-op">if</span> grid[r][c] &lt; min_val: min_val = grid[r][c]
+    row_maxs.append(max_val)
+    row_mins.append(min_val)</pre>
         </div>
       </div>
     </div>
@@ -74,14 +76,15 @@ min_val = grid[<span class="tok-num">0</span>][<span class="tok-num">0</span>]
       <div class="section-head" style="margin-bottom:24px">
         <span class="eyebrow">Interactive</span>
         <h2 class="h2">Run the simulation</h2>
-        <p class="subtitle">Compare each cell against the running max and min.</p>
+        <p class="subtitle">Compare each cell against the running max and min. Trays hold finished line results.</p>
       </div>
-<div class="sim-shell">
+
+      <div class="sim-shell">
         <div class="sim-toolbar">
           <div class="pill-tabs" role="tablist">
             <button class="pill-tab active" data-mode="all" role="tab">Entire matrix</button>
-            <button class="pill-tab" data-mode="row" role="tab">One row</button>
-            <button class="pill-tab" data-mode="col" role="tab">One column</button>
+            <button class="pill-tab" data-mode="row" role="tab">Each row</button>
+            <button class="pill-tab" data-mode="col" role="tab">Each column</button>
           </div>
           <div class="progress-wrap">
             <span id="stepLabel">Step 0 / 0</span>
@@ -125,23 +128,23 @@ min_val = grid[<span class="tok-num">0</span>][<span class="tok-num">0</span>]
       <div class="section-head">
         <span class="eyebrow">Remember</span>
         <h2 class="h2">2D max &amp; min essentials</h2>
-        <p class="subtitle">Seed, compare, update.</p>
+        <p class="subtitle">Whole grid vs a list of line extremes.</p>
       </div>
       <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
-          <span class="badge badge-tag" style="align-self:flex-start">Seed</span>
-          <h3 class="h5">First cell sets both</h3>
-          <p class="muted" style="margin:0;font-size:14px">For a row or column, seed from the first cell in that region.</p>
+          <span class="badge badge-tag" style="align-self:flex-start">All</span>
+          <h3 class="h5">One max, one min</h3>
+          <p class="muted" style="margin:0;font-size:14px">Seed from <code>grid[0][0]</code>, then scan the rest of the matrix.</p>
         </div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
-          <span class="badge badge-ok" style="align-self:flex-start">Compare</span>
-          <h3 class="h5">Two questions per cell</h3>
-          <p class="muted" style="margin:0;font-size:14px">Greater than max? Less than min? Update only when true.</p>
+          <span class="badge badge-ok" style="align-self:flex-start">Rows</span>
+          <h3 class="h5">Re-seed each row</h3>
+          <p class="muted" style="margin:0;font-size:14px">Append into <code>row_maxs</code> and <code>row_mins</code> after each row finishes.</p>
         </div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
-          <span class="badge badge-soft" style="align-self:flex-start">Region</span>
-          <h3 class="h5">Scope the scan</h3>
-          <p class="muted" style="margin:0;font-size:14px">Whole matrix, one row, or one column — same comparisons.</p>
+          <span class="badge badge-soft" style="align-self:flex-start">Columns</span>
+          <h3 class="h5">Same idea, swap axes</h3>
+          <p class="muted" style="margin:0;font-size:14px"><code>col_maxs</code> / <code>col_mins</code> store one pair per column.</p>
         </div>
       </div>
       <div class="card-feature next-card" style="margin-top:40px">
@@ -155,6 +158,7 @@ min_val = grid[<span class="tok-num">0</span>][<span class="tok-num">0</span>]
     </div>
   </section>
 </main>
+
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
@@ -184,67 +188,71 @@ min_val = grid[<span class="tok-num">0</span>][<span class="tok-num">0</span>]
   </div>
 </footer>
 
-
 <script src="../../assets/js/sim-player.js"></script>
 <script>
 const GRID = [[3, 8, 2],[5, 1, 7],[4, 9, 6]];
 const ROWS = GRID.length, COLS = GRID[0].length;
-const FOCUS_ROW = 1, FOCUS_COL = 2;
 
-function cellsFor(mode) {
-  if (mode === 'row') return GRID[FOCUS_ROW].map((v, c) => ({ r: FOCUS_ROW, c, v }));
-  if (mode === 'col') return GRID.map((row, r) => ({ r, c: FOCUS_COL, v: row[FOCUS_COL] }));
+function visitedUpToRow(rowExclusive) {
   const out = [];
-  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) out.push({ r, c, v: GRID[r][c] });
+  for (let r = 0; r < rowExclusive; r++) for (let c = 0; c < COLS; c++) out.push(`${r},${c}`);
+  return out;
+}
+function visitedUpToCol(colExclusive) {
+  const out = [];
+  for (let c = 0; c < colExclusive; c++) for (let r = 0; r < ROWS; r++) out.push(`${r},${c}`);
   return out;
 }
 
-function buildSteps(mode) {
-  const cells = cellsFor(mode);
+function buildStepsAll() {
   const steps = [];
-  const first = cells[0];
-  let maxVal = first.v;
-  let minVal = first.v;
-  // all: seed 0,1 · for r 2 · for c 3 · cmp/set 4-7
-  // row/col: seed 0,1 · for 2 · cmp/set 3-6
-  const L = mode === 'all'
-    ? { seedMax: 0, seedMin: 1, probe: 3, cmpMax: 4, setMax: 5, cmpMin: 6, setMin: 7, done: 7 }
-    : { seedMax: 0, seedMin: 1, probe: 2, cmpMax: 3, setMax: 4, cmpMin: 5, setMin: 6, done: 6 };
+  const cells = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) cells.push({ r, c, v: GRID[r][c] });
+  // Skip first after seed — same as 1D: scan remaining only in steps, code shows full loops
+  const L = { seedMax: 0, seedMin: 1, probe: 3, cmpMax: 4, setMax: 5, cmpMin: 6, setMin: 7, done: 7 };
+  const rest = cells.slice(1);
+  let maxVal = cells[0].v;
+  let minVal = cells[0].v;
   steps.push({
     line: L.seedMax, badge: 'Setup',
-    text: `Seed <code>max_val = grid[${first.r}][${first.c}] = ${first.v}</code>.`,
+    text: `Seed <code>max_val = grid[0][0] = ${cells[0].v}</code>.`,
     apply(s) {
-      s.max = first.v; s.min = undefined; s.r = first.r; s.c = first.c;
-      s.probeR = first.r; s.probeC = first.c; s.visited = [`${first.r},${first.c}`];
-      s.done = false; s.flash = 'max_val';
+      s.max = cells[0].v; s.min = undefined; s.r = 0; s.c = 0;
+      s.probeR = 0; s.probeC = 0; s.visited = ['0,0'];
+      s.maxs = []; s.mins = []; s.activeBand = -1; s.done = false; s.flash = 'max_val';
     }
   });
   steps.push({
     line: L.seedMin,
-    text: `Seed <code>min_val = ${first.v}</code> from the same first cell.`,
+    text: `Seed <code>min_val = ${cells[0].v}</code> from the same first cell.`,
     apply(s) {
-      s.max = first.v; s.min = first.v; s.r = first.r; s.c = first.c;
-      s.probeR = first.r; s.probeC = first.c; s.visited = [`${first.r},${first.c}`];
-      s.flash = 'min_val';
+      s.max = cells[0].v; s.min = cells[0].v; s.r = 0; s.c = 0;
+      s.probeR = 0; s.probeC = 0; s.visited = ['0,0'];
+      s.maxs = []; s.mins = []; s.activeBand = -1; s.flash = 'min_val';
     }
   });
-  for (let i = 1; i < cells.length; i++) {
-    const { r, c, v } = cells[i];
+  for (let i = 0; i < rest.length; i++) {
+    const { r, c, v } = rest[i];
     const maxBefore = maxVal;
     const minBefore = minVal;
-    const visitedNow = cells.slice(0, i + 1).map((x) => `${x.r},${x.c}`);
+    const visitedNow = cells.slice(0, i + 2).map((x) => `${x.r},${x.c}`);
     steps.push({
       line: L.probe,
       text: `Visit <code>grid[${r}][${c}] = ${v}</code>.`,
       apply(s) {
         s.r = r; s.c = c; s.probeR = r; s.probeC = c;
-        s.max = maxBefore; s.min = minBefore; s.visited = visitedNow.slice(); s.flash = 'c';
+        s.max = maxBefore; s.min = minBefore; s.visited = visitedNow.slice();
+        s.maxs = []; s.mins = []; s.activeBand = -1; s.flash = 'c';
       }
     });
     steps.push({
       line: L.cmpMax,
       text: `Is <code>${v} &gt; max_val (${maxBefore})</code>? ${v > maxBefore ? 'Yes.' : 'No.'}`,
-      apply(s) { s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxBefore; s.min = minBefore; s.visited = visitedNow.slice(); s.flash = null; }
+      apply(s) {
+        s.r = r; s.c = c; s.probeR = r; s.probeC = c;
+        s.max = maxBefore; s.min = minBefore; s.visited = visitedNow.slice();
+        s.maxs = []; s.mins = []; s.activeBand = -1; s.flash = null;
+      }
     });
     if (v > maxBefore) {
       maxVal = v;
@@ -252,13 +260,21 @@ function buildSteps(mode) {
       steps.push({
         line: L.setMax, kind: 'good',
         text: `New maximum! <code>max_val = ${nextMax}</code>.`,
-        apply(s) { s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = nextMax; s.min = minBefore; s.visited = visitedNow.slice(); s.flash = 'max_val'; }
+        apply(s) {
+          s.r = r; s.c = c; s.probeR = r; s.probeC = c;
+          s.max = nextMax; s.min = minBefore; s.visited = visitedNow.slice();
+          s.maxs = []; s.mins = []; s.activeBand = -1; s.flash = 'max_val';
+        }
       });
     }
     steps.push({
       line: L.cmpMin,
       text: `Is <code>${v} &lt; min_val (${minBefore})</code>? ${v < minBefore ? 'Yes.' : 'No.'}`,
-      apply(s) { s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxVal; s.min = minBefore; s.visited = visitedNow.slice(); s.flash = null; }
+      apply(s) {
+        s.r = r; s.c = c; s.probeR = r; s.probeC = c;
+        s.max = maxVal; s.min = minBefore; s.visited = visitedNow.slice();
+        s.maxs = []; s.mins = []; s.activeBand = -1; s.flash = null;
+      }
     });
     if (v < minBefore) {
       minVal = v;
@@ -266,7 +282,11 @@ function buildSteps(mode) {
       steps.push({
         line: L.setMin, kind: 'good',
         text: `New minimum! <code>min_val = ${nextMin}</code>.`,
-        apply(s) { s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxVal; s.min = nextMin; s.visited = visitedNow.slice(); s.flash = 'min_val'; }
+        apply(s) {
+          s.r = r; s.c = c; s.probeR = r; s.probeC = c;
+          s.max = maxVal; s.min = nextMin; s.visited = visitedNow.slice();
+          s.maxs = []; s.mins = []; s.activeBand = -1; s.flash = 'min_val';
+        }
       });
     }
   }
@@ -276,7 +296,291 @@ function buildSteps(mode) {
     text: `Scan complete. Max is <code>${finalMax}</code>, min is <code>${finalMin}</code>.`,
     apply(s) {
       s.done = true; s.max = finalMax; s.min = finalMin; s.probeR = -1; s.probeC = -1;
-      s.visited = cells.map((x) => `${x.r},${x.c}`); s.flash = null;
+      s.visited = cells.map((x) => `${x.r},${x.c}`);
+      s.maxs = []; s.mins = []; s.activeBand = -1; s.flash = null;
+    }
+  });
+  return steps;
+}
+
+function buildStepsRows() {
+  const steps = [];
+  const rowMaxs = [];
+  const rowMins = [];
+  // lines: 0 row_maxs=[] 1 row_mins=[] 2 for r 3 seed max 4 seed min 5 for c 6 cmp max 7 set max 8 cmp min 9 set min 10 append max 11 append min
+  const L = { start: 2, seedMax: 3, seedMin: 4, probe: 5, cmpMax: 6, setMax: 7, cmpMin: 8, setMin: 9, appMax: 10, appMin: 11 };
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: 'Create empty lists <code>row_maxs</code> and <code>row_mins</code>.',
+    apply(s) {
+      s.max = undefined; s.min = undefined; s.r = -1; s.c = -1; s.probeR = -1; s.probeC = -1;
+      s.visited = []; s.maxs = []; s.mins = []; s.activeBand = -1; s.done = false; s.flash = 'row_maxs';
+    }
+  });
+  for (let r = 0; r < ROWS; r++) {
+    const maxsBefore = rowMaxs.slice();
+    const minsBefore = rowMins.slice();
+    let maxVal = GRID[r][0];
+    let minVal = GRID[r][0];
+    steps.push({
+      line: L.start,
+      text: `Start row <code>r = ${r}</code>.`,
+      apply(s) {
+        s.r = r; s.c = -1; s.probeR = -1; s.probeC = -1; s.max = undefined; s.min = undefined;
+        s.visited = visitedUpToRow(r); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+        s.activeBand = r; s.flash = 'r';
+      }
+    });
+    steps.push({
+      line: L.seedMax,
+      text: `Seed <code>max_val = grid[${r}][0] = ${maxVal}</code>.`,
+      apply(s) {
+        s.r = r; s.c = 0; s.probeR = r; s.probeC = 0; s.max = maxVal; s.min = undefined;
+        s.visited = visitedUpToRow(r).concat([`${r},0`]); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+        s.activeBand = r; s.flash = 'max_val';
+      }
+    });
+    steps.push({
+      line: L.seedMin,
+      text: `Seed <code>min_val = ${minVal}</code>.`,
+      apply(s) {
+        s.r = r; s.c = 0; s.probeR = r; s.probeC = 0; s.max = maxVal; s.min = minVal;
+        s.visited = visitedUpToRow(r).concat([`${r},0`]); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+        s.activeBand = r; s.flash = 'min_val';
+      }
+    });
+    for (let c = 1; c < COLS; c++) {
+      const v = GRID[r][c];
+      const maxBefore = maxVal;
+      const minBefore = minVal;
+      const visitedNow = visitedUpToRow(r).concat(Array.from({ length: c + 1 }, (_, i) => `${r},${i}`));
+      steps.push({
+        line: L.probe,
+        text: `Visit <code>grid[${r}][${c}] = ${v}</code>.`,
+        apply(s) {
+          s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxBefore; s.min = minBefore;
+          s.visited = visitedNow.slice(); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+          s.activeBand = r; s.flash = 'c';
+        }
+      });
+      steps.push({
+        line: L.cmpMax,
+        text: `Is <code>${v} &gt; max_val (${maxBefore})</code>? ${v > maxBefore ? 'Yes.' : 'No.'}`,
+        apply(s) {
+          s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxBefore; s.min = minBefore;
+          s.visited = visitedNow.slice(); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+          s.activeBand = r; s.flash = null;
+        }
+      });
+      if (v > maxBefore) {
+        maxVal = v;
+        const nextMax = maxVal;
+        steps.push({
+          line: L.setMax, kind: 'good',
+          text: `New maximum! <code>max_val = ${nextMax}</code>.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = nextMax; s.min = minBefore;
+            s.visited = visitedNow.slice(); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+            s.activeBand = r; s.flash = 'max_val';
+          }
+        });
+      }
+      steps.push({
+        line: L.cmpMin,
+        text: `Is <code>${v} &lt; min_val (${minBefore})</code>? ${v < minBefore ? 'Yes.' : 'No.'}`,
+        apply(s) {
+          s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxVal; s.min = minBefore;
+          s.visited = visitedNow.slice(); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+          s.activeBand = r; s.flash = null;
+        }
+      });
+      if (v < minBefore) {
+        minVal = v;
+        const nextMin = minVal;
+        steps.push({
+          line: L.setMin, kind: 'good',
+          text: `New minimum! <code>min_val = ${nextMin}</code>.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxVal; s.min = nextMin;
+            s.visited = visitedNow.slice(); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+            s.activeBand = r; s.flash = 'min_val';
+          }
+        });
+      }
+    }
+    rowMaxs.push(maxVal);
+    rowMins.push(minVal);
+    const maxsNow = rowMaxs.slice();
+    const minsNow = rowMins.slice();
+    steps.push({
+      line: L.appMax, kind: 'good',
+      text: `Append max <code>${maxVal}</code> → <code>row_maxs = [${maxsNow.join(', ')}]</code>.`,
+      apply(s) {
+        s.r = r; s.c = COLS - 1; s.probeR = -1; s.probeC = -1; s.max = maxVal; s.min = minVal;
+        s.visited = visitedUpToRow(r + 1); s.maxs = maxsNow.slice(); s.mins = minsBefore.slice();
+        s.activeBand = r; s.flash = 'row_maxs';
+      }
+    });
+    steps.push({
+      line: L.appMin, kind: 'good',
+      text: `Append min <code>${minVal}</code> → <code>row_mins = [${minsNow.join(', ')}]</code>.`,
+      apply(s) {
+        s.r = r; s.c = COLS - 1; s.probeR = -1; s.probeC = -1; s.max = maxVal; s.min = minVal;
+        s.visited = visitedUpToRow(r + 1); s.maxs = maxsNow.slice(); s.mins = minsNow.slice();
+        s.activeBand = r; s.flash = 'row_mins';
+      }
+    });
+  }
+  const finalMaxs = rowMaxs.slice();
+  const finalMins = rowMins.slice();
+  steps.push({
+    line: L.appMin, kind: 'good', badge: 'Done',
+    text: `Finished. <code>row_maxs = [${finalMaxs.join(', ')}]</code>, <code>row_mins = [${finalMins.join(', ')}]</code>.`,
+    apply(s) {
+      s.done = true; s.max = undefined; s.min = undefined; s.probeR = -1; s.probeC = -1;
+      s.visited = visitedUpToRow(ROWS); s.maxs = finalMaxs.slice(); s.mins = finalMins.slice();
+      s.activeBand = -1; s.flash = null;
+    }
+  });
+  return steps;
+}
+
+function buildStepsCols() {
+  const steps = [];
+  const colMaxs = [];
+  const colMins = [];
+  const L = { start: 2, seedMax: 3, seedMin: 4, probe: 5, cmpMax: 6, setMax: 7, cmpMin: 8, setMin: 9, appMax: 10, appMin: 11 };
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: 'Create empty lists <code>col_maxs</code> and <code>col_mins</code>.',
+    apply(s) {
+      s.max = undefined; s.min = undefined; s.r = -1; s.c = -1; s.probeR = -1; s.probeC = -1;
+      s.visited = []; s.maxs = []; s.mins = []; s.activeBand = -1; s.done = false; s.flash = 'col_maxs';
+    }
+  });
+  for (let c = 0; c < COLS; c++) {
+    const maxsBefore = colMaxs.slice();
+    const minsBefore = colMins.slice();
+    let maxVal = GRID[0][c];
+    let minVal = GRID[0][c];
+    steps.push({
+      line: L.start,
+      text: `Start column <code>c = ${c}</code>.`,
+      apply(s) {
+        s.r = -1; s.c = c; s.probeR = -1; s.probeC = -1; s.max = undefined; s.min = undefined;
+        s.visited = visitedUpToCol(c); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+        s.activeBand = c; s.flash = 'c';
+      }
+    });
+    steps.push({
+      line: L.seedMax,
+      text: `Seed <code>max_val = grid[0][${c}] = ${maxVal}</code>.`,
+      apply(s) {
+        s.r = 0; s.c = c; s.probeR = 0; s.probeC = c; s.max = maxVal; s.min = undefined;
+        s.visited = visitedUpToCol(c).concat([`0,${c}`]); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+        s.activeBand = c; s.flash = 'max_val';
+      }
+    });
+    steps.push({
+      line: L.seedMin,
+      text: `Seed <code>min_val = ${minVal}</code>.`,
+      apply(s) {
+        s.r = 0; s.c = c; s.probeR = 0; s.probeC = c; s.max = maxVal; s.min = minVal;
+        s.visited = visitedUpToCol(c).concat([`0,${c}`]); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+        s.activeBand = c; s.flash = 'min_val';
+      }
+    });
+    for (let r = 1; r < ROWS; r++) {
+      const v = GRID[r][c];
+      const maxBefore = maxVal;
+      const minBefore = minVal;
+      const visitedNow = visitedUpToCol(c).concat(Array.from({ length: r + 1 }, (_, i) => `${i},${c}`));
+      steps.push({
+        line: L.probe,
+        text: `Visit <code>grid[${r}][${c}] = ${v}</code>.`,
+        apply(s) {
+          s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxBefore; s.min = minBefore;
+          s.visited = visitedNow.slice(); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+          s.activeBand = c; s.flash = 'r';
+        }
+      });
+      steps.push({
+        line: L.cmpMax,
+        text: `Is <code>${v} &gt; max_val (${maxBefore})</code>? ${v > maxBefore ? 'Yes.' : 'No.'}`,
+        apply(s) {
+          s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxBefore; s.min = minBefore;
+          s.visited = visitedNow.slice(); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+          s.activeBand = c; s.flash = null;
+        }
+      });
+      if (v > maxBefore) {
+        maxVal = v;
+        const nextMax = maxVal;
+        steps.push({
+          line: L.setMax, kind: 'good',
+          text: `New maximum! <code>max_val = ${nextMax}</code>.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = nextMax; s.min = minBefore;
+            s.visited = visitedNow.slice(); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+            s.activeBand = c; s.flash = 'max_val';
+          }
+        });
+      }
+      steps.push({
+        line: L.cmpMin,
+        text: `Is <code>${v} &lt; min_val (${minBefore})</code>? ${v < minBefore ? 'Yes.' : 'No.'}`,
+        apply(s) {
+          s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxVal; s.min = minBefore;
+          s.visited = visitedNow.slice(); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+          s.activeBand = c; s.flash = null;
+        }
+      });
+      if (v < minBefore) {
+        minVal = v;
+        const nextMin = minVal;
+        steps.push({
+          line: L.setMin, kind: 'good',
+          text: `New minimum! <code>min_val = ${nextMin}</code>.`,
+          apply(s) {
+            s.r = r; s.c = c; s.probeR = r; s.probeC = c; s.max = maxVal; s.min = nextMin;
+            s.visited = visitedNow.slice(); s.maxs = maxsBefore.slice(); s.mins = minsBefore.slice();
+            s.activeBand = c; s.flash = 'min_val';
+          }
+        });
+      }
+    }
+    colMaxs.push(maxVal);
+    colMins.push(minVal);
+    const maxsNow = colMaxs.slice();
+    const minsNow = colMins.slice();
+    steps.push({
+      line: L.appMax, kind: 'good',
+      text: `Append max <code>${maxVal}</code> → <code>col_maxs = [${maxsNow.join(', ')}]</code>.`,
+      apply(s) {
+        s.r = ROWS - 1; s.c = c; s.probeR = -1; s.probeC = -1; s.max = maxVal; s.min = minVal;
+        s.visited = visitedUpToCol(c + 1); s.maxs = maxsNow.slice(); s.mins = minsBefore.slice();
+        s.activeBand = c; s.flash = 'col_maxs';
+      }
+    });
+    steps.push({
+      line: L.appMin, kind: 'good',
+      text: `Append min <code>${minVal}</code> → <code>col_mins = [${minsNow.join(', ')}]</code>.`,
+      apply(s) {
+        s.r = ROWS - 1; s.c = c; s.probeR = -1; s.probeC = -1; s.max = maxVal; s.min = minVal;
+        s.visited = visitedUpToCol(c + 1); s.maxs = maxsNow.slice(); s.mins = minsNow.slice();
+        s.activeBand = c; s.flash = 'col_mins';
+      }
+    });
+  }
+  const finalMaxs = colMaxs.slice();
+  const finalMins = colMins.slice();
+  steps.push({
+    line: L.appMin, kind: 'good', badge: 'Done',
+    text: `Finished. <code>col_maxs = [${finalMaxs.join(', ')}]</code>, <code>col_mins = [${finalMins.join(', ')}]</code>.`,
+    apply(s) {
+      s.done = true; s.max = undefined; s.min = undefined; s.probeR = -1; s.probeC = -1;
+      s.visited = visitedUpToCol(COLS); s.maxs = finalMaxs.slice(); s.mins = finalMins.slice();
+      s.activeBand = -1; s.flash = null;
     }
   });
   return steps;
@@ -285,30 +589,44 @@ function buildSteps(mode) {
 function renderMatrix(state, mode) {
   const headers = [`<div class="matrix-corner"></div>`]
     .concat(Array.from({ length: COLS }, (_, c) =>
-      `<div class="matrix-colh${state.c === c || (mode === 'col' && FOCUS_COL === c) ? ' active' : ''}">${c}</div>`)).join('');
+      `<div class="matrix-colh${state.c === c || (mode === 'col' && state.activeBand === c) ? ' active' : ''}">${c}</div>`)).join('');
   let body = '';
   for (let r = 0; r < ROWS; r++) {
-    body += `<div class="matrix-rowh${state.r === r || (mode === 'row' && FOCUS_ROW === r) ? ' active' : ''}">${r}</div>`;
+    body += `<div class="matrix-rowh${state.r === r || (mode === 'row' && state.activeBand === r) ? ' active' : ''}">${r}</div>`;
     for (let c = 0; c < COLS; c++) {
       const key = `${r},${c}`;
       const v = GRID[r][c];
       let cls = 'cell';
-      const inFocus = mode === 'all' || (mode === 'row' && r === FOCUS_ROW) || (mode === 'col' && c === FOCUS_COL);
       const seen = state.visited.includes(key);
-      if (!inFocus) cls += ' discard';
-      else {
-        if (state.probeR === r && state.probeC === c) cls += ' probe';
-        else if (seen) cls += ' visited';
-        else if (mode === 'row') cls += ' row-band';
-        else if (mode === 'col') cls += ' col-band';
-        if (seen && state.max !== undefined && v === state.max) cls += ' match';
-        if (seen && state.min !== undefined && v === state.min) cls += ' min';
-      }
+      if (mode === 'row' && state.activeBand >= 0 && r > state.activeBand && !state.done) cls += ' discard';
+      else if (mode === 'col' && state.activeBand >= 0 && c > state.activeBand && !state.done) cls += ' discard';
+      if (state.probeR === r && state.probeC === c) cls += ' probe';
+      else if (seen) cls += ' visited';
+      else if (mode === 'row' && state.activeBand === r) cls += ' row-band';
+      else if (mode === 'col' && state.activeBand === c) cls += ' col-band';
+      if (seen && state.max !== undefined && v === state.max) cls += ' match';
+      if (seen && state.min !== undefined && v === state.min) cls += ' min';
       body += `<div class="${cls}"><span class="idx">${r},${c}</span><div class="v">${v}</div></div>`;
     }
   }
-  const caption = mode === 'all' ? 'Scanning entire matrix' : mode === 'row' ? `Scanning row <strong>${FOCUS_ROW}</strong>` : `Scanning column <strong>${FOCUS_COL}</strong>`;
-  return `<div class="matrix-wrap"><div class="matrix-caption">${caption}</div><div class="matrix-grid" style="--cols:${COLS}">${headers}${body}</div></div>`;
+  const caption = mode === 'all'
+    ? 'Scanning entire matrix'
+    : mode === 'row'
+      ? (state.activeBand >= 0 ? `Scanning row <strong>${state.activeBand}</strong>` : 'Scanning each row')
+      : (state.activeBand >= 0 ? `Scanning column <strong>${state.activeBand}</strong>` : 'Scanning each column');
+  let tray = '';
+  if (mode !== 'all') {
+    const maxLabel = mode === 'row' ? 'row_maxs' : 'col_maxs';
+    const minLabel = mode === 'row' ? 'row_mins' : 'col_mins';
+    const maxChips = (state.maxs || []).map((v, i, arr) =>
+      `<span class="out-chip${i === arr.length - 1 ? ' latest' : ''}">${v}</span>`).join('');
+    const minChips = (state.mins || []).map((v, i, arr) =>
+      `<span class="out-chip${i === arr.length - 1 ? ' latest' : ''}">${v}</span>`).join('');
+    tray = `
+      <div class="output-tray"><span class="out-label">${maxLabel}</span>${maxChips || '<span class="muted-cap">[ ]</span>'}</div>
+      <div class="output-tray"><span class="out-label">${minLabel}</span>${minChips || '<span class="muted-cap">[ ]</span>'}</div>`;
+  }
+  return `<div class="matrix-wrap"><div class="matrix-caption">${caption}</div><div class="matrix-grid" style="--cols:${COLS}">${headers}${body}</div>${tray}</div>`;
 }
 
 function render(state, ctx) {
@@ -325,7 +643,7 @@ function render(state, ctx) {
 const programs = {
   all: {
     file: 'matrix_max_min.py', label: 'entire matrix',
-    ready: 'Seed from <code>grid[0][0]</code>, then scan the remaining cells in row-major order.',
+    ready: 'Seed from <code>grid[0][0]</code>, then scan the remaining cells.',
     lines: [
       'max_val = grid[0][0]',
       'min_val = grid[0][0]',
@@ -336,35 +654,45 @@ const programs = {
       '        if grid[r][c] < min_val:',
       '            min_val = grid[r][c]',
     ],
-    steps: buildSteps('all'),
+    steps: buildStepsAll(),
   },
   row: {
-    file: 'matrix_max_min_row.py', label: 'one row',
-    ready: `Seed from the first cell of row <code>${FOCUS_ROW}</code>, then scan the rest of that row.`,
+    file: 'matrix_max_min_rows.py', label: 'each row',
+    ready: 'Build <code>row_maxs</code> and <code>row_mins</code> — one pair per row.',
     lines: [
-      `max_val = grid[${FOCUS_ROW}][0]`,
-      `min_val = grid[${FOCUS_ROW}][0]`,
-      `for c in range(1, len(grid[${FOCUS_ROW}])):`,
-      `    if grid[${FOCUS_ROW}][c] > max_val:`,
-      `        max_val = grid[${FOCUS_ROW}][c]`,
-      `    if grid[${FOCUS_ROW}][c] < min_val:`,
-      `        min_val = grid[${FOCUS_ROW}][c]`,
+      'row_maxs = []',
+      'row_mins = []',
+      'for r in range(len(grid)):',
+      '    max_val = grid[r][0]',
+      '    min_val = grid[r][0]',
+      '    for c in range(1, len(grid[0])):',
+      '        if grid[r][c] > max_val:',
+      '            max_val = grid[r][c]',
+      '        if grid[r][c] < min_val:',
+      '            min_val = grid[r][c]',
+      '    row_maxs.append(max_val)',
+      '    row_mins.append(min_val)',
     ],
-    steps: buildSteps('row'),
+    steps: buildStepsRows(),
   },
   col: {
-    file: 'matrix_max_min_col.py', label: 'one column',
-    ready: `Seed from the first cell of column <code>${FOCUS_COL}</code>, then scan the rest of that column.`,
+    file: 'matrix_max_min_cols.py', label: 'each column',
+    ready: 'Build <code>col_maxs</code> and <code>col_mins</code> — one pair per column.',
     lines: [
-      `max_val = grid[0][${FOCUS_COL}]`,
-      `min_val = grid[0][${FOCUS_COL}]`,
-      'for r in range(1, len(grid)):',
-      `    if grid[r][${FOCUS_COL}] > max_val:`,
-      `        max_val = grid[r][${FOCUS_COL}]`,
-      `    if grid[r][${FOCUS_COL}] < min_val:`,
-      `        min_val = grid[r][${FOCUS_COL}]`,
+      'col_maxs = []',
+      'col_mins = []',
+      'for c in range(len(grid[0])):',
+      '    max_val = grid[0][c]',
+      '    min_val = grid[0][c]',
+      '    for r in range(1, len(grid)):',
+      '        if grid[r][c] > max_val:',
+      '            max_val = grid[r][c]',
+      '        if grid[r][c] < min_val:',
+      '            min_val = grid[r][c]',
+      '    col_maxs.append(max_val)',
+      '    col_mins.append(min_val)',
     ],
-    steps: buildSteps('col'),
+    steps: buildStepsCols(),
   },
 };
 
@@ -372,7 +700,8 @@ CompSimu.createPlayer({
   programs,
   initialMode: 'all',
   initialState: () => ({
-    r: -1, c: -1, probeR: -1, probeC: -1, max: undefined, min: undefined, visited: [], done: false, flash: null,
+    r: -1, c: -1, probeR: -1, probeC: -1, max: undefined, min: undefined,
+    visited: [], maxs: [], mins: [], activeBand: -1, done: false, flash: null,
   }),
   render,
 });
