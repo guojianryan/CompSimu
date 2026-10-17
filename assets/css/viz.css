@@ -4,6 +4,42 @@
   display: flex; justify-content: center; align-items: flex-end; gap: 8px; flex-wrap: wrap;
   min-height: 88px;
 }
+
+/* 2D matrix grid */
+.matrix-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+.matrix-caption {
+  font: 600 12px/1.3 var(--mono); color: var(--brand-tag); min-height: 1.3em; text-align: center;
+}
+.matrix-caption .muted-cap { color: var(--muted); font-weight: 500; }
+.matrix-grid {
+  display: grid; gap: 6px; align-items: center; justify-items: center;
+  grid-template-columns: 28px repeat(var(--cols, 3), 52px);
+}
+.matrix-corner { width: 28px; height: 20px; }
+.matrix-colh, .matrix-rowh {
+  font: 700 10px/1 var(--mono); color: var(--stone); letter-spacing: .3px; text-transform: uppercase;
+}
+.matrix-colh { height: 20px; display: grid; place-items: center; }
+.matrix-rowh { width: 28px; text-align: center; }
+.matrix-colh.active, .matrix-rowh.active { color: var(--brand-tag); }
+.matrix-grid .cell { width: 52px; }
+.matrix-grid .cell .idx { font-size: 9px; }
+.cell.row-band { background: rgba(55,114,207,.05); }
+.cell.col-band { background: rgba(245,90,60,.05); }
+.cell.visited { border-color: var(--brand-green-deep); background: rgba(0,180,138,.08); }
+.output-tray {
+  display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center;
+  min-height: 34px; max-width: 100%;
+}
+.output-tray .out-label {
+  font: 600 11px/1 var(--sans); letter-spacing: .4px; text-transform: uppercase; color: var(--steel); margin-right: 4px;
+}
+.output-tray .out-chip {
+  font: 700 12px/1 var(--mono); padding: 5px 8px; border-radius: var(--r-full);
+  background: rgba(55,114,207,.1); color: var(--brand-tag); border: 1px solid rgba(55,114,207,.2);
+}
+.output-tray .out-chip.latest { background: rgba(0,212,164,.16); color: var(--brand-green-deep); border-color: rgba(0,180,138,.35); box-shadow: 0 0 0 2px rgba(0,212,164,.12); }
+
 .cell {
   width: 56px; text-align: center; position: relative;
   background: var(--canvas); border: 1px solid var(--hairline); border-radius: var(--r-md);
