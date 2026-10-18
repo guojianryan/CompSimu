@@ -17,6 +17,7 @@ simulations/python-swap/index.html      Swapping two variables (temp-variable me
 simulations/array-sum/index.html        Totalling an array (accumulator)
 simulations/count-occurrences/index.html Counting occurrences
 simulations/max-min/index.html          Finding max and min
+simulations/parallel-arrays/index.html  Parallel arrays (linear search lookup)
 simulations/linear-search/index.html    Linear search
 simulations/binary-search/index.html    Binary search
 simulations/bubble-sort/index.html      Bubble sort

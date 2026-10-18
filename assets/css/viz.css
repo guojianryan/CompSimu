@@ -542,3 +542,70 @@
   .fec-bus { flex: 1 1 30%; min-width: 90px; }
   .fec-regs { grid-template-columns: 1fr 1fr; }
 }
+
+/* Parallel arrays — two aligned rows linked by a shared index */
+.pa-stage { min-height: 320px; gap: 14px; }
+.pa-wrap {
+  width: 100%; max-width: 560px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.pa-row {
+  display: grid; grid-template-columns: 64px 1fr; gap: 10px; align-items: center;
+}
+.pa-label {
+  font: 700 12px/1.2 var(--mono); color: var(--steel); text-align: right;
+  letter-spacing: .2px;
+}
+.pa-row .array-row {
+  justify-content: flex-start; min-height: 72px; flex-wrap: nowrap;
+}
+.pa-row .cell { width: 64px; }
+.pa-row .cell .v { font-size: 16px; padding: 10px 2px 12px; }
+.pa-row .cell.linked {
+  border-color: var(--brand-green-deep);
+  background: rgba(0,212,164,.14);
+  box-shadow: 0 0 0 3px rgba(0,212,164,.18);
+}
+
+.pa-link {
+  position: relative; height: 28px; margin: 0 0 0 74px;
+  display: flex; align-items: center; justify-content: flex-start;
+}
+.pa-link.idle { justify-content: center; margin-left: 64px; opacity: .7; }
+.pa-link-tag {
+  font: 700 11px/1 var(--mono); color: var(--brand-tag);
+  background: rgba(55,114,207,.1); border: 1px solid rgba(55,114,207,.25);
+  padding: 4px 8px; border-radius: var(--r-full); z-index: 1;
+}
+.pa-link-tag.muted { color: var(--stone); background: var(--surface-soft); border-color: var(--hairline); font-weight: 600; }
+.pa-link-line {
+  position: absolute; top: 0; bottom: 0; width: 2px;
+  left: calc(var(--i, 0) * 72px + 32px);
+  background: var(--brand-tag);
+  border-radius: var(--r-full);
+  box-shadow: 0 0 0 3px rgba(55,114,207,.12);
+}
+.pa-link .pa-link-tag {
+  position: absolute;
+  left: calc(var(--i, 0) * 72px + 32px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.pa-link.on .pa-link-line {
+  background: var(--brand-green-deep);
+  box-shadow: 0 0 0 3px rgba(0,212,164,.18);
+}
+.pa-link.on .pa-link-tag {
+  color: var(--brand-green-deep);
+  background: rgba(0,212,164,.12);
+  border-color: rgba(0,180,138,.35);
+}
+
+@media (max-width: 640px) {
+  .pa-row { grid-template-columns: 48px 1fr; gap: 6px; }
+  .pa-row .cell { width: 52px; }
+  .pa-row .cell .v { font-size: 13px; }
+  .pa-link { margin-left: 54px; }
+  .pa-link-line,
+  .pa-link .pa-link-tag { left: calc(var(--i, 0) * 60px + 26px); }
+}
