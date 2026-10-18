@@ -59,12 +59,14 @@
         <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Search then look up</span></div>
         <div class="code-block">
           <div class="code-block-header"><span>find_mark.py</span><span>Python</span></div>
-<pre><span class="tok-op">for</span> i <span class="tok-op">in</span> <span class="tok-op">range</span>(<span class="tok-op">len</span>(names)):
+<pre>result = <span class="tok-op">None</span>
+<span class="tok-op">for</span> i <span class="tok-op">in</span> <span class="tok-op">range</span>(<span class="tok-op">len</span>(names)):
     <span class="tok-op">if</span> names[i] == target:
-        <span class="tok-op">return</span> marks[i]
-<span class="tok-op">return</span> <span class="tok-op">None</span></pre>
+        result = marks[i]
+        <span class="tok-op">break</span>
+<span class="tok-op">print</span>(result)</pre>
         </div>
-        <p class="muted" style="margin:0;font-size:14px">Find <code>"Chen"</code> in <code>names</code>, then read <code>marks</code> at that index.</p>
+        <p class="muted" style="margin:0;font-size:14px">Find <code>"Chen"</code> in <code>names</code>, store <code>marks[i]</code>, then <code>break</code> and print.</p>
       </div>
     </div>
   </section>
@@ -197,24 +199,27 @@ const DATA = {
 };
 
 const LINES = [
+  'result = None',
   'for i in range(len(names)):',
   '    if names[i] == target:',
-  '        return marks[i]',
-  'return None',
+  '        result = marks[i]',
+  '        break',
+  'print(result)',
 ];
 
 function buildSteps(names, marks, target) {
   const steps = [];
   steps.push({
     line: 0, badge: 'Setup',
-    text: `Two parallel arrays: <code>names</code> and <code>marks</code>. Search for <code>"${target}"</code> with linear search, then read the mark at the same index.`,
+    text: `Start with <code>result = None</code>. Two parallel arrays: <code>names</code> and <code>marks</code>. Search for <code>"${target}"</code>; if found, store the mark and <code>break</code>.`,
     apply(s) {
       s.i = 0;
       s.probe = -1;
       s.done = false;
       s.found = false;
-      s.result = undefined;
+      s.result = null;
       s.linked = false;
+      s.printed = false;
     }
   });
 
@@ -224,7 +229,7 @@ function buildSteps(names, marks, target) {
     const match = name === target;
 
     steps.push({
-      line: 1,
+      line: 2,
       text: match
         ? `Compare <code>names[${i}]</code> (<code>"${name}"</code>) with target <code>"${target}"</code>. <strong>Match!</strong>`
         : `Compare <code>names[${i}]</code> (<code>"${name}"</code>) with target <code>"${target}"</code>. Not equal — keep scanning.`,
@@ -235,21 +240,49 @@ function buildSteps(names, marks, target) {
         s.linked = false;
         s.found = false;
         s.done = false;
-        s.result = undefined;
+        s.printed = false;
+        s.result = null;
       }
     });
 
     if (match) {
       steps.push({
-        line: 2, kind: 'good', badge: 'Lookup',
-        text: `Same index in the parallel array: return <code>marks[${i}]</code> → <code>${mark}</code>. Linear search found the name; the index unlocks the mark.`,
+        line: 3, kind: 'good', badge: 'Lookup',
+        text: `Same index in the parallel array: set <code>result = marks[${i}]</code> → <code>${mark}</code>.`,
         apply(s) {
           s.i = i;
           s.probe = i;
           s.found = true;
-          s.done = true;
           s.linked = true;
           s.result = mark;
+          s.done = false;
+          s.printed = false;
+        }
+      });
+      steps.push({
+        line: 4, kind: 'good', badge: 'Break',
+        text: `<code>break</code> leaves the loop early — no need to check the remaining names.`,
+        apply(s) {
+          s.i = i;
+          s.probe = i;
+          s.found = true;
+          s.linked = true;
+          s.result = mark;
+          s.done = false;
+          s.printed = false;
+        }
+      });
+      steps.push({
+        line: 5, kind: 'good', badge: 'Print',
+        text: `Print the result: <code>${mark}</code>. Linear search found the name; the shared index unlocked the mark.`,
+        apply(s) {
+          s.i = i;
+          s.probe = i;
+          s.found = true;
+          s.linked = true;
+          s.result = mark;
+          s.done = true;
+          s.printed = true;
         }
       });
       return steps;
@@ -257,14 +290,15 @@ function buildSteps(names, marks, target) {
   }
 
   steps.push({
-    line: 3, kind: 'warn', badge: 'Missing',
-    text: `Checked every name. <code>"${target}"</code> is not in <code>names</code> — return <code>None</code>. No index means no mark to look up.`,
+    line: 5, kind: 'warn', badge: 'Print',
+    text: `Checked every name. <code>"${target}"</code> was never found, so <code>result</code> is still <code>None</code> — print that.`,
     apply(s) {
       s.done = true;
       s.found = false;
       s.probe = -1;
       s.linked = false;
       s.result = null;
+      s.printed = true;
     }
   });
   return steps;
@@ -308,8 +342,12 @@ function render(state) {
       </div>`
     : `<div class="pa-link idle"><span class="pa-link-tag muted">same index</span></div>`;
 
+  const resultShown = state.result === null ? 'None'
+    : state.result === undefined ? undefined
+    : state.result;
+
   const vars = CompSimu.renderVars([
-    { name: 'i', value: state.probe >= 0 ? state.probe : undefined, flash: state.probe >= 0 && !state.done },
+    { name: 'i', value: state.probe >= 0 ? state.probe : undefined, flash: state.probe >= 0 && !state.linked },
     { name: 'target', value: state.target },
     {
       name: 'names[i]',
@@ -319,12 +357,13 @@ function render(state) {
     {
       name: 'marks[i]',
       value: state.linked ? state.marks[state.probe] : undefined,
-      flash: state.linked,
+      flash: state.linked && !state.printed,
     },
     {
       name: 'result',
-      value: state.done ? (state.found ? state.result : 'None') : undefined,
-      flash: state.done,
+      value: resultShown,
+      flash: state.linked || state.printed,
+      badge: state.printed ? 'printed' : undefined,
     },
   ]);
 
@@ -342,14 +381,14 @@ const programs = {
   found: {
     file: 'find_mark.py',
     label: 'name found',
-    ready: 'Press <b>Step</b> to scan <code>names</code> for <code>"Chen"</code>. When it matches, read <code>marks</code> at the same index.',
+    ready: 'Press <b>Step</b> to scan <code>names</code> for <code>"Chen"</code>. On a match, set <code>result</code>, <code>break</code>, then <code>print</code>.',
     lines: LINES,
     steps: buildSteps(DATA.found.names, DATA.found.marks, DATA.found.target),
   },
   missing: {
     file: 'find_mark.py',
     label: 'name missing',
-    ready: 'Search for <code>"Gus"</code>. Linear search will check every name — and find no parallel mark to return.',
+    ready: 'Search for <code>"Gus"</code>. The loop finishes without a match, so <code>print</code> shows <code>None</code>.',
     lines: LINES,
     steps: buildSteps(DATA.missing.names, DATA.missing.marks, DATA.missing.target),
   },
@@ -369,6 +408,7 @@ CompSimu.createPlayer({
       found: false,
       done: false,
       linked: false,
+      printed: false,
       result: undefined,
     };
   },
