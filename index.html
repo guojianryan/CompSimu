@@ -83,6 +83,7 @@
   .sim-thumb.t-count { background: linear-gradient(160deg, #d9e8fb 0%, #edf3fb 55%, #f7f9fc 100%); }
   .sim-thumb.t-maxmin { background: linear-gradient(160deg, #ffe4d6 0%, #fff1ea 55%, #fff8f4 100%); }
   .sim-thumb.t-linear { background: linear-gradient(160deg, #dce7f5 0%, #eef3fa 55%, #f7f9fc 100%); }
+  .sim-thumb.t-parallel { background: linear-gradient(160deg, #dde8f6 0%, #e9f0f9 50%, #f4eef6 100%); }
   .sim-thumb.t-binary { background: linear-gradient(160deg, #d7f0ea 0%, #eaf7f3 50%, #dce8f6 100%); }
   .sim-thumb.t-bubble { background: linear-gradient(160deg, #e0e7f4 0%, #eef2f9 55%, #f7f9fc 100%); }
   .sim-thumb.t-select { background: linear-gradient(160deg, #d6f2e6 0%, #ebf8f1 55%, #f5fbf8 100%); }
@@ -113,6 +114,20 @@
   .thumb-chip.probe { background: rgba(55,114,207,.16); border-color: rgba(55,114,207,.4); color: var(--brand-tag); box-shadow: 0 0 0 3px rgba(55,114,207,.12); }
   .thumb-chip.dim { opacity: .38; }
   .thumb-chip.hit { background: rgba(0,212,164,.22); border-color: var(--brand-green-deep); }
+  .thumb-parallel {
+    display: flex; flex-direction: column; gap: 6px; width: min(210px, 88%);
+  }
+  .thumb-parallel .pr {
+    display: flex; gap: 5px; align-items: center;
+  }
+  .thumb-parallel .pl {
+    width: 42px; font: 700 9px/1 var(--mono); color: var(--steel); text-align: right; flex-shrink: 0;
+  }
+  .thumb-parallel .thumb-chip { min-width: 26px; height: 28px; font-size: 11px; padding: 0 5px; }
+  .thumb-parallel .thumb-chip.pair {
+    background: rgba(0,212,164,.18); border-color: rgba(0,180,138,.45); color: var(--brand-green-deep);
+    animation: thumb-pulse 2.2s ease-in-out infinite;
+  }
   .thumb-total {
     margin-left: 8px; min-width: 54px; padding: 8px 10px; border-radius: 12px; text-align: center;
     background: #fff; border: 1px solid rgba(0,180,138,.3); box-shadow: var(--shadow-soft);
@@ -500,6 +515,23 @@
             <h3 class="h5">Max &amp; min in a 2D array</h3>
             <p>Find extremes across the whole grid, or build max/min lists — one pair per row, or per column.</p>
             <div class="sim-foot"><span>2D arrays · Comparisons</span><span class="btn-link">Open →</span></div>
+          </div>
+        </a>
+
+        <a class="card sim-card" href="simulations/parallel-arrays/index.html" data-cat="python">
+          <div class="sim-thumb t-parallel">
+            <div class="thumb-scene">
+              <div class="thumb-parallel">
+                <div class="pr"><span class="pl">names</span><span class="thumb-chip">Ada</span><span class="thumb-chip pair">Chen</span><span class="thumb-chip">Eve</span></div>
+                <div class="pr"><span class="pl">marks</span><span class="thumb-chip">88</span><span class="thumb-chip pair">95</span><span class="thumb-chip">90</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Programming</span><span class="badge badge-soft">Beginner</span></div>
+            <h3 class="h5">Parallel arrays</h3>
+            <p>Keep related lists aligned by index — linear search a name, then read the mark at the same position.</p>
+            <div class="sim-foot"><span>Arrays · Linear search</span><span class="btn-link">Open →</span></div>
           </div>
         </a>
 

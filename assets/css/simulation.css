@@ -68,6 +68,8 @@
 .var[data-name="mid"], .var[data-name="max"], .var[data-name="max_val"] { --c: var(--brand-green-deep); }
 .var[data-name="hi"], .var[data-name="top"], .var[data-name="front"], .var[data-name="size"] { --c: var(--orange); }
 .var[data-name="temp"], .var[data-name="result"], .var[data-name="x"] { --c: var(--brand-green-deep); }
+.var[data-name="names[i]"] { --c: var(--brand-tag); }
+.var[data-name="marks[i]"] { --c: var(--brand-green-deep); }
 .var[data-name="swapped"] { --c: var(--brand-warn); }
 .var[data-name="r"], .var[data-name="c"], .var[data-name="row"], .var[data-name="col"] { --c: var(--brand-tag); }
 .var[data-name="printed"] { --c: var(--brand-green-deep); }

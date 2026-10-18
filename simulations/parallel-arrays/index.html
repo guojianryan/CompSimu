@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Parallel arrays — CompSimu</title>
+<meta name="description" content="Learn parallel arrays by searching one list with linear search and reading the matching value from a second list at the same index." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Parallel arrays</span>
+    </nav>
+    <h1 class="h1">Parallel arrays</h1>
+    <p class="subtitle" style="max-width:720px">Two arrays, same length, same order. Index <code>i</code> in one list pairs with index <code>i</code> in the other — so a linear search on names can look up a mark.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Programming</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">Arrays · Linear search</span>
+      <span class="badge badge-soft">~6 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Same index, related data</h2>
+        <p>Sometimes one array is not enough. You might store <strong>names</strong> in one list and <strong>marks</strong> in another. They stay in lockstep: the student at <code>names[2]</code> has the mark at <code>marks[2]</code>.</p>
+        <p>That pairing is a <strong>parallel array</strong>. To look something up, use linear search on the key array, then read the other array at the same index.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Keep the arrays the same length. If you insert or delete in one, do the same at the same index in the other.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Search then look up</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>find_mark.py</span><span>Python</span></div>
+<pre><span class="tok-op">for</span> i <span class="tok-op">in</span> <span class="tok-op">range</span>(<span class="tok-op">len</span>(names)):
+    <span class="tok-op">if</span> names[i] == target:
+        <span class="tok-op">return</span> marks[i]
+<span class="tok-op">return</span> <span class="tok-op">None</span></pre>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">Find <code>"Chen"</code> in <code>names</code>, then read <code>marks</code> at that index.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">Both arrays highlight the same index. Linear search walks <code>names</code>; the match unlocks <code>marks[i]</code>.</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="found" role="tab">Name found</button>
+            <button class="pill-tab" data-mode="missing" role="tab">Name missing</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">demo.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Parallel arrays</span><span id="stageMode">demo</span></div>
+            <div class="stage viz-stage pa-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">Why parallel arrays matter</h2>
+        <p class="subtitle">One index ties related facts together without a single “record” type.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">Index</span>
+          <h3 class="h5">Same position = same person</h3>
+          <p class="muted" style="margin:0;font-size:14px"><code>names[i]</code> and <code>marks[i]</code> belong together. Never mix indices across the two lists.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">Search</span>
+          <h3 class="h5">Linear search finds the key</h3>
+          <p class="muted" style="margin:0;font-size:14px">Scan the key array (<code>names</code>) until you match the target, then stop — just like ordinary linear search.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-soft" style="align-self:flex-start">Lookup</span>
+          <h3 class="h5">Reuse the index</h3>
+          <p class="muted" style="margin:0;font-size:14px">Once you know <code>i</code>, read any parallel array at <code>i</code> — marks, ages, IDs, and so on.</p>
+        </div>
+      </div>
+      <div class="card-feature next-card" style="margin-top:40px">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Linear search</h3>
+          <p class="muted" style="margin:6px 0 0">The same scan pattern on a single array — compare each element until you find the target.</p>
+        </div>
+        <a class="btn btn-primary" href="../linear-search/index.html">Open linear search</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+
+const NAMES = ['Ada', 'Ben', 'Chen', 'Dana', 'Eve'];
+const MARKS = [88, 72, 95, 81, 90];
+
+const DATA = {
+  found: { names: NAMES, marks: MARKS, target: 'Chen' },
+  missing: { names: NAMES, marks: MARKS, target: 'Gus' },
+};
+
+const LINES = [
+  'for i in range(len(names)):',
+  '    if names[i] == target:',
+  '        return marks[i]',
+  'return None',
+];
+
+function buildSteps(names, marks, target) {
+  const steps = [];
+  steps.push({
+    line: 0, badge: 'Setup',
+    text: `Two parallel arrays: <code>names</code> and <code>marks</code>. Search for <code>"${target}"</code> with linear search, then read the mark at the same index.`,
+    apply(s) {
+      s.i = 0;
+      s.probe = -1;
+      s.done = false;
+      s.found = false;
+      s.result = undefined;
+      s.linked = false;
+    }
+  });
+
+  for (let i = 0; i < names.length; i++) {
+    const name = names[i];
+    const mark = marks[i];
+    const match = name === target;
+
+    steps.push({
+      line: 1,
+      text: match
+        ? `Compare <code>names[${i}]</code> (<code>"${name}"</code>) with target <code>"${target}"</code>. <strong>Match!</strong>`
+        : `Compare <code>names[${i}]</code> (<code>"${name}"</code>) with target <code>"${target}"</code>. Not equal — keep scanning.`,
+      kind: match ? 'good' : undefined,
+      apply(s) {
+        s.i = i;
+        s.probe = i;
+        s.linked = false;
+        s.found = false;
+        s.done = false;
+        s.result = undefined;
+      }
+    });
+
+    if (match) {
+      steps.push({
+        line: 2, kind: 'good', badge: 'Lookup',
+        text: `Same index in the parallel array: return <code>marks[${i}]</code> → <code>${mark}</code>. Linear search found the name; the index unlocks the mark.`,
+        apply(s) {
+          s.i = i;
+          s.probe = i;
+          s.found = true;
+          s.done = true;
+          s.linked = true;
+          s.result = mark;
+        }
+      });
+      return steps;
+    }
+  }
+
+  steps.push({
+    line: 3, kind: 'warn', badge: 'Missing',
+    text: `Checked every name. <code>"${target}"</code> is not in <code>names</code> — return <code>None</code>. No index means no mark to look up.`,
+    apply(s) {
+      s.done = true;
+      s.found = false;
+      s.probe = -1;
+      s.linked = false;
+      s.result = null;
+    }
+  });
+  return steps;
+}
+
+function cellClass(state, i, kind) {
+  let cls = 'cell';
+  const probing = state.probe === i;
+  if (probing && state.found) cls += ' match';
+  else if (probing) cls += ' probe';
+  if (state.probe >= 0 && i < state.probe && !state.found) cls += ' discard';
+  if (state.done && !state.found) cls += ' discard';
+  if (kind === 'mark' && state.linked && probing) cls += ' linked';
+  return cls;
+}
+
+function renderArrayRow(label, values, state, kind) {
+  const cells = values.map((v, i) => {
+    const shown = typeof v === 'string' ? v : v;
+    return `<div class="${cellClass(state, i, kind)}">
+      <span class="idx">${i}</span>
+      <div class="v">${shown}</div>
+    </div>`;
+  }).join('');
+  return `<div class="pa-row">
+    <div class="pa-label">${label}</div>
+    <div class="array-row">${cells}</div>
+  </div>`;
+}
+
+function render(state) {
+  const stage = document.getElementById('stage');
+  const names = state.names;
+  const marks = state.marks;
+  const n = names.length;
+
+  const link = state.probe >= 0
+    ? `<div class="pa-link${state.linked ? ' on' : ''}" style="--i:${state.probe};--n:${n}">
+        <span class="pa-link-line"></span>
+        <span class="pa-link-tag">i = ${state.probe}</span>
+      </div>`
+    : `<div class="pa-link idle"><span class="pa-link-tag muted">same index</span></div>`;
+
+  const vars = CompSimu.renderVars([
+    { name: 'i', value: state.probe >= 0 ? state.probe : undefined, flash: state.probe >= 0 && !state.done },
+    { name: 'target', value: state.target },
+    {
+      name: 'names[i]',
+      value: state.probe >= 0 ? state.names[state.probe] : undefined,
+      flash: state.probe >= 0 && !state.linked,
+    },
+    {
+      name: 'marks[i]',
+      value: state.linked ? state.marks[state.probe] : undefined,
+      flash: state.linked,
+    },
+    {
+      name: 'result',
+      value: state.done ? (state.found ? state.result : 'None') : undefined,
+      flash: state.done,
+    },
+  ]);
+
+  stage.innerHTML = `
+    <div class="pa-wrap">
+      ${renderArrayRow('names', names, state, 'name')}
+      ${link}
+      ${renderArrayRow('marks', marks, state, 'mark')}
+    </div>
+    ${vars}
+  `;
+}
+
+const programs = {
+  found: {
+    file: 'find_mark.py',
+    label: 'name found',
+    ready: 'Press <b>Step</b> to scan <code>names</code> for <code>"Chen"</code>. When it matches, read <code>marks</code> at the same index.',
+    lines: LINES,
+    steps: buildSteps(DATA.found.names, DATA.found.marks, DATA.found.target),
+  },
+  missing: {
+    file: 'find_mark.py',
+    label: 'name missing',
+    ready: 'Search for <code>"Gus"</code>. Linear search will check every name — and find no parallel mark to return.',
+    lines: LINES,
+    steps: buildSteps(DATA.missing.names, DATA.missing.marks, DATA.missing.target),
+  },
+};
+
+CompSimu.createPlayer({
+  programs,
+  initialMode: 'found',
+  initialState: (mode) => {
+    const d = DATA[mode || 'found'];
+    return {
+      names: [...d.names],
+      marks: [...d.marks],
+      target: d.target,
+      i: -1,
+      probe: -1,
+      found: false,
+      done: false,
+      linked: false,
+      result: undefined,
+    };
+  },
+  render,
+});
+
+</script>
+</body>
+</html>
