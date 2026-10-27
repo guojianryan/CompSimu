@@ -92,7 +92,7 @@
 }
 .loop-lab .code li::before {
   content: counter(ln); display: inline-block; width: 2.6em; text-align: right;
-  padding-right: 1em; color: var(--steel); opacity: .6;
+  padding-right: 1em; color: var(--slate); opacity: .85;
 }
 .loop-lab .code li.active { background: var(--accent-soft); border-left-color: var(--accent); }
 .loop-lab .code li.active.err { background: var(--ll-bad-soft); border-left-color: var(--ll-bad); }
