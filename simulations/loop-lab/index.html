@@ -34,7 +34,7 @@
       <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
       <span style="color:var(--ink)">Loop Lab</span>
     </nav>
-    <h1 class="h1">Loop Lab: <span style="color:#2453c4">for</span> vs <span style="color:#b4500b">while</span></h1>
+    <h1 class="h1">Loop Lab: <span style="color:var(--brand-tag)">for</span> vs <span style="color:var(--brand-warn)">while</span></h1>
     <p class="subtitle" style="max-width:720px">Pick a task, then step through both loops line by line. Watch the highlighted line, the variables, the loop check, and the output change on each step.</p>
     <div class="meta">
       <span class="badge badge-tag">Programming</span>
@@ -360,15 +360,15 @@ function stop() {
 
 function chooseScenario(key) {
   scen = key;
-  document.querySelectorAll("#chips .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.key === key));
+  document.querySelectorAll("#chips .task-chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.key === key));
   document.getElementById("takeaway").textContent = SCENARIOS[key].takeaway;
   sides.forEach(buildPanel);
   reset();
 }
 
 document.getElementById("chips").innerHTML = Object.entries(SCENARIOS)
-  .map(([k, s]) => `<button type="button" class="chip" data-key="${k}" aria-pressed="false">${s.label}</button>`).join("");
-document.getElementById("chips").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) chooseScenario(b.dataset.key); });
+  .map(([k, s]) => `<button type="button" class="task-chip" data-key="${k}" aria-pressed="false">${s.label}</button>`).join("");
+document.getElementById("chips").addEventListener("click", e => { const b = e.target.closest(".task-chip"); if (b) chooseScenario(b.dataset.key); });
 document.getElementById("stepBtn").addEventListener("click", () => { stop(); if (finished()) reset(); else step(); });
 document.getElementById("runBtn").addEventListener("click", () => timer === null ? play() : stop());
 document.getElementById("resetBtn").addEventListener("click", reset);
