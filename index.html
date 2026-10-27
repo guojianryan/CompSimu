@@ -35,12 +35,12 @@
   .mockup-bar .url { margin-left: 12px; font-family: var(--mono); font-size: 12px; background: var(--surface); padding: 3px 10px; border-radius: var(--r-sm); }
   .mockup-body { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; padding: 24px; text-align: left; }
   .mock-line { display: block; padding: 2px 10px; margin: 0 -10px; border-radius: 4px; }
-  .mock-line.on { background: rgba(0,212,164,.16); box-shadow: inset 2px 0 0 var(--brand-green); }
+  .mock-line.on { background: rgba(36,83,196,.16); box-shadow: inset 2px 0 0 var(--brand-tag); }
   .mock-stage { background: var(--surface); border: 1px solid var(--hairline); border-radius: var(--r-md); display: flex; align-items: center; justify-content: center; gap: 16px; padding: 24px; position: relative; }
   .mbox { width: 104px; background: var(--canvas); border: 1px solid var(--hairline); border-radius: var(--r-lg); padding: 10px; text-align: center; box-shadow: var(--shadow-soft); }
   .mbox .n { font: 600 12px var(--mono); padding: 1px 8px; border-radius: var(--r-full); color: #fff; display: inline-block; }
   .mbox .v { font: 600 30px var(--mono); margin-top: 6px; background: var(--surface-soft); border-radius: var(--r-md); padding: 6px 0; }
-  .mbox.a .n { background: var(--brand-tag); } .mbox.b .n { background: var(--orange); } .mbox.t .n { background: var(--brand-green); color: var(--primary); }
+  .mbox.a .n { background: var(--brand-tag); } .mbox.b .n { background: var(--orange); color: #fff; } .mbox.t .n { background: var(--brand-green); color: #fff; }
   .mbox.t { border-color: var(--brand-green); }
   .mock-caption { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; font-size: 14px; color: var(--slate); background: rgba(55,114,207,.06); border: 1px solid rgba(55,114,207,.18); border-radius: var(--r-md); padding: 10px 14px; }
 
@@ -70,7 +70,7 @@
   .sim-body p { margin: 0; color: var(--steel); font-size: 14px; }
   .sim-meta { display: flex; gap: 8px; flex-wrap: wrap; }
   .sim-foot { margin-top: auto; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--steel); }
-  .sim-card.featured { border: 2px solid var(--brand-green); box-shadow: rgba(0,212,164,.08) 0 8px 24px; }
+  .sim-card.featured { border: 2px solid var(--brand-tag); box-shadow: rgba(36,83,196,.1) 0 8px 24px; }
   .sim-card.soon { background: var(--surface-soft); }
   .sim-card.soon .sim-thumb { filter: saturate(.75); }
   .sim-card.soon .h5 { color: var(--slate); }
@@ -78,6 +78,7 @@
   .plus { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--hairline); display: grid; place-items: center; font-size: 22px; color: var(--steel); background: var(--canvas); }
 
   /* Per-card atmospheric tints (Mintlify dual-mode + Notion tinted cards) */
+  .sim-thumb.t-loop { background: linear-gradient(160deg, #dce6f6 0%, #e8eef8 45%, #f7efe6 100%); }
   .sim-thumb.t-swap { background: linear-gradient(160deg, #dce8f8 0%, #eef4fb 55%, #f7fafc 100%); }
   .sim-thumb.t-sum { background: linear-gradient(160deg, #d4f3e8 0%, #eaf8f2 55%, #f5fbf8 100%); }
   .sim-thumb.t-count { background: linear-gradient(160deg, #d9e8fb 0%, #edf3fb 55%, #f7f9fc 100%); }
@@ -94,6 +95,18 @@
   .sim-thumb.t-recur { background: linear-gradient(160deg, #dce8e4 0%, #eaf2ef 55%, #f5f9f7 100%); }
   .sim-thumb.t-auto { background: linear-gradient(160deg, #e4ece8 0%, #eef4f1 55%, #f6f9f7 100%); }
   .sim-thumb.t-bool { background: linear-gradient(160deg, #f0e6d8 0%, #f7f0e8 55%, #fbf8f3 100%); }
+
+  .thumb-loop {
+    display: flex; gap: 10px; align-items: stretch; width: min(210px, 90%);
+  }
+  .thumb-loop .tl {
+    flex: 1; border-radius: 10px; padding: 10px 8px; background: rgba(255,255,255,.92);
+    border: 1px solid rgba(36,83,196,.18); display: grid; gap: 4px; place-items: center;
+    font: 800 13px/1 var(--mono);
+  }
+  .thumb-loop .tl.for { color: #2453c4; border-top: 3px solid #2453c4; }
+  .thumb-loop .tl.while { color: #b4500b; border-top: 3px solid #b4500b; border-color: rgba(180,80,11,.22); }
+  .thumb-loop .tl span { font: 600 10px/1.2 var(--sans); color: var(--steel); font-weight: 600; }
 
   .thumb-swap { display: flex; gap: 12px; align-items: center; }
   .thumb-swap .mbox { width: 68px; padding: 6px; animation: thumb-float 3.2s ease-in-out infinite; }
@@ -322,7 +335,7 @@
     </div>
     <div class="nav-cta">
       <a class="btn btn-secondary" href="index.html#contribute">Contribute</a>
-      <a class="btn btn-primary" href="simulations/python-swap/index.html">Start learning</a>
+      <a class="btn btn-primary" href="simulations/loop-lab/index.html">Start learning</a>
     </div>
   </div>
 </nav>
@@ -339,18 +352,18 @@
     </div>
 
     <div class="mockup" aria-hidden="true">
-      <div class="mockup-bar"><i></i><i></i><i></i><span class="url">compsimu / simulations / python-swap</span></div>
+      <div class="mockup-bar"><i></i><i></i><i></i><span class="url">compsimu / simulations / loop-lab</span></div>
       <div class="mockup-body">
         <div class="code-block">
-          <div class="code-block-header"><span>swap_temp.py</span><span>Python</span></div>
-<pre><span class="mock-line"><span class="tok-a">a</span> <span class="tok-op">=</span> <span class="tok-num">5</span></span><span class="mock-line"><span class="tok-b">b</span> <span class="tok-op">=</span> <span class="tok-num">10</span></span><span class="mock-line on"><span class="tok-temp">temp</span> <span class="tok-op">=</span> <span class="tok-a">a</span></span><span class="mock-line"><span class="tok-a">a</span> <span class="tok-op">=</span> <span class="tok-b">b</span></span><span class="mock-line"><span class="tok-b">b</span> <span class="tok-op">=</span> <span class="tok-temp">temp</span></span></pre>
+          <div class="code-block-header"><span>count.py</span><span>Python</span></div>
+<pre><span class="mock-line on"><span class="tok-op">for</span> i <span class="tok-op">in</span> <span class="tok-op">range</span>(<span class="tok-num">1</span>, <span class="tok-num">6</span>):</span><span class="mock-line">    <span class="tok-op">print</span>(i)</span><span class="mock-line"><span class="tok-op">while</span> i &lt;= <span class="tok-num">5</span>:</span><span class="mock-line">    <span class="tok-op">print</span>(i)</span><span class="mock-line">    i += <span class="tok-num">1</span></span></pre>
         </div>
         <div class="mock-stage">
-          <div class="mbox a"><span class="n">a</span><div class="v">5</div></div>
-          <div class="mbox b"><span class="n">b</span><div class="v">10</div></div>
-          <div class="mbox t"><span class="n">temp</span><div class="v">5</div></div>
+          <div class="mbox a"><span class="n">for</span><div class="v">i=3</div></div>
+          <div class="mbox b"><span class="n">while</span><div class="v">i=3</div></div>
+          <div class="mbox t"><span class="n">out</span><div class="v">1 2 3</div></div>
         </div>
-        <div class="mock-caption"><span class="badge badge-tag">Example</span> A programming simulation — theory topics (automata, logic, and more) follow the same step-by-step style.</div>
+        <div class="mock-caption"><span class="badge badge-tag">Example</span> Loop Lab — step through <code>for</code> and <code>while</code> side by side.</div>
       </div>
     </div>
   </div>
@@ -382,7 +395,24 @@
       </div>
 
       <div class="sim-grid" id="simGrid">
-        <a class="card sim-card featured" href="simulations/python-swap/index.html" data-cat="python">
+        <a class="card sim-card featured" href="simulations/loop-lab/index.html" data-cat="python">
+          <div class="sim-thumb t-loop">
+            <div class="thumb-scene">
+              <div class="thumb-loop">
+                <div class="tl for">for<span>counted</span></div>
+                <div class="tl while">while<span>until</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Programming</span><span class="badge badge-soft">Beginner</span></div>
+            <h3 class="h5">Loop Lab: for vs while</h3>
+            <p>Step both loops side by side — see when a counted <code>for</code> fits, and when a condition-driven <code>while</code> is better.</p>
+            <div class="sim-foot"><span>Loops · for · while</span><span class="btn-link">Open →</span></div>
+          </div>
+        </a>
+
+        <a class="card sim-card" href="simulations/python-swap/index.html" data-cat="python">
           <div class="sim-thumb t-swap">
             <div class="thumb-scene">
               <div class="thumb-swap">
@@ -762,7 +792,7 @@
           <h2 class="h2" style="margin:12px 0">Help us build the next simulation</h2>
           <p style="margin:0 0 24px;font-size:17px">Every simulation is a plain HTML page with no build step. Pick a programming or theory concept, add a folder under <code style="background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.2)">simulations/</code>, and open a pull request.</p>
           <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <a class="btn btn-on-dark" href="simulations/python-swap/index.html">See an example</a>
+            <a class="btn btn-on-dark" href="simulations/loop-lab/index.html">See an example</a>
             <a class="btn btn-ghost-dark" href="#simulations">Browse the library</a>
           </div>
         </div>

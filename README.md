@@ -13,6 +13,7 @@ assets/css/simulation.css               Shared simulation UI (code panel, memory
 assets/css/viz.css                      Array / bar / stack / queue visualizations
 assets/js/sim-player.js                 Shared step / play / reset controller
 assets/img/logo.svg                     Favicon / logo
+simulations/loop-lab/index.html         Loop Lab: for vs while
 simulations/python-swap/index.html      Swapping two variables (temp-variable method)
 simulations/array-sum/index.html        Totalling an array (accumulator)
 simulations/count-occurrences/index.html Counting occurrences
@@ -48,4 +49,4 @@ python3 -m http.server 8000
 
 ## Design
 
-Visual style follows the Mintlify design system from [VoltAgent/awesome-design-md](https://github.com/VoltAgent/awesome-design-md/tree/main/design-md/mintlify): Inter + Geist Mono, black pill buttons, a sparing mint accent, a sky-gradient hero, and flat hairline cards.
+Visual style uses Bricolage Grotesque + IBM Plex Sans + JetBrains Mono, a cool gray page background, blue/amber accents for programming concepts, and flat hairline cards.
