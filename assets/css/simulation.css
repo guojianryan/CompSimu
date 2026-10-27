@@ -8,10 +8,10 @@
 .prose p { margin: 0 0 16px; }
 .callout {
   display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: var(--r-md);
-  border: 1px solid rgba(36,83,196,.2); background: rgba(36,83,196,.06); color: var(--slate); font-size: 15px;
+  border: 1px solid rgba(126,162,255,.28); background: rgba(126,162,255,.1); color: var(--slate); font-size: 15px;
 }
-.callout.tip { border-color: rgba(29,122,70,.35); background: rgba(29,122,70,.08); }
-.callout.warn { border-color: rgba(180,35,24,.3); background: rgba(180,35,24,.06); }
+.callout.tip { border-color: rgba(95,208,143,.35); background: rgba(95,208,143,.1); }
+.callout.warn { border-color: rgba(255,138,125,.35); background: rgba(255,138,125,.1); }
 .callout .badge { flex-shrink: 0; }
 
 .sim-shell { border: 1px solid var(--hairline); border-radius: var(--r-lg); background: var(--canvas); padding: 20px; box-shadow: var(--shadow-soft); }
@@ -35,14 +35,14 @@
   flex: 1 1 auto; min-width: 0; white-space: pre; tab-size: 4; line-height: 1.55;
 }
 .code-lines .ln.done { color: #8e8e93; }
-.code-lines .ln.current { background: rgba(36,83,196,.18); border-left-color: var(--brand-tag); color: #fff; }
+.code-lines .ln.current { background: rgba(126,162,255,.18); border-left-color: var(--brand-tag); color: #fff; }
 .code-lines .ln.current .num { color: #7ea2ff; }
 
 .stage-panel { border: 1px solid var(--hairline); border-radius: var(--r-md); display: flex; flex-direction: column; overflow: hidden; background: var(--surface); }
 .stage-head { display: flex; justify-content: space-between; padding: 8px 16px; border-bottom: 1px solid var(--hairline); font: 600 11px/1.4 var(--sans); letter-spacing: .5px; text-transform: uppercase; color: var(--steel); background: var(--canvas); }
 .stage {
   position: relative; flex: 1; min-height: 260px; padding: 24px 16px; display: flex; flex-direction: column; justify-content: center; gap: 16px;
-  background-image: radial-gradient(rgba(0,0,0,.06) 1px, transparent 1px); background-size: 16px 16px;
+  background-image: radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px); background-size: 16px 16px;
 }
 .stage-empty { text-align: center; color: var(--stone); font-size: 14px; }
 
@@ -90,7 +90,7 @@
 @keyframes var-pop { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes val-flash {
   0% { transform: scale(1); }
-  40% { transform: scale(1.1); background: color-mix(in srgb, var(--c) 14%, #fff); border-color: var(--c); }
+  40% { transform: scale(1.1); background: color-mix(in srgb, var(--c) 22%, var(--canvas)); border-color: var(--c); }
   100% { transform: scale(1); }
 }
 .chip {
