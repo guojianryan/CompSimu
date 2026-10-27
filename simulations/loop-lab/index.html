@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Loop Lab: for vs while — CompSimu</title>
+<meta name="description" content="Step through for and while loops side by side. See when a counted range fits, and when a condition-driven while loop is the better tool." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/loop-lab.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Loop Lab</span>
+    </nav>
+    <h1 class="h1">Loop Lab: <span style="color:#2453c4">for</span> vs <span style="color:#b4500b">while</span></h1>
+    <p class="subtitle" style="max-width:720px">Pick a task, then step through both loops line by line. Watch the highlighted line, the variables, the loop check, and the output change on each step.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Programming</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">Loops · for · while</span>
+      <span class="badge badge-soft">~8 min</span>
+    </div>
+    <div class="loop-lab" style="margin-top:16px">
+      <div class="rule">
+        <span class="r-for"><code>for</code>: you know how many times to repeat</span>
+        <span class="r-while"><code>while</code>: repeat until something changes</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="simulation" style="padding-top:24px">
+    <div class="container">
+      <div class="loop-lab" id="loopLab">
+        <div class="toolbar">
+          <div class="chips" role="group" aria-label="Choose a task" id="chips"></div>
+          <div class="controls">
+            <button class="btn primary" id="stepBtn" type="button">Step ▸</button>
+            <button class="btn" id="runBtn" type="button">Run</button>
+            <button class="btn" id="resetBtn" type="button">Reset</button>
+            <label class="speed" for="speed">Speed <input id="speed" type="range" min="1" max="5" value="3"></label>
+          </div>
+        </div>
+
+        <p class="takeaway" id="takeaway"></p>
+
+        <div class="panels">
+          <section class="panel p-for" id="panel-for" aria-label="for loop"></section>
+          <section class="panel p-while" id="panel-while" aria-label="while loop"></section>
+        </div>
+        <p class="hint">Keyboard: → or N to step, Space to run or pause, R to reset.</p>
+
+        <section class="quiz" aria-labelledby="quizTitle">
+          <div class="quiz-head">
+            <h2 id="quizTitle">Which loop fits?</h2>
+            <div style="display:flex;gap:12px;align-items:center">
+              <span class="score" id="score">0 / 8</span>
+              <button class="btn" id="quizReset" type="button">Try again</button>
+            </div>
+          </div>
+          <div class="qgrid" id="qgrid"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="card-feature next-card" style="display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap">
+        <div>
+          <span class="eyebrow">Up next</span>
+          <h3 class="h4" style="margin-top:6px">Swapping two variables</h3>
+          <p class="muted" style="margin:6px 0 0">See why a temp variable keeps values alive when assignment overwrites.</p>
+        </div>
+        <a class="btn btn-primary" href="../python-swap/index.html">Open swap</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function mk(v, out) { return (line, note, x = {}) => ({ line, note, vars: { ...v }, out: [...out], ...x }); }
+
+const SCENARIOS = {
+  count: {
+    label: "Count 1 to 5",
+    takeaway: "Same output, different work. The for loop sets up, checks and updates i for you. The while loop makes you write all three yourself: i = 1, then i <= 5, then i += 1.",
+    for: {
+      lines: ["for i in range(1, 6):", "    print(i)", 'print("Done")'],
+      *gen() {
+        const v = {}, out = [], S = mk(v, out);
+        for (let i = 1; i <= 5; i++) {
+          v.i = i;
+          yield S(0, `Take the next value from range: i = ${i}`, { check: { expr: "next value in range(1, 6)?", filled: `yes, ${i}`, result: true } });
+          out.push(String(i));
+          yield S(1, `Print ${i}`);
+        }
+        yield S(0, "No values left in range(1, 6), so the loop ends.", { check: { expr: "next value in range(1, 6)?", filled: "none left", result: false } });
+        out.push("Done");
+        yield S(2, "The loop is over. The program carries on.", { done: true });
+      }
+    },
+    while: {
+      lines: ["i = 1", "while i <= 5:", "    print(i)", "    i += 1", 'print("Done")'],
+      *gen() {
+        const v = {}, out = [], S = mk(v, out);
+        v.i = 1;
+        yield S(0, "Set up the counter: i = 1");
+        while (true) {
+          const r = v.i <= 5;
+          yield S(1, r ? `Check: ${v.i} <= 5 is True, so go inside the loop.` : `Check: ${v.i} <= 5 is False, so the loop ends.`, { check: { expr: "i <= 5", filled: `${v.i} <= 5`, result: r } });
+          if (!r) break;
+          out.push(String(v.i));
+          yield S(2, `Print ${v.i}`);
+          v.i++;
+          yield S(3, `Update the counter: i is now ${v.i}`);
+        }
+        out.push("Done");
+        yield S(4, "The loop is over. The program carries on.", { done: true });
+      }
+    }
+  },
+
+  dice: {
+    label: "Roll until a 6",
+    takeaway: "Nobody knows how many rolls it will take. The while loop simply keeps checking roll != 6. The for loop needs a guessed limit (10 tries) plus a break, and it can run out of tries before a 6 shows up. Press Reset for new rolls.",
+    for: {
+      lines: ["for attempt in range(1, 11):", "    roll = random.randint(1, 6)", "    print(roll)", "    if roll == 6:", "        break", 'print("Stopped after", attempt, "rolls")'],
+      *gen(rolls) {
+        const v = {}, out = [], S = mk(v, out);
+        let found = false;
+        for (let a = 1; a <= 10; a++) {
+          v.attempt = a;
+          yield S(0, `Next try from range: attempt = ${a}`, { check: { expr: "next value in range(1, 11)?", filled: `yes, ${a}`, result: true } });
+          v.roll = rolls[a - 1];
+          yield S(1, `Roll the die: ${v.roll}`);
+          out.push(String(v.roll));
+          yield S(2, `Print ${v.roll}`);
+          if (v.roll === 6) {
+            yield S(3, "roll == 6 is True");
+            yield S(4, "break jumps straight out of the loop.");
+            found = true; break;
+          }
+          yield S(3, `roll == 6 is False (${v.roll}), so go round again.`);
+        }
+        if (!found) yield S(0, "All 10 tries used up, so the loop ends without a 6.", { check: { expr: "next value in range(1, 11)?", filled: "none left", result: false } });
+        out.push(`Stopped after ${v.attempt} rolls`);
+        yield S(5, found ? `Found a 6, but only because we guessed 10 tries would be enough.` : "No 6 in 10 tries. The guessed limit was too small.", { done: true });
+      }
+    },
+    while: {
+      lines: ["roll = 0", "count = 0", "while roll != 6:", "    roll = random.randint(1, 6)", "    count += 1", "    print(roll)", 'print("Got a 6 after", count, "rolls")'],
+      *gen(rolls) {
+        const v = {}, out = [], S = mk(v, out);
+        v.roll = 0; yield S(0, "Start with a roll that is not 6.");
+        v.count = 0; yield S(1, "Start counting at 0.");
+        while (true) {
+          const r = v.roll !== 6;
+          yield S(2, r ? `Check: ${v.roll} != 6 is True, so roll again.` : "Check: 6 != 6 is False, so the loop ends.", { check: { expr: "roll != 6", filled: `${v.roll} != 6`, result: r } });
+          if (!r) break;
+          v.roll = rolls[v.count];
+          yield S(3, `Roll the die: ${v.roll}`);
+          v.count++;
+          yield S(4, `count is now ${v.count}`);
+          out.push(String(v.roll));
+          yield S(5, `Print ${v.roll}`);
+        }
+        out.push(`Got a 6 after ${v.count} rolls`);
+        yield S(6, "Done. No limit had to be guessed.", { done: true });
+      }
+    }
+  },
+
+  bug: {
+    label: "Forgot to update (bug)",
+    takeaway: "Remove i += 1 and nothing inside the while loop changes i, so the check i <= 5 stays True forever: an infinite loop. The for loop cannot make this mistake, because range moves i on by itself.",
+    for: {
+      lines: ["for i in range(1, 6):", "    print(i)", 'print("Done")'],
+      gen: null
+    },
+    while: {
+      lines: ["i = 1", "while i <= 5:", "    print(i)", "    # forgot: i += 1", 'print("Done")'],
+      missing: [3],
+      *gen() {
+        const v = {}, out = [], S = mk(v, out);
+        v.i = 1;
+        yield S(0, "Set up the counter: i = 1");
+        for (let n = 1; n <= 6; n++) {
+          yield S(1, `Check: 1 <= 5 is True, so go inside the loop.`, { check: { expr: "i <= 5", filled: "1 <= 5", result: true } });
+          out.push("1");
+          yield S(2, "Print 1");
+          yield S(3, "Nothing changes i. It is still 1.", { warn: true });
+        }
+        yield S(1, "Stopped by the simulator. i never changes, so i <= 5 is always True. This loop would run forever.", { error: true });
+      }
+    }
+  }
+};
+SCENARIOS.bug.for.gen = SCENARIOS.count.for.gen;
+
+const sides = ["for", "while"];
+let scen = "count", traces = { for: [], while: [] }, pos = { for: 0, while: 0 }, timer = null, rolls = [];
+
+function makeRolls() {
+  const r = [];
+  for (let i = 0; i < 40; i++) r.push(1 + Math.floor(Math.random() * 6));
+  if (r[0] === 6) r[0] = 1 + Math.floor(Math.random() * 5);
+  if (!r.includes(6)) r[4 + Math.floor(Math.random() * 14)] = 6;
+  return r;
+}
+
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function highlight(line) {
+  let code = line, comment = "";
+  const h = line.indexOf("#");
+  if (h >= 0) { code = line.slice(0, h); comment = line.slice(h); }
+  let html = esc(code).replace(/("[^"]*")|\b(for|in|while|if|break)\b|\b(print|range|random\.randint)\b|\b(\d+)\b/g,
+    (m, s, k, f, n) => s ? `<span class="str">${s}</span>` : k ? `<span class="kw">${k}</span>` : f ? `<span class="fn">${f}</span>` : `<span class="num">${n}</span>`);
+  if (comment) html += `<span class="cm">${esc(comment)}</span>`;
+  return html;
+}
+
+function buildPanel(side) {
+  const p = SCENARIOS[scen][side];
+  const el = document.getElementById("panel-" + side);
+  el.innerHTML = `
+    <div class="panel-head"><h3 class="mono">${side} loop</h3><span class="pill" data-k="status">Ready</span></div>
+    <ol class="code" data-k="code">${p.lines.map((l, i) => `<li class="${(p.missing || []).includes(i) ? "missing" : ""}">${highlight(l)}</li>`).join("")}</ol>
+    <p class="note" data-k="note" aria-live="polite"></p>
+    <div class="grid2">
+      <div class="box"><span class="label">Variables</span><div class="vars" data-k="vars"></div></div>
+      <div class="box"><span class="label">Loop check</span><div data-k="check"></div></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><strong data-k="iters">0</strong><span>times through the loop</span></div>
+      <div class="stat"><strong data-k="steps">0</strong><span>lines run</span></div>
+    </div>
+    <div class="box" style="padding:0;border:none"><span class="label">Output</span><div class="console" data-k="out"></div></div>
+    <div class="box" style="padding:0;border:none"><span class="label">Trace table: every loop check</span>
+      <div class="trace-wrap"><table><thead><tr><th>#</th><th>Variables</th><th>Check</th><th>Result</th></tr></thead><tbody data-k="trace"></tbody></table></div>
+    </div>`;
+}
+
+function q(side, k) { return document.querySelector(`#panel-${side} [data-k="${k}"]`); }
+function varsText(vars) { return Object.entries(vars).map(([k, v]) => `${k} = ${v}`).join(", ") || "none"; }
+
+function renderSide(side) {
+  const tr = traces[side], n = pos[side], st = n ? tr[n - 1] : null;
+  q(side, "code").querySelectorAll("li").forEach((li, i) => {
+    li.classList.toggle("active", !!st && st.line === i);
+    li.classList.toggle("err", !!st && st.line === i && !!(st.error || st.warn));
+  });
+  const note = q(side, "note");
+  note.textContent = st ? st.note : "Press Step to run the first line.";
+  note.className = "note" + (st && st.error ? " err" : st && st.done ? " done" : "");
+  const vars = st ? st.vars : {};
+  q(side, "vars").innerHTML = Object.keys(vars).length
+    ? Object.entries(vars).map(([k, v]) => `<span class="var">${k} = <b>${v}</b></span>`).join("")
+    : `<span class="empty">None yet</span>`;
+  const checks = tr.slice(0, n).filter(s => s.check);
+  const last = checks[checks.length - 1];
+  q(side, "check").innerHTML = last
+    ? `<div class="check-expr">${esc(last.check.expr)}</div><div class="check-row">${esc(last.check.filled)} <span class="tf ${last.check.result ? "t" : "f"}">${last.check.result ? "True" : "False"}</span></div>`
+    : `<span class="empty">Not checked yet</span>`;
+  q(side, "iters").textContent = checks.filter(c => c.check.result).length;
+  q(side, "steps").textContent = n;
+  const pill = q(side, "status");
+  if (!st) { pill.textContent = "Ready"; pill.className = "pill"; }
+  else if (st.error) { pill.textContent = "Never ends"; pill.className = "pill error"; }
+  else if (st.done) { pill.textContent = "Finished"; pill.className = "pill done"; }
+  else { pill.textContent = "Running"; pill.className = "pill running"; }
+  const out = q(side, "out");
+  out.innerHTML = st && st.out.length ? st.out.map(esc).join("\n") : `<span class="prompt">Output appears here</span>`;
+  out.scrollTop = out.scrollHeight;
+  const tb = q(side, "trace");
+  tb.innerHTML = checks.length
+    ? checks.map((c, i) => `<tr><td>${i + 1}</td><td class="mono">${esc(varsText(c.vars))}</td><td class="mono">${esc(c.check.filled)}</td><td><span class="tf ${c.check.result ? "t" : "f"}">${c.check.result ? "True" : "False"}</span></td></tr>`).join("")
+    : `<tr><td colspan="4" class="empty">No checks yet</td></tr>`;
+  const wrap = tb.closest(".trace-wrap"); wrap.scrollTop = wrap.scrollHeight;
+}
+
+function render() { sides.forEach(renderSide); }
+function finished() { return sides.every(s => pos[s] >= traces[s].length); }
+
+function reset() {
+  stop();
+  rolls = makeRolls();
+  sides.forEach(s => { traces[s] = [...SCENARIOS[scen][s].gen(rolls)]; pos[s] = 0; });
+  render();
+}
+function step() {
+  sides.forEach(s => { if (pos[s] < traces[s].length) pos[s]++; });
+  render();
+  if (finished()) stop();
+}
+function delay() { return [1500, 1000, 650, 380, 180][document.getElementById("speed").value - 1]; }
+function play() {
+  if (finished()) reset();
+  document.getElementById("runBtn").textContent = "Pause";
+  const tick = () => { step(); if (timer !== null) timer = setTimeout(tick, delay()); };
+  timer = setTimeout(tick, 0);
+}
+function stop() {
+  if (timer !== null) clearTimeout(timer);
+  timer = null;
+  document.getElementById("runBtn").textContent = "Run";
+}
+
+function chooseScenario(key) {
+  scen = key;
+  document.querySelectorAll("#chips .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.key === key));
+  document.getElementById("takeaway").textContent = SCENARIOS[key].takeaway;
+  sides.forEach(buildPanel);
+  reset();
+}
+
+document.getElementById("chips").innerHTML = Object.entries(SCENARIOS)
+  .map(([k, s]) => `<button type="button" class="chip" data-key="${k}" aria-pressed="false">${s.label}</button>`).join("");
+document.getElementById("chips").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) chooseScenario(b.dataset.key); });
+document.getElementById("stepBtn").addEventListener("click", () => { stop(); if (finished()) reset(); else step(); });
+document.getElementById("runBtn").addEventListener("click", () => timer === null ? play() : stop());
+document.getElementById("resetBtn").addEventListener("click", reset);
+document.addEventListener("keydown", e => {
+  if (e.target.closest("button, input, a")) return;
+  if (e.key === "ArrowRight" || e.key === "n" || e.key === "N") { stop(); if (finished()) reset(); else step(); }
+  else if (e.key === " ") { e.preventDefault(); timer === null ? play() : stop(); }
+  else if (e.key === "r" || e.key === "R") reset();
+});
+
+const QUIZ = [
+  ["Print every name in a class list of 32 students.", "for", "The list tells you exactly how many names there are."],
+  ["Keep asking for a PIN until the user types the right one.", "while", "You can't know how many wrong tries come first."],
+  ["Add up the numbers 1 to 100.", "for", "The range 1 to 100 is fixed before you start."],
+  ["Roll a die until you get a 6.", "while", "The stopping point depends on the dice, not a count."],
+  ["Print the 7 times table from 1 × 7 to 12 × 7.", "for", "Always exactly 12 lines."],
+  ["Run a game until the player has no lives left.", "while", "It ends when a condition changes: lives == 0."],
+  ["Draw a row of 20 stars.", "for", "Twenty is known in advance."],
+  ["Read a thermometer until the water reaches 100 °C.", "while", "Nobody knows how many readings it will take."]
+];
+let answers = {};
+function renderQuiz() {
+  document.getElementById("qgrid").innerHTML = QUIZ.map(([task, ans, why], i) => {
+    const a = answers[i], cls = a ? (a === ans ? "right" : "wrong") : "";
+    return `<div class="q ${cls}">
+      <p>${task}</p>
+      <div class="opts">
+        <button type="button" class="o-for ${a === "for" ? "picked" : ""}" data-i="${i}" data-a="for" ${a ? "disabled" : ""}>for</button>
+        <button type="button" class="o-while ${a === "while" ? "picked" : ""}" data-i="${i}" data-a="while" ${a ? "disabled" : ""}>while</button>
+      </div>
+      <p class="fb">${a ? `<strong>${a === ans ? "Correct." : `Better as ${ans}.`}</strong> ${why}` : "Choose one."}</p>
+    </div>`;
+  }).join("");
+  const right = Object.entries(answers).filter(([i, a]) => QUIZ[i][1] === a).length;
+  document.getElementById("score").textContent = `${right} / ${QUIZ.length}`;
+}
+document.getElementById("qgrid").addEventListener("click", e => {
+  const b = e.target.closest("button[data-a]"); if (!b) return;
+  answers[b.dataset.i] = b.dataset.a; renderQuiz();
+});
+document.getElementById("quizReset").addEventListener("click", () => { answers = {}; renderQuiz(); });
+
+chooseScenario("count");
+for (let k = 0; k < 4; k++) step();
+renderQuiz();
+</script>
+</body>
+</html>

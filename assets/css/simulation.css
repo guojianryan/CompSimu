@@ -1,6 +1,6 @@
 /* Shared building blocks for CompSimu simulation pages (code panel, memory stage, controls, step callout). */
 
-.sim-header { padding: 48px 0 32px; border-bottom: 1px solid var(--hairline-soft); background: linear-gradient(180deg, var(--surface-soft), var(--canvas)); }
+.sim-header { padding: 48px 0 32px; border-bottom: 1px solid var(--hairline-soft); background: linear-gradient(180deg, var(--surface), var(--page-bg)); }
 .sim-header .h1 { margin: 16px 0 12px; }
 .sim-header .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
 
@@ -8,17 +8,17 @@
 .prose p { margin: 0 0 16px; }
 .callout {
   display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: var(--r-md);
-  border: 1px solid rgba(55,114,207,.2); background: rgba(55,114,207,.06); color: var(--slate); font-size: 15px;
+  border: 1px solid rgba(36,83,196,.2); background: rgba(36,83,196,.06); color: var(--slate); font-size: 15px;
 }
-.callout.tip { border-color: rgba(0,212,164,.35); background: rgba(0,212,164,.08); }
-.callout.warn { border-color: rgba(212,86,86,.3); background: rgba(212,86,86,.06); }
+.callout.tip { border-color: rgba(29,122,70,.35); background: rgba(29,122,70,.08); }
+.callout.warn { border-color: rgba(180,35,24,.3); background: rgba(180,35,24,.06); }
 .callout .badge { flex-shrink: 0; }
 
 .sim-shell { border: 1px solid var(--hairline); border-radius: var(--r-lg); background: var(--canvas); padding: 20px; box-shadow: var(--shadow-soft); }
 .sim-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; }
 .progress-wrap { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--steel); min-width: 220px; }
 .progress { flex: 1; height: 4px; background: var(--hairline-soft); border-radius: var(--r-full); overflow: hidden; }
-.progress > div { height: 100%; width: 0; background: var(--brand-green); transition: width .4s ease; }
+.progress > div { height: 100%; width: 0; background: var(--brand-tag); transition: width .4s ease; }
 
 .sim-panels { display: grid; grid-template-columns: minmax(280px, .9fr) 1.3fr; gap: 16px; }
 .code-lines { padding: 12px 0; font: 400 15px/1.55 var(--mono); overflow-x: auto; }
@@ -35,8 +35,8 @@
   flex: 1 1 auto; min-width: 0; white-space: pre; tab-size: 4; line-height: 1.55;
 }
 .code-lines .ln.done { color: #8e8e93; }
-.code-lines .ln.current { background: rgba(0,212,164,.14); border-left-color: var(--brand-green); color: #fff; }
-.code-lines .ln.current .num { color: var(--brand-green); }
+.code-lines .ln.current { background: rgba(36,83,196,.18); border-left-color: var(--brand-tag); color: #fff; }
+.code-lines .ln.current .num { color: #7ea2ff; }
 
 .stage-panel { border: 1px solid var(--hairline); border-radius: var(--r-md); display: flex; flex-direction: column; overflow: hidden; background: var(--surface); }
 .stage-head { display: flex; justify-content: space-between; padding: 8px 16px; border-bottom: 1px solid var(--hairline); font: 600 11px/1.4 var(--sans); letter-spacing: .5px; text-transform: uppercase; color: var(--steel); background: var(--canvas); }
@@ -104,7 +104,7 @@
 .step-note.warn { border-color: rgba(212,86,86,.3); background: rgba(212,86,86,.05); }
 .step-note.warn .badge { background: rgba(212,86,86,.12); color: var(--brand-error); }
 .step-note.good { border-color: rgba(0,212,164,.4); background: rgba(0,212,164,.07); }
-.step-note.good .badge { background: var(--brand-green); color: var(--primary); }
+.step-note.good .badge { background: var(--brand-green); color: #fff; }
 
 .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
 .speed { display: flex; align-items: center; gap: 10px; margin-left: auto; font-size: 13px; color: var(--steel); }
