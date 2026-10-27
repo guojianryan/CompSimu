@@ -36,7 +36,7 @@
 }
 .output-tray .out-chip {
   font: 700 12px/1 var(--mono); padding: 5px 8px; border-radius: var(--r-full);
-  background: rgba(55,114,207,.1); color: var(--brand-tag); border: 1px solid rgba(55,114,207,.2);
+  background: rgba(126,162,255,.16); color: var(--brand-tag); border: 1px solid rgba(126,162,255,.35);
 }
 .output-tray .out-chip.latest { background: rgba(95,208,143,.2); color: var(--brand-green); border-color: rgba(95,208,143,.45); box-shadow: 0 0 0 2px rgba(95,208,143,.18); }
 
