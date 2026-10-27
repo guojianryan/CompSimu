@@ -117,7 +117,6 @@
 
 .stage-panel .stage.viz-stage { justify-content: center; }
 .intro-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 32px; align-items: start; }
-.next-card { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
 
 @media (max-width: 900px) {
   .intro-grid { grid-template-columns: 1fr; }
