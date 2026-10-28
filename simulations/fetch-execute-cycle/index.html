@@ -53,7 +53,7 @@
         <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Fetch, then execute</h2>
         <p>The CPU never “sees” a whole program at once. It repeatedly: <strong>fetch</strong> the next instruction from memory, <strong>decode</strong> it, then <strong>execute</strong> it — using registers as staging posts for addresses and data.</p>
         <p>This demo runs a tiny program that loads <code>10</code>, adds <code>25</code>, and stores <code>35</code> back into RAM.</p>
-        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Three buses link CPU and RAM: <strong>address</strong> (where), <strong>data</strong> (what), and <strong>control</strong> (read/write).</span></div>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Three buses link CPU and RAM: <strong>address</strong> (where — one way, CPU → RAM), <strong>data</strong> (what — both ways), and <strong>control</strong> (read/write).</span></div>
       </div>
       <div class="card" style="display:flex;flex-direction:column;gap:14px">
         <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Program</span><span class="h5" style="font-size:16px">Add two numbers</span></div>
@@ -131,7 +131,7 @@
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
           <span class="badge badge-tag" style="align-self:flex-start">Address</span>
           <h3 class="h5">Address bus · MAR</h3>
-          <p class="muted" style="margin:0;font-size:14px"><code>PC</code> or an operand is copied into <code>MAR</code>, which drives the address bus so RAM knows which cell to use.</p>
+          <p class="muted" style="margin:0;font-size:14px"><code>PC</code> or an operand is copied into <code>MAR</code>, which drives the address bus one way — CPU → RAM — so memory knows which cell to use.</p>
         </div>
         <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
           <span class="badge badge-soft" style="align-self:flex-start">Control</span>
@@ -620,7 +620,7 @@ function busLane(kind, label, value, dir) {
   const active = value != null && value !== '';
   const dirClass = dir === 'in' ? 'dir-in' : dir === 'out' ? 'dir-out' : '';
   const tip = {
-    address: 'Address bus — which RAM cell to access',
+    address: 'Address bus (unidirectional CPU → RAM) — which RAM cell to access',
     data: 'Data bus — value moving between CPU and RAM',
     control: 'Control bus — READ / WRITE command from the CU',
   }[kind] || label;
