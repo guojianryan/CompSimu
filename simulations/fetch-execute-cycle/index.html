@@ -624,10 +624,14 @@ function busLane(kind, label, value, dir) {
     data: 'Data bus — value moving between CPU and RAM',
     control: 'Control bus — READ / WRITE command from the CU',
   }[kind] || label;
+  // Address bus is unidirectional CPU → RAM: no reverse arrow.
+  const leftEnd = kind === 'address'
+    ? '<span class="fec-bus-origin" aria-hidden="true"></span>'
+    : '<span class="fec-bus-end left"></span>';
   return `<div class="fec-bus ${kind}${active ? ' active' : ''} ${dirClass}" title="${tip}">
     <div class="fec-bus-label">${label}</div>
     <div class="fec-bus-track">
-      <span class="fec-bus-end left"></span>
+      ${leftEnd}
       <span class="fec-bus-wire"></span>
       <span class="fec-bus-end right"></span>
       ${active ? `<span class="fec-bus-chip">${value}</span>` : ''}

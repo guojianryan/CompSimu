@@ -465,7 +465,11 @@
 }
 .fec-bus.active .fec-bus-end { opacity: 1; }
 /* Address bus is unidirectional: CPU → RAM only (no reverse arrow). */
-.fec-bus.address .fec-bus-end.left { display: none; }
+.fec-bus-origin {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+  background: var(--bus); opacity: .45;
+}
+.fec-bus.address.active .fec-bus-origin { opacity: 1; }
 .fec-bus.address .fec-bus-end.right { opacity: .55; }
 .fec-bus.address.active .fec-bus-end.right { opacity: 1; transform: scale(1.15); }
 /* Data direction: in = RAM→CPU (flip left arrow emphasis), out = CPU→RAM */
