@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0a0a0a"/><path d="M12 10l-6 6 6 6M20 10l6 6-6 6" fill="none" stroke="#00d4a4" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="CompSimu">
+  <defs>
+    <linearGradient id="bg" x1="6" y1="2" x2="28" y2="30" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1f2b47"/>
+      <stop offset="1" stop-color="#12161d"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#bg)"/>
+  <path d="M12.2 9.2L6.4 16l5.8 6.8" fill="none" stroke="#7ea2ff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M19.8 9.2L25.6 16l-5.8 6.8" fill="none" stroke="#7ea2ff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="16" cy="16" r="1.7" fill="#5fd08f"/>
+</svg>
