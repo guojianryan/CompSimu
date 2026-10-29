@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180" role="img" aria-label="CompSimu">
+  <!-- Full-bleed iOS home-screen icon. iOS applies its own rounded mask. -->
+  <defs>
+    <linearGradient id="bg" x1="24" y1="8" x2="156" y2="172" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#243553"/>
+      <stop offset="0.55" stop-color="#1a2433"/>
+      <stop offset="1" stop-color="#12161d"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="90" y1="0" x2="90" y2="90" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.2" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="180" height="180" fill="url(#bg)"/>
+  <rect width="180" height="90" fill="url(#sheen)"/>
+
+  <!-- subtle code-grid texture -->
+  <g opacity="0.10" stroke="#7ea2ff" stroke-width="1">
+    <path d="M28 48h124M28 68h124M28 88h124M28 108h124M28 128h124"/>
+    <path d="M48 36v108M68 36v108M88 36v108M108 36v108M128 36v108"/>
+  </g>
+
+  <!-- </> mark -->
+  <g fill="none" stroke="#7ea2ff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <path d="M70 48L38 90l32 42"/>
+    <path d="M110 48l32 42-32 42"/>
+  </g>
+
+  <!-- run/active pulse -->
+  <circle cx="90" cy="90" r="9" fill="#5fd08f"/>
+  <circle cx="90" cy="90" r="16" fill="none" stroke="#5fd08f" stroke-opacity="0.35" stroke-width="3"/>
+</svg>
