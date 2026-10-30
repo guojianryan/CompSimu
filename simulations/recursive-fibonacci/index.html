@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recursive Fibonacci — CompSimu</title>
+<meta name="description" content="Watch fib(n) explode into a call tree. Spot the same subproblems computed again and again — why naive recursion is inefficient." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="icon" href="../../assets/img/favicon-32.png" type="image/png" sizes="32x32" />
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png" sizes="180x180" />
+<meta name="apple-mobile-web-app-title" content="CompSimu" />
+<meta name="theme-color" content="#12161d" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+<link rel="stylesheet" href="../../assets/css/recursion.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Recursive Fibonacci</span>
+    </nav>
+    <h1 class="h1">Recursive Fibonacci</h1>
+    <p class="subtitle" style="max-width:720px">Each <code>fib(n)</code> splits into <code>fib(n−1)</code> and <code>fib(n−2)</code>. The call tree grows fast — and the same small values get computed over and over.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Programming</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">Recursion · Call tree</span>
+      <span class="badge badge-soft">~10 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">Two recursive calls, one tree</h2>
+        <p>The Fibonacci sequence is <code>0, 1, 1, 2, 3, 5, …</code>. Recursively: if <code>n ≤ 1</code>, return <code>n</code>; otherwise return <code>fib(n − 1) + fib(n − 2)</code>.</p>
+        <p>Unlike factorial’s single chain, each call branches. Watch the tree fill in — then notice how many orange nodes redo work that was already finished elsewhere.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>Start with <code>fib(4)</code>. Then try <code>fib(5)</code> and count how many times <code>fib(2)</code> appears.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Definition</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>fibonacci.py</span><span>Python</span></div>
+<pre><span class="tok-op">def</span> fib(n):
+    <span class="tok-op">if</span> n &lt;= <span class="tok-num">1</span>:
+        <span class="tok-op">return</span> n
+    <span class="tok-op">return</span> fib(n - <span class="tok-num">1</span>) + fib(n - <span class="tok-num">2</span>)</pre>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">This version is correct but <strong>not</strong> efficient — the tree proves why.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">Nodes stay on the tree after they return so you can compare identical subproblems side by side.</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="n4" role="tab">fib(4)</button>
+            <button class="pill-tab" data-mode="n5" role="tab">fib(5)</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">fibonacci.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Call tree</span><span id="stageMode">fib(4)</span></div>
+            <div class="stage viz-stage fib-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">Why the naive tree wastes work</h2>
+        <p class="subtitle">Correct answers, exponential cost — the overlapping subproblems are the lesson.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">Branch</span>
+          <h3 class="h5">Two calls per step</h3>
+          <p class="muted" style="margin:0;font-size:14px">Each non-base call opens <code>fib(n−1)</code> and <code>fib(n−2)</code>, so the tree roughly doubles each level.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-soft" style="align-self:flex-start">Overlap</span>
+          <h3 class="h5">Same <code>fib(k)</code> again</h3>
+          <p class="muted" style="margin:0;font-size:14px">Orange nodes redo a value that already finished elsewhere. Nothing is remembered between branches.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">Fix</span>
+          <h3 class="h5">Memoize or iterate</h3>
+          <p class="muted" style="margin:0;font-size:14px">Store answers (memoization / DP) or build upward in a loop so each <code>n</code> is solved once.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+const LINES = [
+  'def fib(n):',
+  '    if n <= 1:',
+  '        return n',
+  '    return fib(n - 1) + fib(n - 2)',
+  'result = fib(N)',
+  'print(result)',
+];
+
+function linesFor(N) {
+  return LINES.map((l) => l.replace('fib(N)', `fib(${N})`));
+}
+
+function fibValue(n) {
+  if (n <= 1) return n;
+  let a = 0, b = 1;
+  for (let i = 2; i <= n; i++) {
+    const t = a + b;
+    a = b;
+    b = t;
+  }
+  return b;
+}
+
+function uniqueSubproblems(N) {
+  return N + 1; // fib(0) … fib(N)
+}
+
+/** Build a depth-first call-tree trace for fib(N). Nodes stay after return. */
+function buildStepsFresh(N) {
+  const steps = [];
+  let nextId = 0;
+  const counts = {};
+  const answer = fibValue(N);
+
+  function bump(k) {
+    counts[k] = (counts[k] || 0) + 1;
+    return counts[k];
+  }
+
+  steps.push({
+    line: 4,
+    badge: 'Call',
+    text: `Main calls <code>fib(${N})</code>. Plant the root of the call tree with argument <code>n = ${N}</code>.`,
+    apply(s) {
+      const id = 0;
+      s.nodes = {
+        [id]: {
+          id, n: N, parent: null, left: null, right: null,
+          status: 'active', ret: null, duplicate: false, leftRet: null, rightRet: null,
+        },
+      };
+      s.root = id;
+      s.focus = id;
+      s.totalCalls = 1;
+      s.counts = { [N]: 1 };
+      s.dupCalls = 0;
+      s.result = undefined;
+      s.printed = undefined;
+      s.flashDup = null;
+    },
+  });
+  bump(N);
+  nextId = 1;
+
+  function descend(n, nodeId) {
+    steps.push({
+      line: 1,
+      badge: `n = ${n}`,
+      text: n <= 1
+        ? `Inside <code>fib(${n})</code>: is <code>n ≤ 1</code>? <strong>Yes</strong> — base case.`
+        : `Inside <code>fib(${n})</code>: is <code>n ≤ 1</code>? <strong>No</strong> — we need both <code>fib(${n - 1})</code> and <code>fib(${n - 2})</code>.`,
+      apply(s) {
+        s.nodes[nodeId].status = 'active';
+        s.focus = nodeId;
+        s.flashDup = null;
+      },
+    });
+
+    if (n <= 1) {
+      const nodeIsDup = counts[n] > 1;
+      steps.push({
+        line: 2,
+        badge: nodeIsDup ? 'Again' : 'Base',
+        kind: nodeIsDup ? 'warn' : 'good',
+        text: nodeIsDup
+          ? `Return <code>${n}</code> — but <code>fib(${n})</code> has already been computed elsewhere in this tree. Same work, again.`
+          : `Return <code>${n}</code> from the base case. This leaf finishes immediately.`,
+        apply(s) {
+          const node = s.nodes[nodeId];
+          node.ret = n;
+          node.status = node.duplicate ? 'duplicate' : 'done';
+          s.focus = nodeId;
+          s.flashDup = node.duplicate ? nodeId : null;
+        },
+      });
+      return n;
+    }
+
+    const leftId = nextId++;
+    const leftCount = bump(n - 1);
+    const leftDup = leftCount > 1;
+    steps.push({
+      line: 3,
+      badge: leftDup ? 'Again' : 'Call',
+      kind: leftDup ? 'warn' : undefined,
+      text: leftDup
+        ? `Call <code>fib(${n - 1})</code> on the left — <strong>we've already computed fib(${n - 1}) before</strong> (call #${leftCount}). Watch the orange node.`
+        : `Evaluate <code>fib(${n - 1}) + fib(${n - 2})</code>. First call <code>fib(${n - 1})</code> — grow the left branch.`,
+      apply(s) {
+        const parent = s.nodes[nodeId];
+        parent.status = 'waiting';
+        parent.left = leftId;
+        const count = (s.counts[n - 1] || 0) + 1;
+        s.counts[n - 1] = count;
+        const duplicate = count > 1;
+        if (duplicate) s.dupCalls++;
+        s.nodes[leftId] = {
+          id: leftId, n: n - 1, parent: nodeId, left: null, right: null,
+          status: 'active', ret: null, duplicate, leftRet: null, rightRet: null,
+        };
+        s.focus = leftId;
+        s.totalCalls++;
+        s.flashDup = duplicate ? leftId : null;
+      },
+    });
+
+    const leftVal = descend(n - 1, leftId);
+
+    steps.push({
+      line: 3,
+      badge: 'Back',
+      text: `<code>fib(${n - 1})</code> returned <code>${leftVal}</code>. Now call the right branch <code>fib(${n - 2})</code>.`,
+      apply(s) {
+        const parent = s.nodes[nodeId];
+        parent.leftRet = leftVal;
+        parent.status = 'waiting';
+        s.focus = nodeId;
+        s.flashDup = null;
+      },
+    });
+
+    const rightId = nextId++;
+    const rightCount = bump(n - 2);
+    const rightDup = rightCount > 1;
+    steps.push({
+      line: 3,
+      badge: rightDup ? 'Again' : 'Call',
+      kind: rightDup ? 'warn' : undefined,
+      text: rightDup
+        ? `Call <code>fib(${n - 2})</code> on the right — <strong>fib(${n - 2}) is a repeat</strong> (call #${rightCount}). Same calculation, another subtree.`
+        : `Call <code>fib(${n - 2})</code> — grow the right branch under <code>fib(${n})</code>.`,
+      apply(s) {
+        const parent = s.nodes[nodeId];
+        parent.status = 'waiting';
+        parent.right = rightId;
+        const count = (s.counts[n - 2] || 0) + 1;
+        s.counts[n - 2] = count;
+        const duplicate = count > 1;
+        if (duplicate) s.dupCalls++;
+        s.nodes[rightId] = {
+          id: rightId, n: n - 2, parent: nodeId, left: null, right: null,
+          status: 'active', ret: null, duplicate, leftRet: null, rightRet: null,
+        };
+        s.focus = rightId;
+        s.totalCalls++;
+        s.flashDup = duplicate ? rightId : null;
+      },
+    });
+
+    const rightVal = descend(n - 2, rightId);
+    const sum = leftVal + rightVal;
+    const selfDup = counts[n] > 1;
+
+    steps.push({
+      line: 3,
+      badge: selfDup ? 'Again' : 'Add',
+      kind: selfDup ? 'warn' : 'good',
+      text: selfDup
+        ? `Add <code>${leftVal} + ${rightVal} = <strong>${sum}</strong></code>. This whole <code>fib(${n})</code> subtree is a <strong>repeat</strong> of earlier work.`
+        : `Both children are done: <code>${leftVal} + ${rightVal} = <strong>${sum}</strong></code>. Return that from <code>fib(${n})</code>.`,
+      apply(s) {
+        const node = s.nodes[nodeId];
+        node.rightRet = rightVal;
+        node.ret = sum;
+        node.status = node.duplicate ? 'duplicate' : 'done';
+        s.focus = nodeId;
+        s.flashDup = node.duplicate ? nodeId : null;
+        if (nodeId === s.root) s.result = sum;
+      },
+    });
+
+    return sum;
+  }
+
+  descend(N, 0);
+
+  steps.push({
+    line: 5,
+    badge: 'Done',
+    kind: 'good',
+    text: `Print <code>result</code>: <code>${answer}</code>. The tree needed <strong>${/* filled */ ''}</strong> calls to solve only <code>${uniqueSubproblems(N)}</code> distinct values — that's the inefficiency.`,
+    apply(s) {
+      s.printed = answer;
+      s.result = answer;
+      s.focus = s.root;
+      s.flashDup = null;
+      if (s.root != null && s.nodes[s.root]) s.nodes[s.root].status = 'done';
+    },
+  });
+
+  const totalCalls = Object.values(counts).reduce((a, b) => a + b, 0);
+  const redo = totalCalls - uniqueSubproblems(N);
+  steps[steps.length - 1].text =
+    `Print <code>result</code>: <code>${answer}</code>. This tree made <strong>${totalCalls}</strong> calls to compute only <strong>${uniqueSubproblems(N)}</strong> distinct values` +
+    (redo > 0 ? ` — <strong>${redo}</strong> of those calls were repeats.` : '.');
+
+  return { steps, answer, totalCalls, counts: { ...counts } };
+}
+
+function renderNode(nodes, id, focus, flashDup) {
+  const node = nodes[id];
+  if (!node) return '';
+  let status = node.status;
+  if (flashDup === id) status = 'duplicate';
+  const focusCls = focus === id ? ' focus-ring' : '';
+  const retHtml = node.ret != null
+    ? `<div class="ret has">→ ${node.ret}</div>`
+    : `<div class="ret">…</div>`;
+  let tag = '';
+  if (node.duplicate && node.ret != null) tag = '<span class="tag">repeat</span>';
+  else if (status === 'active') tag = '<span class="tag">running</span>';
+  else if (status === 'waiting') tag = '<span class="tag">waiting</span>';
+  else if (status === 'done') tag = '<span class="tag">done</span>';
+  else if (status === 'duplicate') tag = '<span class="tag">repeat</span>';
+
+  const kids = [];
+  if (node.left != null) kids.push(renderNode(nodes, node.left, focus, flashDup));
+  if (node.right != null) kids.push(renderNode(nodes, node.right, focus, flashDup));
+  const kidsHtml = kids.length
+    ? `<div class="fib-kids">${kids.map((k) => `<div class="fib-branch">${k}</div>`).join('')}</div>`
+    : '';
+
+  return `<div class="fib-branch">
+    <div class="fib-node ${status}${focusCls}" data-id="${id}">
+      <div class="fn"><span class="name">fib</span>(<span class="arg">${node.n}</span>)</div>
+      ${retHtml}${tag}
+    </div>
+    ${kidsHtml}
+  </div>`;
+}
+
+function render(state) {
+  const stage = document.getElementById('stage');
+  const nodes = state.nodes || {};
+  const hasRoot = state.root != null && nodes[state.root];
+
+  let treeHtml;
+  if (!hasRoot) {
+    treeHtml = `<div class="fib-empty">Call tree is empty. Press <b>Step</b> to call fib.</div>`;
+  } else {
+    treeHtml = `<div class="fib-tree-scroll"><div class="fib-tree">${renderNode(nodes, state.root, state.focus, state.flashDup)}</div></div>`;
+  }
+
+  const maxN = Object.keys(nodes).length
+    ? Math.max(...Object.values(nodes).map((n) => n.n))
+    : 0;
+  const tallyBits = [];
+  for (let k = 0; k <= maxN; k++) {
+    const c = (state.counts && state.counts[k]) || 0;
+    if (!c && !Object.keys(nodes).length) continue;
+    if (!c) continue;
+    const cls = c > 1 ? 'dup' : 'once';
+    tallyBits.push(`<span class="fib-chip ${cls}">fib(${k}) × ${c}</span>`);
+  }
+
+  const total = state.totalCalls || 0;
+  const distinct = state.counts ? Object.keys(state.counts).length : 0;
+  const dups = state.dupCalls || 0;
+  let wasteHtml = '';
+  if (total > 0) {
+    if (dups > 0) {
+      wasteHtml = `<div class="fib-waste"><strong>${dups}</strong> of <strong>${total}</strong> calls recompute a value already seen — only <strong>${distinct}</strong> distinct inputs so far.</div>`;
+    } else {
+      wasteHtml = `<div class="fib-waste ok">So far every call is a new input (<strong>${total}</strong> calls, <strong>${distinct}</strong> values). Repeats appear once branches overlap.</div>`;
+    }
+  }
+
+  const vars = CompSimu.renderVars([
+    { name: 'calls', value: total || undefined },
+    { name: 'repeats', value: dups || undefined, flash: state.flashDup != null },
+    { name: 'result', value: state.result, flash: state.result != null && state.printed == null },
+    { name: 'printed', value: state.printed, flash: state.printed != null },
+  ]);
+
+  stage.innerHTML = `
+    <div class="fib-wrap">
+      <div class="fib-legend">
+        <span class="lg-active"><i></i>Running</span>
+        <span class="lg-wait"><i></i>Waiting</span>
+        <span class="lg-done"><i></i>First time</span>
+        <span class="lg-dup"><i></i>Computed again</span>
+      </div>
+      ${tallyBits.length ? `<div class="fib-tally">${tallyBits.join('')}</div>` : ''}
+      ${treeHtml}
+      ${wasteHtml}
+      <div class="fib-stats">${vars}</div>
+    </div>`;
+}
+
+function makeProgram(N) {
+  const { steps, answer } = buildStepsFresh(N);
+  return {
+    file: 'fibonacci.py',
+    label: `fib(${N})`,
+    ready: `Ready to compute <code>fib(${N})</code> (= <code>${answer}</code>). Press <b>Step</b> to grow the call tree — watch for orange “repeat” nodes.`,
+    lines: linesFor(N),
+    steps,
+  };
+}
+
+CompSimu.createPlayer({
+  programs: {
+    n4: makeProgram(4),
+    n5: makeProgram(5),
+  },
+  initialMode: 'n4',
+  initialState: () => ({
+    nodes: {}, root: null, focus: null, counts: {}, totalCalls: 0, dupCalls: 0,
+    result: undefined, printed: undefined, flashDup: null,
+  }),
+  render,
+});
+</script>
+</body>
+</html>

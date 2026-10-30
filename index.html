@@ -92,6 +92,7 @@
   .sim-thumb.t-bubble { background: linear-gradient(160deg, #1f2b47 0%, #1a2029 55%, #141a22 100%); }
   .sim-thumb.t-select { background: linear-gradient(160deg, #17331f 0%, #1a2029 55%, #141a22 100%); }
   .sim-thumb.t-stack { background: linear-gradient(160deg, #3a2616 0%, #1a2029 55%, #141a22 100%); }
+  .sim-thumb.t-fib { background: linear-gradient(160deg, #3a2616 0%, #1a2029 45%, #1f2b47 100%); }
   .sim-thumb.t-queue { background: linear-gradient(160deg, #1f2b47 0%, #1a2029 55%, #141a22 100%); }
   .sim-thumb.t-ir { background: linear-gradient(160deg, #243040 0%, #1a2029 50%, #141a22 100%); }
   .sim-thumb.t-fec { background: linear-gradient(160deg, #1f2b47 0%, #1a2029 50%, #141a22 100%); }
@@ -197,6 +198,18 @@
     box-shadow: 0 3px 8px rgba(0,0,0,.25);
   }
   .thumb-stack span.top { background: rgba(242,160,92,.18); border-color: var(--orange); color: var(--orange); transform: translateY(-2px); }
+  .thumb-tree {
+    display: flex; flex-direction: column; align-items: center; gap: 6px; width: 160px;
+    font: 700 10px/1 var(--mono); color: var(--slate);
+  }
+  .thumb-tree .row { display: flex; gap: 6px; justify-content: center; }
+  .thumb-tree span {
+    padding: 5px 7px; border-radius: 7px; background: rgba(18,22,29,.75);
+    border: 1px solid rgba(126,162,255,.3);
+  }
+  .thumb-tree .root { border-color: rgba(126,162,255,.5); color: var(--brand-tag); }
+  .thumb-tree .dup { border-color: rgba(242,160,92,.5); color: var(--brand-warn); background: rgba(242,160,92,.14); }
+  .thumb-tree .ok { border-color: rgba(95,208,143,.45); color: var(--brand-green); }
   .thumb-queue { display: flex; gap: 5px; align-items: center; }
   .thumb-queue span {
     width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
@@ -605,6 +618,24 @@
             <h3 class="h5">Stacks</h3>
             <p>Push and pop from the top — last in, first out — and watch the stack grow and shrink.</p>
             <div class="sim-foot"><span>LIFO</span><span class="btn-link">Open →</span></div>
+          </div>
+        </a>
+
+        <a class="card sim-card" href="simulations/recursive-fibonacci/index.html" data-cat="python">
+          <div class="sim-thumb t-fib">
+            <div class="thumb-scene">
+              <div class="thumb-tree">
+                <span class="root">fib(4)</span>
+                <div class="row"><span class="ok">fib(3)</span><span class="dup">fib(2)</span></div>
+                <div class="row"><span class="dup">fib(2)</span><span class="ok">fib(1)</span><span class="dup">fib(1)</span><span class="ok">fib(0)</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Programming</span><span class="badge badge-soft">Beginner</span></div>
+            <h3 class="h5">Recursive Fibonacci</h3>
+            <p>Grow the <code>fib(n)</code> call tree and spot the same subproblems computed again and again.</p>
+            <div class="sim-foot"><span>Recursion · Call tree</span><span class="btn-link">Open →</span></div>
           </div>
         </a>
 
