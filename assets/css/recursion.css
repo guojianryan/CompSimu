@@ -1,10 +1,11 @@
-/* Recursive factorial — call-stack stage (scoped under .rf) */
+/* Recursion simulations — call stack (factorial) and call tree (Fibonacci) */
+
+/* —— Factorial call stack —— */
 .rf-stage { min-height: 380px; gap: 14px; justify-content: flex-start; }
 .rf-wrap {
   width: 100%; max-width: 520px; margin: 0 auto;
   display: grid; gap: 14px;
 }
-
 .rf-stack-panel {
   background: var(--canvas); border: 1px solid var(--hairline); border-radius: var(--r-md);
   padding: 14px 12px 12px; position: relative;
@@ -22,7 +23,6 @@
 .rf-empty {
   text-align: center; color: var(--stone); font-size: 14px; padding: 28px 12px;
 }
-
 .rf-frame {
   border: 1px solid var(--hairline); border-radius: var(--r-md);
   background: var(--surface-soft); padding: 10px 12px;
@@ -45,13 +45,10 @@
   animation: var-pop .35s ease;
 }
 .rf-frame.top { transform: translateY(-1px); }
-
 .rf-frame-head {
   display: flex; justify-content: space-between; align-items: center; gap: 8px;
 }
-.rf-frame-title {
-  font: 700 14px/1.2 var(--mono); color: var(--ink);
-}
+.rf-frame-title { font: 700 14px/1.2 var(--mono); color: var(--ink); }
 .rf-frame-title .fn { color: var(--brand-tag); }
 .rf-frame-title .arg { color: var(--brand-warn); }
 .rf-pill {
@@ -62,20 +59,172 @@
 .rf-pill.active { background: rgba(126,162,255,.2); color: var(--brand-tag); border-color: transparent; }
 .rf-pill.waiting { background: rgba(242,160,92,.2); color: var(--brand-warn); border-color: transparent; }
 .rf-pill.returning { background: rgba(95,208,143,.2); color: var(--brand-green); border-color: transparent; }
-
 .rf-frame-meta {
   display: grid; gap: 4px;
   font: 500 12px/1.35 var(--mono); color: var(--slate);
 }
 .rf-frame-meta b { color: var(--ink); font-weight: 700; }
 .rf-frame-meta .muted { color: var(--steel); }
-
 .rf-arrow {
   text-align: center; font: 700 11px/1 var(--sans); letter-spacing: .4px;
   text-transform: uppercase; color: var(--steel);
 }
 .rf-arrow span { color: var(--brand-tag); }
-
 .rf-result {
   display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+}
+
+/* —— Fibonacci call tree —— */
+.fib-stage {
+  min-height: 420px; gap: 12px; justify-content: flex-start;
+  overflow: visible; padding: 8px 4px 4px;
+}
+.fib-wrap {
+  width: 100%; display: grid; gap: 12px; justify-items: center;
+}
+.fib-legend {
+  display: flex; flex-wrap: wrap; gap: 10px 16px; justify-content: center;
+  font: 600 12px/1.2 var(--sans); color: var(--steel);
+}
+.fib-legend i {
+  display: inline-block; width: 12px; height: 12px; border-radius: 4px;
+  margin-right: 6px; vertical-align: -1px; border: 1px solid transparent;
+}
+.fib-legend .lg-active i { background: rgba(126,162,255,.35); border-color: var(--brand-tag); }
+.fib-legend .lg-done i { background: rgba(95,208,143,.28); border-color: var(--brand-green); }
+.fib-legend .lg-dup i { background: rgba(242,160,92,.3); border-color: var(--brand-warn); }
+.fib-legend .lg-wait i { background: rgba(126,162,255,.08); border-color: var(--hairline); }
+
+.fib-tally {
+  display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; max-width: 100%;
+}
+.fib-tally .fib-chip {
+  font: 700 11px/1 var(--mono); padding: 5px 8px; border-radius: var(--r-full);
+  background: var(--surface-soft); color: var(--slate); border: 1px solid var(--hairline);
+}
+.fib-tally .fib-chip.dup {
+  background: rgba(242,160,92,.18); color: var(--brand-warn); border-color: rgba(242,160,92,.4);
+}
+.fib-tally .fib-chip.once {
+  background: rgba(95,208,143,.12); color: var(--brand-green); border-color: rgba(95,208,143,.35);
+}
+
+.fib-tree-scroll {
+  width: 100%; max-height: min(520px, 58vh); overflow: auto;
+  padding: 4px 0 8px; border: 1px solid var(--hairline); border-radius: var(--r-md);
+  background: rgba(18,22,29,.35);
+}
+.fib-tree {
+  display: inline-flex; flex-direction: column; align-items: center;
+  min-width: 100%; padding: 12px 16px 8px;
+}
+.fib-empty {
+  text-align: center; color: var(--stone); font-size: 14px; padding: 36px 16px;
+}
+
+.fib-branch {
+  display: flex; flex-direction: column; align-items: center;
+}
+.fib-kids {
+  display: flex; justify-content: center; gap: 10px; position: relative;
+  padding-top: 18px;
+}
+.fib-kids::before {
+  content: ""; position: absolute; top: 0; left: 50%; width: 0; height: 18px;
+  border-left: 2px solid rgba(126,162,255,.35);
+  transform: translateX(-50%);
+}
+.fib-kids .fib-branch {
+  position: relative; padding-top: 0;
+}
+.fib-kids .fib-branch::before {
+  content: ""; position: absolute; top: -18px; height: 18px; width: 50%;
+  border-top: 2px solid rgba(126,162,255,.35);
+}
+.fib-kids .fib-branch:first-child::before {
+  right: 0; border-left: 2px solid rgba(126,162,255,.35); border-radius: 8px 0 0 0;
+}
+.fib-kids .fib-branch:last-child::before {
+  left: 0; border-right: 2px solid rgba(126,162,255,.35); border-radius: 0 8px 0 0;
+}
+.fib-kids .fib-branch:only-child::before {
+  left: 50%; width: 0; border: none; border-left: 2px solid rgba(126,162,255,.35);
+}
+
+.fib-node {
+  min-width: 72px; padding: 7px 8px 8px; border-radius: 10px; text-align: center;
+  background: var(--surface-soft); border: 1px solid var(--hairline);
+  transition: border-color .2s, background .2s, box-shadow .2s, transform .2s;
+  position: relative; z-index: 1;
+}
+.fib-node .fn {
+  font: 700 11px/1.15 var(--mono); color: var(--ink); white-space: nowrap;
+}
+.fib-node .fn .name { color: var(--brand-tag); }
+.fib-node .fn .arg { color: var(--brand-warn); }
+.fib-node .ret {
+  margin-top: 4px; font: 700 12px/1 var(--mono); color: var(--steel); min-height: 12px;
+}
+.fib-node .ret.has { color: var(--brand-green); }
+.fib-node .tag {
+  display: block; margin-top: 4px;
+  font: 700 9px/1 var(--sans); letter-spacing: .35px; text-transform: uppercase;
+  color: var(--steel);
+}
+
+.fib-node.active {
+  border-color: var(--brand-tag);
+  background: rgba(126,162,255,.14);
+  box-shadow: 0 0 0 3px rgba(126,162,255,.18);
+  transform: translateY(-1px);
+}
+.fib-node.waiting {
+  border-color: rgba(126,162,255,.4);
+  background: rgba(126,162,255,.06);
+}
+.fib-node.done {
+  border-color: rgba(95,208,143,.45);
+  background: rgba(95,208,143,.1);
+}
+.fib-node.done .tag { color: var(--brand-green); }
+.fib-node.duplicate {
+  border-color: var(--brand-warn);
+  background: rgba(242,160,92,.16);
+  box-shadow: 0 0 0 3px rgba(242,160,92,.18);
+  animation: fib-dup-pulse .55s ease;
+}
+.fib-node.duplicate .fn .name { color: var(--brand-warn); }
+.fib-node.duplicate .ret.has { color: var(--brand-warn); }
+.fib-node.duplicate .tag { color: var(--brand-warn); }
+.fib-node.focus-ring {
+  outline: 2px solid rgba(126,162,255,.55);
+  outline-offset: 2px;
+}
+
+@keyframes fib-dup-pulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+.fib-stats {
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; width: 100%;
+}
+
+.fib-waste {
+  width: 100%; max-width: 560px; text-align: center;
+  font: 600 13px/1.4 var(--sans); color: var(--slate);
+  padding: 10px 12px; border-radius: var(--r-md);
+  border: 1px dashed rgba(242,160,92,.4); background: rgba(242,160,92,.08);
+}
+.fib-waste strong { color: var(--brand-warn); }
+.fib-waste.ok {
+  border-color: rgba(95,208,143,.35); background: rgba(95,208,143,.08);
+}
+.fib-waste.ok strong { color: var(--brand-green); }
+
+@media (max-width: 720px) {
+  .fib-node { min-width: 62px; padding: 6px 6px 7px; }
+  .fib-node .fn { font-size: 10px; }
+  .fib-kids { gap: 6px; }
 }
