@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recursive factorial — CompSimu</title>
+<meta name="description" content="Step through factorial(n) and watch frames push and pop on the call stack until the base case returns." />
+<link rel="icon" href="../../assets/img/logo.svg" type="image/svg+xml" />
+<link rel="icon" href="../../assets/img/favicon-32.png" type="image/png" sizes="32x32" />
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png" sizes="180x180" />
+<meta name="apple-mobile-web-app-title" content="CompSimu" />
+<meta name="theme-color" content="#12161d" />
+<link rel="stylesheet" href="../../assets/css/site.css" />
+<link rel="stylesheet" href="../../assets/css/simulation.css" />
+<link rel="stylesheet" href="../../assets/css/viz.css" />
+<link rel="stylesheet" href="../../assets/css/recursion.css" />
+</head>
+<body>
+
+<nav class="site-nav" aria-label="Main">
+  <div class="container">
+    <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+    <div class="nav-links">
+      <a href="../../index.html#simulations" aria-current="page">Simulations</a>
+      <a href="../../index.html#how">How it works</a>
+      <a href="../../index.html#audience">For classrooms</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-secondary" href="../../index.html#contribute">Contribute</a>
+      <a class="btn btn-primary" href="../../index.html#simulations">All simulations</a>
+    </div>
+  </div>
+</nav>
+
+<header class="sim-header">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="../../index.html">Home</a><span aria-hidden="true">/</span>
+      <a href="../../index.html#simulations">Simulations</a><span aria-hidden="true">/</span>
+      <span style="color:var(--ink)">Recursive factorial</span>
+    </nav>
+    <h1 class="h1">Recursive factorial</h1>
+    <p class="subtitle" style="max-width:720px">Each call to <code>factorial(n)</code> waits for a smaller call. Watch frames pile onto the call stack, hit the base case, then unwind with return values.</p>
+    <div class="meta">
+      <span class="badge badge-tag">Programming</span>
+      <span class="badge badge-soft">Beginner</span>
+      <span class="badge badge-soft">Recursion · Call stack</span>
+      <span class="badge badge-soft">~8 min</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section-sm" id="why">
+    <div class="container intro-grid">
+      <div class="prose">
+        <span class="eyebrow">The idea</span>
+        <h2 class="h3" style="margin:8px 0 16px;color:var(--ink)">A function that calls itself</h2>
+        <p><code>factorial(n)</code> is <code>n × (n−1) × … × 1</code>. The recursive definition is: if <code>n</code> is <code>0</code>, answer <code>1</code>; otherwise answer <code>n × factorial(n − 1)</code>.</p>
+        <p>Every call gets its own frame on the <strong>call stack</strong> with its own <code>n</code>. Deeper calls push new frames. When a call returns, its frame pops and the value goes back to the caller.</p>
+        <div class="callout tip"><span class="badge badge-ok">Tip</span><span>The base case (<code>n == 0</code>) stops the chain. Without it, the stack would grow forever.</span></div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-tag">Idea</span><span class="h5" style="font-size:16px">Definition</span></div>
+        <div class="code-block">
+          <div class="code-block-header"><span>factorial.py</span><span>Python</span></div>
+<pre><span class="tok-op">def</span> factorial(n):
+    <span class="tok-op">if</span> n == <span class="tok-num">0</span>:
+        <span class="tok-op">return</span> <span class="tok-num">1</span>
+    <span class="tok-op">return</span> n * factorial(n - <span class="tok-num">1</span>)</pre>
+        </div>
+        <p class="muted" style="margin:0;font-size:14px">Try <code>factorial(3)</code> first — four frames is enough to see the pattern.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="simulation" style="padding-top:0">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">Interactive</span>
+        <h2 class="h2">Run the simulation</h2>
+        <p class="subtitle">Frames grow downward in time but upward on screen — the top frame is the one running now.</p>
+      </div>
+
+      <div class="sim-shell">
+        <div class="sim-toolbar">
+          <div class="pill-tabs" role="tablist">
+            <button class="pill-tab active" data-mode="n3" role="tab">factorial(3)</button>
+            <button class="pill-tab" data-mode="n4" role="tab">factorial(4)</button>
+          </div>
+          <div class="progress-wrap">
+            <span id="stepLabel">Step 0 / 0</span>
+            <div class="progress"><div id="progressBar"></div></div>
+          </div>
+        </div>
+
+        <div class="sim-panels">
+          <div class="code-block">
+            <div class="code-block-header"><span id="fileName">factorial.py</span><span>Python</span></div>
+            <div class="code-lines" id="code"></div>
+          </div>
+          <div class="stage-panel">
+            <div class="stage-head"><span>Call stack</span><span id="stageMode">factorial(3)</span></div>
+            <div class="stage viz-stage rf-stage" id="stage"></div>
+          </div>
+        </div>
+
+        <div class="step-note" id="explain">
+          <span class="badge badge-tag" id="explainBadge">Ready</span>
+          <div class="txt" id="explainTxt"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn-secondary" id="btnReset" title="Reset (R)"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>Reset</button>
+          <button class="btn btn-secondary" id="btnBack" title="Back (←)"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg>Back</button>
+          <button class="btn btn-primary" id="btnPlay" title="Play / Pause (Space)"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg><span id="playTxt">Play</span></button>
+          <button class="btn btn-secondary" id="btnStep" title="Step (→)"><svg viewBox="0 0 24 24"><path d="M6 18 14.5 12 6 6zM16 6h2v12h-2z"/></svg>Step</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.5" max="2" step="0.25" value="1" />
+            <span id="speedVal">1×</span>
+          </label>
+        </div>
+        <div class="kbd-hint">Shortcuts: <kbd>Space</kbd> play/pause · <kbd>→</kbd> step · <kbd>←</kbd> back · <kbd>R</kbd> reset</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm" id="takeaways" style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Remember</span>
+        <h2 class="h2">How recursion uses the stack</h2>
+        <p class="subtitle">Same LIFO idea as a data-structure stack — but the runtime manages it for you.</p>
+      </div>
+      <div class="features" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-tag" style="align-self:flex-start">Push</span>
+          <h3 class="h5">Each call adds a frame</h3>
+          <p class="muted" style="margin:0;font-size:14px">Locals like <code>n</code> live in that frame. Deeper calls sit above older ones.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-ok" style="align-self:flex-start">Base</span>
+          <h3 class="h5">Base case stops growth</h3>
+          <p class="muted" style="margin:0;font-size:14px"><code>n == 0 → return 1</code> is the turnaround. Then values climb back up.</p>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:24px">
+          <span class="badge badge-soft" style="align-self:flex-start">Pop</span>
+          <h3 class="h5">Return unwinds the stack</h3>
+          <p class="muted" style="margin:0;font-size:14px">A finished frame pops and hands its value to the caller waiting below.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="logo" href="../../index.html"><span class="logo-mark">&lt;/&gt;</span>CompSimu</a>
+        <p style="margin:12px 0 0;max-width:320px">Interactive simulations that help students learn computer science and programming.</p>
+      </div>
+      <div>
+        <h4>Learn</h4>
+        <ul>
+          <li><a href="../../index.html#how">How it works</a></li>
+          <li><a href="../../index.html#audience">For classrooms</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul>
+          <li><a href="../../index.html#contribute">Contribute</a></li>
+          <li><a href="../../index.html#simulations">All simulations</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 CompSimu · Made for curious students</span>
+      <span>Static site · No tracking · Works offline</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../assets/js/sim-player.js"></script>
+<script>
+const LINES = [
+  'def factorial(n):',
+  '    if n == 0:',
+  '        return 1',
+  '    return n * factorial(n - 1)',
+  'result = factorial(N)',
+  'print(result)',
+];
+
+function linesFor(N) {
+  return LINES.map((l) => l.replace('factorial(N)', `factorial(${N})`));
+}
+
+/** Build a step-by-step trace for factorial(N). */
+function buildSteps(N) {
+  const steps = [];
+
+  steps.push({
+    line: 4,
+    badge: 'Call',
+    text: `Main calls <code>factorial(${N})</code>. Push a new frame onto the call stack with local <code>n = ${N}</code>.`,
+    apply(s) {
+      s.frames = [{ id: 0, n: N, status: 'active', waitFor: null, childRet: null, ret: null }];
+      s.focus = 0;
+      s.result = undefined;
+      s.printed = undefined;
+    },
+  });
+
+  function descend(n, depth) {
+    steps.push({
+      line: 1,
+      badge: `n = ${n}`,
+      text: n === 0
+        ? `Inside <code>factorial(0)</code>: is <code>n == 0</code>? <strong>Yes</strong> — this is the base case.`
+        : `Inside <code>factorial(${n})</code>: is <code>n == 0</code>? <strong>No</strong> — we must call a smaller factorial.`,
+      apply(s) {
+        const f = s.frames[depth];
+        f.status = 'active';
+        s.focus = f.id;
+      },
+    });
+
+    if (n === 0) {
+      steps.push({
+        line: 2,
+        badge: 'Base',
+        kind: 'good',
+        text: `Return <code>1</code> from the base case. This value will climb back up the stack.`,
+        apply(s) {
+          const f = s.frames[depth];
+          f.ret = 1;
+          f.status = 'returning';
+          s.focus = f.id;
+        },
+      });
+      steps.push({
+        line: depth === 0 ? 4 : 3,
+        badge: 'Pop',
+        text: depth === 0
+          ? `<code>factorial(0)</code> returns <code>1</code> to main.`
+          : `Pop <code>factorial(0)</code>. Hand <code>1</code> back to <code>factorial(1)</code>, which was waiting.`,
+        apply(s) {
+          s.frames.pop();
+          if (depth === 0) {
+            s.result = 1;
+            s.focus = null;
+          } else {
+            const parent = s.frames[depth - 1];
+            parent.childRet = 1;
+            parent.status = 'active';
+            s.focus = parent.id;
+          }
+        },
+      });
+      return 1;
+    }
+
+    steps.push({
+      line: 3,
+      badge: 'Call',
+      text: `Evaluate <code>${n} * factorial(${n - 1})</code>. Pause this frame and call <code>factorial(${n - 1})</code> — push another frame.`,
+      apply(s) {
+        const f = s.frames[depth];
+        f.status = 'waiting';
+        f.waitFor = `factorial(${n - 1})`;
+        f.childRet = null;
+        const child = { id: depth + 1, n: n - 1, status: 'active', waitFor: null, childRet: null, ret: null };
+        s.frames.push(child);
+        s.focus = child.id;
+      },
+    });
+
+    const sub = descend(n - 1, depth + 1);
+    const product = n * sub;
+
+    steps.push({
+      line: 3,
+      badge: 'Multiply',
+      kind: 'good',
+      text: `<code>factorial(${n - 1})</code> returned <code>${sub}</code>. Compute <code>${n} * ${sub} = <strong>${product}</strong></code>, then return that value.`,
+      apply(s) {
+        const f = s.frames[depth];
+        f.ret = product;
+        f.status = 'returning';
+        f.waitFor = null;
+        s.focus = f.id;
+      },
+    });
+
+    steps.push({
+      line: depth === 0 ? 4 : 3,
+      badge: 'Pop',
+      text: depth === 0
+        ? `<code>factorial(${N})</code> returns <code>${product}</code> to main. The call stack is empty again.`
+        : `Pop <code>factorial(${n})</code>. Hand <code>${product}</code> back to the caller waiting below.`,
+      apply(s) {
+        s.frames.pop();
+        if (depth === 0) {
+          s.result = product;
+          s.focus = null;
+        } else {
+          const parent = s.frames[depth - 1];
+          parent.childRet = product;
+          parent.status = 'active';
+          s.focus = parent.id;
+        }
+      },
+    });
+
+    return product;
+  }
+
+  const answer = descend(N, 0);
+
+  steps.push({
+    line: 5,
+    badge: 'Done',
+    kind: 'good',
+    text: `Print <code>result</code>: <code>${answer}</code>. Every frame has returned — recursion finished.`,
+    apply(s) {
+      s.printed = answer;
+      s.focus = null;
+    },
+  });
+
+  return { steps, answer };
+}
+
+function statusLabel(status) {
+  if (status === 'active') return 'Running';
+  if (status === 'waiting') return 'Waiting';
+  if (status === 'returning') return 'Returning';
+  return status;
+}
+
+function render(state) {
+  const stage = document.getElementById('stage');
+  const frames = state.frames || [];
+  const topId = frames.length ? frames[frames.length - 1].id : null;
+
+  let stackHtml;
+  if (!frames.length) {
+    stackHtml = `<div class="rf-empty">Call stack is empty.${state.result != null ? ` Result is ready: <b>${state.result}</b>.` : ' Press <b>Step</b> to call factorial.'}</div>`;
+  } else {
+    stackHtml = frames.map((f) => {
+      const isTop = f.id === topId;
+      const isFocus = f.id === state.focus;
+      const cls = ['rf-frame', f.status, isTop ? 'top' : '', isFocus ? 'focus' : ''].filter(Boolean).join(' ');
+      const waitLine = f.status === 'waiting'
+        ? `<div>waiting for <b>${f.waitFor}</b></div>`
+        : '';
+      const childLine = f.childRet != null && f.status !== 'waiting'
+        ? `<div>got back <b>${f.childRet}</b></div>`
+        : (f.childRet != null ? `<div class="muted">child returned <b>${f.childRet}</b></div>` : '');
+      const retLine = f.ret != null
+        ? `<div>returns <b>${f.ret}</b></div>`
+        : `<div class="muted">returns —</div>`;
+      return `<div class="${cls}" data-id="${f.id}">
+        <div class="rf-frame-head">
+          <div class="rf-frame-title"><span class="fn">factorial</span>(<span class="arg">n=${f.n}</span>)</div>
+          <span class="rf-pill ${f.status}">${statusLabel(f.status)}${isTop ? ' · top' : ''}</span>
+        </div>
+        <div class="rf-frame-meta">
+          <div>local <b>n = ${f.n}</b></div>
+          ${waitLine}${childLine}${retLine}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const vars = CompSimu.renderVars([
+    { name: 'depth', value: frames.length },
+    { name: 'result', value: state.result, flash: state.result != null && state.printed == null },
+    { name: 'printed', value: state.printed, flash: state.printed != null },
+  ]);
+
+  stage.innerHTML = `
+    <div class="rf-wrap">
+      <div class="rf-stack-panel">
+        <div class="rf-stack-label">Call stack</div>
+        <div class="rf-arrow">top of stack <span>↑</span> newest frame</div>
+        <div class="rf-stack">${stackHtml}</div>
+      </div>
+      <div class="rf-result">${vars}</div>
+    </div>`;
+}
+
+function makeProgram(N) {
+  const { steps, answer } = buildSteps(N);
+  return {
+    file: 'factorial.py',
+    label: `factorial(${N})`,
+    ready: `Ready to compute <code>factorial(${N})</code> (= <code>${answer}</code>). Press <b>Step</b> to push the first frame.`,
+    lines: linesFor(N),
+    steps,
+  };
+}
+
+CompSimu.createPlayer({
+  programs: {
+    n3: makeProgram(3),
+    n4: makeProgram(4),
+  },
+  initialMode: 'n3',
+  initialState: () => ({ frames: [], focus: null, result: undefined, printed: undefined }),
+  render,
+});
+</script>
+</body>
+</html>

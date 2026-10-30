@@ -92,6 +92,7 @@
   .sim-thumb.t-bubble { background: linear-gradient(160deg, #1f2b47 0%, #1a2029 55%, #141a22 100%); }
   .sim-thumb.t-select { background: linear-gradient(160deg, #17331f 0%, #1a2029 55%, #141a22 100%); }
   .sim-thumb.t-stack { background: linear-gradient(160deg, #3a2616 0%, #1a2029 55%, #141a22 100%); }
+  .sim-thumb.t-recur { background: linear-gradient(160deg, #1f2b47 0%, #1a2029 45%, #17331f 100%); }
   .sim-thumb.t-queue { background: linear-gradient(160deg, #1f2b47 0%, #1a2029 55%, #141a22 100%); }
   .sim-thumb.t-ir { background: linear-gradient(160deg, #243040 0%, #1a2029 50%, #141a22 100%); }
   .sim-thumb.t-fec { background: linear-gradient(160deg, #1f2b47 0%, #1a2029 50%, #141a22 100%); }
@@ -197,6 +198,14 @@
     box-shadow: 0 3px 8px rgba(0,0,0,.25);
   }
   .thumb-stack span.top { background: rgba(242,160,92,.18); border-color: var(--orange); color: var(--orange); transform: translateY(-2px); }
+  .thumb-frames { display: flex; flex-direction: column; gap: 5px; width: 140px; }
+  .thumb-frames span {
+    display: block; padding: 6px 10px; border-radius: 8px; font: 600 11px/1 var(--mono);
+    background: rgba(18,22,29,.75); border: 1px solid rgba(126,162,255,.3); color: var(--slate);
+  }
+  .thumb-frames span:nth-child(1) { margin-left: 0; border-color: rgba(95,208,143,.45); color: var(--brand-green); }
+  .thumb-frames span:nth-child(2) { margin-left: 10px; opacity: .92; }
+  .thumb-frames span:nth-child(3) { margin-left: 20px; opacity: .78; border-color: rgba(242,160,92,.4); color: var(--brand-warn); }
   .thumb-queue { display: flex; gap: 5px; align-items: center; }
   .thumb-queue span {
     width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center;
@@ -605,6 +614,20 @@
             <h3 class="h5">Stacks</h3>
             <p>Push and pop from the top — last in, first out — and watch the stack grow and shrink.</p>
             <div class="sim-foot"><span>LIFO</span><span class="btn-link">Open →</span></div>
+          </div>
+        </a>
+
+        <a class="card sim-card" href="simulations/recursive-factorial/index.html" data-cat="python">
+          <div class="sim-thumb t-recur">
+            <div class="thumb-scene">
+              <div class="thumb-frames"><span>fact(0) → 1</span><span>fact(1)</span><span>fact(3)</span></div>
+            </div>
+          </div>
+          <div class="sim-body">
+            <div class="sim-meta"><span class="badge badge-green">Live</span><span class="badge badge-tag">Programming</span><span class="badge badge-soft">Beginner</span></div>
+            <h3 class="h5">Recursive factorial</h3>
+            <p>Watch <code>factorial(n)</code> push frames onto the call stack, hit the base case, then unwind with return values.</p>
+            <div class="sim-foot"><span>Recursion · Call stack</span><span class="btn-link">Open →</span></div>
           </div>
         </a>
 
